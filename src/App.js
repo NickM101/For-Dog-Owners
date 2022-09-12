@@ -7,16 +7,12 @@
  */
 
 import React, {useEffect, useState} from 'react';
-import {
-  SafeAreaView,
-  ScrollView,
-  StatusBar,
-  StyleSheet,
-  Text,
-  useColorScheme,
-  View,
-} from 'react-native';
+import {NavigationContainer} from '@react-navigation/native';
+import {Provider as PaperProvider} from 'react-native-paper';
+import {createNativeStackNavigator} from '@react-navigation/native-stack';
+
 import {WithSplashScreen} from './layouts/SplashScreen';
+import Router from './router';
 
 const App = () => {
   const [isAppReady, setIsAppReady] = useState(false);
@@ -31,11 +27,13 @@ const App = () => {
     });
   }, []);
   return (
-    <WithSplashScreen isAppReady={isAppReady}>
-      <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
-        <Text>Hello Tiktok for dogs</Text>
-      </View>
-    </WithSplashScreen>
+    <PaperProvider>
+      <WithSplashScreen isAppReady={isAppReady}>
+        <NavigationContainer>
+          <Router />
+        </NavigationContainer>
+      </WithSplashScreen>
+    </PaperProvider>
   );
 };
 
