@@ -7,8 +7,8 @@ const Tab = createBottomTabNavigator();
 
 const Screen = ({name}) => {
   return (
-    <View className="flex h-screen items-center">
-      <Text className="text-bold">This is the {name} screen</Text>
+    <View className="flex-1 items-center justify-center">
+      <Text className="text-lg font-bold">This is the {name} screen</Text>
     </View>
   );
 };
