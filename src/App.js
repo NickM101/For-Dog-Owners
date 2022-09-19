@@ -9,16 +9,16 @@
 import React, {useEffect, useState} from 'react';
 import {NavigationContainer} from '@react-navigation/native';
 import {Provider as PaperProvider} from 'react-native-paper';
-import {createNativeStackNavigator} from '@react-navigation/native-stack';
 
 import {WithSplashScreen} from './layouts/SplashScreen';
 import Router from './router';
+import ChooseInterest from './screens/ChooseInterest';
 
 const App = () => {
   const [isAppReady, setIsAppReady] = useState(false);
 
   async function initialize() {
-    setTimeout(() => true, 5000);
+    setTimeout(() => true, 1000);
   }
 
   useEffect(() => {
@@ -29,9 +29,8 @@ const App = () => {
   return (
     <PaperProvider>
       <WithSplashScreen isAppReady={isAppReady}>
-        <NavigationContainer>
-          <Router />
-        </NavigationContainer>
+        {/* <Router /> */}
+        <ChooseInterest />
       </WithSplashScreen>
     </PaperProvider>
   );
