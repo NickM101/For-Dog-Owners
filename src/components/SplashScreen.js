@@ -2,6 +2,7 @@ import React, {useEffect, useRef, useState} from 'react';
 import {Animated, StyleSheet} from 'react-native';
 
 export function WithSplashScreen({children, isAppReady}) {
+
   return (
     <>
       {isAppReady && children}

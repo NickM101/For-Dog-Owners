@@ -14,7 +14,7 @@ const Screen = ({name}) => {
   );
 };
 
-export const HomeScreen = () => <Screen name="Home" />;
+export const HomeScreen = () => <Screen name="DogHome" />;
 export const DiscoverScreen = () => <Screen name="Discover" />;
 export const CameraScreen = () => <Screen name="Camera" />;
 export const InboxScreen = () => <Screen name="Inbox" />;
@@ -28,7 +28,7 @@ export default function BottomTab() {
         tabBarIcon: ({focused, color, size}) => {
           let iconName;
 
-          if (route.name === 'DogHome') {
+          if (route.name === 'Home') {
             iconName = focused ? 'dog-side' : 'dog-side';
           } else if (route.name === 'Discover') {
             iconName = focused ? 'apple-safari' : 'apple-safari';
@@ -47,7 +47,7 @@ export default function BottomTab() {
         tabBarActiveTintColor: 'tomato',
         tabBarInactiveTintColor: 'gray',
       })}>
-      <Tab.Screen name="DogHome" component={Pager} />
+      <Tab.Screen name="Home" component={Pager} />
       <Tab.Screen name="Discover" component={DiscoverScreen} />
       <Tab.Screen name="Camera" component={CameraScreen} />
       <Tab.Screen name="Inbox" component={InboxScreen} />

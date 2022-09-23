@@ -1,16 +1,16 @@
-import * as React from 'react';
+import React from 'react';
 import {NavigationContainer} from '@react-navigation/native';
-import {createNativeStackNavigator} from '@react-navigation/native-stack';
+
+import {AppStack, AuthStack} from './Routes';
+import { useAuth } from '../context/AuthContext';
 import BottomTab from './BottomTab';
 
-const Stack = createNativeStackNavigator();
-
-export default function index() {
+export default function Router() {
+  const [user] = useAuth(useAuth);
+  
   return (
     <NavigationContainer>
-      <Stack.Navigator screenOptions={{headerShown: false}}>
-        <Stack.Screen name="Home" component={BottomTab} />
-      </Stack.Navigator>
+      {user ? <BottomTab /> : <AuthStack />}
     </NavigationContainer>
   );
 }
