@@ -135,6 +135,10 @@ android {
 
     compileSdkVersion rootProject.ext.compileSdkVersion
 
+    packagingOptions {
+        pickFirst("lib/*/libc++_shared.so")
+    }
+
     defaultConfig {
         applicationId "com.tiktok"
         minSdkVersion rootProject.ext.minSdkVersion
@@ -256,6 +260,7 @@ dependencies {
     implementation "com.facebook.react:react-native:+"  // From node_modules
 
     implementation "androidx.swiperefreshlayout:swiperefreshlayout:1.0.0"
+    implementation "com.facebook.soloader:soloader:0.9.0+"
 
     debugImplementation("com.facebook.flipper:flipper:${FLIPPER_VERSION}") {
         exclude group:'com.facebook.fbjni'
@@ -281,7 +286,7 @@ dependencies {
 }
 
 if (isNewArchitectureEnabled()) {
-    // If new architecture is enabled, we let you build RN from source
+    // If new architecture is enabled, we let you build RN from source.
     // Otherwise we fallback to a prebuilt .aar bundled in the NPM package.
     // This will be applied to all the imported transtitive dependency.
     configurations.all {

@@ -5,9 +5,10 @@
  * @format
  * @flow strict-local
  */
-
+// import {enableScreens} from 'react-native-screens';
+// enableScreens();
 import React, {useEffect, useState} from 'react';
-import {Provider as PaperProvider} from 'react-native-paper';
+import {Provider as PaperProvider, Text} from 'react-native-paper';
 import {Provider as ReduxProvider, useDispatch} from 'react-redux';
 
 import {WithSplashScreen} from './components/SplashScreen';
@@ -22,6 +23,8 @@ import storage from '@react-native-firebase/storage';
 import Toast from 'react-native-toast-message';
 
 import {AuthProvider} from './context/AuthContext';
+import Container from './layouts/Containers/Container';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
 auth().useEmulator('http://192.168.0.103:9099');
 firestore().useEmulator('192.168.0.103', 8080);
@@ -35,11 +38,13 @@ const App = () => {
       <ReduxProvider store={store}>
         <WithSplashScreen isAppReady={true}>
           <PaperProvider>
-            <Router />
+            <GestureHandlerRootView style={{flex: 1}}>
+              <Router />
+            </GestureHandlerRootView>
           </PaperProvider>
+          <Toast />
         </WithSplashScreen>
       </ReduxProvider>
-      <Toast />
     </AuthProvider>
   );
 };

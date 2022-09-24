@@ -1,26 +1,29 @@
 import React, {useState} from 'react';
-import {View, Text} from 'react-native';
+import {View} from 'react-native';
 import {Appbar, TextInput, Button} from 'react-native-paper';
 import Container from '../../layouts/Containers/Container';
-import {useDispatch} from 'react-redux';
-import {register} from '../../redux/actions';
+import Toast from 'react-native-toast-message';
 import auth from '@react-native-firebase/auth';
 
 const RegisterMenu = () => {
-  const dispatch = useDispatch();
-
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
   const _handleRegistration = () => {
-     auth()
-       .createUserWithEmailAndPassword(
-         'jane.doe@example.com',
-         'SuperSecretPassword!',
-       )
-       .then(() => console.log('success registration'))
-       .catch(err => console.error('Error registration', err));
+    auth()
+      .createUserWithEmailAndPassword(
+        'jane.doe@example.com',
+        'SuperSecretPassword!',
+      )
+      .then(() => {
+        console.log('success registration');
+        // Toast.show({
+        //   type: 'success',
+        //   text1: 'Welcome to Pet',
+        // });
+      })
+      .catch(err => console.error('Error registration', err));
   };
   return (
     <Container>

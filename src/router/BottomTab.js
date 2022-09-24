@@ -3,6 +3,7 @@ import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import {Text, View} from 'react-native';
 import Pager from '../layouts/Home/Pager';
+import CameraScreen from '../pages/camera';
 
 const Tab = createBottomTabNavigator();
 
@@ -16,7 +17,7 @@ const Screen = ({name}) => {
 
 export const HomeScreen = () => <Screen name="DogHome" />;
 export const DiscoverScreen = () => <Screen name="Discover" />;
-export const CameraScreen = () => <Screen name="Camera" />;
+
 export const InboxScreen = () => <Screen name="Inbox" />;
 export const ProfileScreen = () => <Screen name="Profile" />;
 
