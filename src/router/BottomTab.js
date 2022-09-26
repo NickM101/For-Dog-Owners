@@ -2,9 +2,7 @@ import React from 'react';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import {Text, View} from 'react-native';
-import Pager from '../layouts/Home/Pager';
-import CameraScreen from '../pages/camera';
-import { CameraStack } from './Routes';
+import {CameraStack, ProfileStack} from './Routes';
 
 const Tab = createBottomTabNavigator();
 
@@ -49,11 +47,11 @@ export default function BottomTab() {
         tabBarActiveTintColor: 'tomato',
         tabBarInactiveTintColor: 'gray',
       })}>
-      <Tab.Screen name="Home" component={Pager} />
+      <Tab.Screen name="Home" component={HomeScreen} />
       <Tab.Screen name="Discover" component={DiscoverScreen} />
       <Tab.Screen name="Camera" component={CameraStack} />
       <Tab.Screen name="Inbox" component={InboxScreen} />
-      <Tab.Screen name="Profile" component={ProfileScreen} />
+      <Tab.Screen name="Profile" component={ProfileStack} />
     </Tab.Navigator>
   );
 }

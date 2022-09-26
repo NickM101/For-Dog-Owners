@@ -243,7 +243,7 @@ const CameraScreen = ({navigation}) => {
               ref={camera}
               style={StyleSheet.absoluteFill}
               device={device}
-              format={format}
+              format={format[0]}
               fps={fps}
               hdr={enableHdr}
               lowLightBoost={device.supportsLowLightBoost && enableNightMode}
