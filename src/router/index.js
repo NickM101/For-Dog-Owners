@@ -6,11 +6,12 @@ import {useAuth} from '../context/AuthContext';
 import BottomTab from './BottomTab';
 
 export default function Router() {
-  const [user] = useAuth(useAuth);
+  const {user} = useAuth(useAuth);
+  console.log('user', user)
 
   return (
     <NavigationContainer>
-      {user ? <BottomTab /> : <AuthStack />}
+      {!user ? <BottomTab /> : <AuthStack />}
     </NavigationContainer>
   );
 }

@@ -1,7 +1,7 @@
 import React, {useState} from 'react';
 import {View} from 'react-native';
 import {Appbar, TextInput, Button} from 'react-native-paper';
-import Container from '../../layouts/Containers/Container';
+import Container from '../../components/Container/Container';
 import Toast from 'react-native-toast-message';
 import auth from '@react-native-firebase/auth';
 

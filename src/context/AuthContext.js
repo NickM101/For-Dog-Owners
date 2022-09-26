@@ -2,30 +2,36 @@ import React, { useState, useEffect, createContext, useContext } from "react";
 
 import auth from '@react-native-firebase/auth';
 
-const AuthContext = createContext();
+export const AuthContext = createContext({});
 
 export const AuthProvider = ({ children }) => {
-  const [user, setUser] = useState();
+  const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(false)
 
-  const anonymous = () => {
-    auth()
+  async function anonymousSignIn() {
+    setLoading(true)
+    await auth()
       .signInAnonymously()
       .then((user) => {
+        setLoading(false)
         console.log(user)
         console.log('---Anonymous--- Signed in Successfully');
       })
       .catch(error => {
+        setLoading(false)
         console.error('-----Anonymous Failed----', error.code);
-      });
+      }).finally(() => setLoading(false))
   };
 
-  const EmailSignIn = () => {
-    auth()
+  async function emailSignIn() {
+    setLoading(true);
+    await auth()
       .signInWithEmailAndPassword(
         'jane.doe@example.com',
         'SuperSecretPassword!',
       )
       .then(currentUser => {
+        setLoading(false);
         console.log('--current user---', currentUser);
         setUser({});
         console.log('User account created & signed in!');
@@ -40,11 +46,12 @@ export const AuthProvider = ({ children }) => {
         }
 
         console.error(error);
-      });
+      })
+      .finally(() => setLoading(false));
   };
 
-  const SignUp = () => {
-    auth()
+  async function signUp() {
+    await auth()
       .createUserWithEmailAndPassword(
         'jane.doe@example.com',
         'SuperSecretPassword!',
@@ -67,7 +74,7 @@ export const AuthProvider = ({ children }) => {
       });
   };
 
-  const SignOut = () => {
+  async function signOut() {
     auth()
       .signOut()
       .then(() => console.log('User signed out!'));
@@ -85,7 +92,7 @@ export const AuthProvider = ({ children }) => {
 
   return (
     <AuthContext.Provider
-      value={[user, setUser, anonymous, EmailSignIn, SignUp, SignOut]}>
+      value={{user, loading, anonymousSignIn, emailSignIn, signUp, signOut}}>
       {children}
     </AuthContext.Provider>
   );

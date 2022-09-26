@@ -1,34 +1,15 @@
 import React, {useState} from 'react';
 import {View, Text} from 'react-native';
 import {Appbar, Button, TextInput} from 'react-native-paper';
-import Container from '../../layouts/Containers/Container';
+import Container from '../../components/Container/Container';
 import auth from '@react-native-firebase/auth';
+import { useAuth } from '../../context/AuthContext';
 
 const LoginForm = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
-  const _handleLogin = () => {
-    auth()
-      .signInWithEmailAndPassword(
-        'jane.doe@example.com',
-        'SuperSecretPassword!',
-      )
-      .then(() => {
-        console.log('User account created & signed in!');
-      })
-      .catch(error => {
-        if (error.code === 'auth/email-already-in-use') {
-          console.log('That email address is already in use!');
-        }
-
-        if (error.code === 'auth/invalid-email') {
-          console.log('That email address is invalid!');
-        }
-
-        console.error(error);
-      });
-  };
+  const { emailSignIn, loading } = useAuth()
 
   return (
     <Container>
@@ -59,8 +40,8 @@ const LoginForm = () => {
           className={'m-3 rounded-sm bg-slate-600'}
           icon=""
           mode="contained"
-          onPress={_handleLogin}>
-          Login
+          onPress={() => emailSignIn()}>
+         {loading ?  'Logging in' : 'Login'}
         </Button>
       </View>
     </Container>

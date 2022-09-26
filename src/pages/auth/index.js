@@ -1,54 +1,42 @@
-import React from 'react';
+import React, {useState, useEffect, useContext} from 'react';
 import {View, Text, TouchableOpacity} from 'react-native';
+import Container from '../../components/Container/Container';
 import auth from '@react-native-firebase/auth';
+import {Button} from 'react-native-paper';
+import {useAuth} from '../../context/AuthContext';
 
+const AuthScreen = ({navigation}) => {
+  const [authPage, setAuthPage] = useState(0);
 
-import Container from '../../layouts/Containers/Container';
+  const {anonymousSignIn} = useAuth();
 
-const AuthMenu = ({authPage, setAuthPage}) => {
-
-  const _handleAnonymous = () => {
-   return auth()
-      .signInAnonymously()
-      .then(() => {
-        console.log('User signed in anonymously');
-      })
-      .catch(error => {
-        if (error.code === 'auth/operation-not-allowed') {
-          console.log('Enable anonymous in your firebase console.');
-        }
-
-        console.error(error);
-      });
-  };
+  console.log('log', anonymousSignIn);
   return (
     <Container>
       <View className={'flex-initial p-5 h-1/4 items-center justify-center'}>
-        <Text className={'text-black font-extrabold text-3xl mb-4'}>{authPage == 0 ? 'Sign up' : 'Login'}</Text>
+        <Text className={'text-black font-extrabold text-3xl mb-4'}>
+          {authPage == 0 ? 'Login' : 'Register'}
+        </Text>
         <Text className={'text-base text-center'}>
           Create a profile, follow other accounts, create your own videos and
           more.
         </Text>
       </View>
-      <View className={'flex-1 h-52 justify-evenly items-center'}>
-        <TouchableOpacity
-          className={
-            'flex flex-row h-14 w-5/6 bg-white rounded-sm items-center justify-between '
-          }>
-          <Text className="p-5">Icon</Text>
-          <Text className="right-4">Use email</Text>
-          <View className={'p-5'} />
-        </TouchableOpacity>
-        <TouchableOpacity
-          className={
-            'flex flex-row h-14 w-5/6 bg-white rounded-sm items-center justify-between '
-          }
-          onPress={_handleAnonymous}
-          >
-          <Text className="p-5">Icon</Text>
-          <Text className="right-5">Continue with Anonymous</Text>
-          <View className={''} />
-        </TouchableOpacity>
+      <View className={'flex-auto justify-evenly items-center'}>
+        <Button
+          className={'w-96 rounded-sm'}
+          icon="email"
+          mode="contained"
+          onPress={() => navigation.navigate('SignIn')}>
+          Use Email
+        </Button>
+        <Button
+          className={'w-96 rounded-sm'}
+          icon="incognito"
+          mode="contained"
+          onPress={() => anonymousSignIn()}>
+          Continue Anonymous
+        </Button>
       </View>
       <View className={'flex-initial h-1/4 items-center justify-around'}>
         <View className={'p-5 mt-4'}>
@@ -85,4 +73,4 @@ const AuthMenu = ({authPage, setAuthPage}) => {
   );
 };
 
-export default AuthMenu;
+export default AuthScreen;

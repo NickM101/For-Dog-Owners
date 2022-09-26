@@ -4,6 +4,7 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 import {Text, View} from 'react-native';
 import Pager from '../layouts/Home/Pager';
 import CameraScreen from '../pages/camera';
+import { CameraStack } from './Routes';
 
 const Tab = createBottomTabNavigator();
 
@@ -50,7 +51,7 @@ export default function BottomTab() {
       })}>
       <Tab.Screen name="Home" component={Pager} />
       <Tab.Screen name="Discover" component={DiscoverScreen} />
-      <Tab.Screen name="Camera" component={CameraScreen} />
+      <Tab.Screen name="Camera" component={CameraStack} />
       <Tab.Screen name="Inbox" component={InboxScreen} />
       <Tab.Screen name="Profile" component={ProfileScreen} />
     </Tab.Navigator>
