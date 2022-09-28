@@ -11,7 +11,7 @@ export default function Router() {
 
   return (
     <NavigationContainer>
-      {!user ? <BottomTab /> : <AuthStack />}
+      {user ? <BottomTab /> : <AuthStack />}
     </NavigationContainer>
   );
 }

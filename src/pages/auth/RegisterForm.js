@@ -9,6 +9,7 @@ const RegisterMenu = () => {
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+   const [secureText, setSecureText] = useState(true);
 
   const _handleRegistration = () => {
     auth()
@@ -18,10 +19,6 @@ const RegisterMenu = () => {
       )
       .then(() => {
         console.log('success registration');
-        // Toast.show({
-        //   type: 'success',
-        //   text1: 'Welcome to Pet',
-        // });
       })
       .catch(err => console.error('Error registration', err));
   };
@@ -39,7 +36,6 @@ const RegisterMenu = () => {
           mode="outlined"
           label="Username"
           placeholder="Type something"
-          right={<TextInput.Affix text="/100" />}
           value={username}
           onChangeText={setUsername}
         />
@@ -48,7 +44,6 @@ const RegisterMenu = () => {
           mode="outlined"
           label="Email Address"
           placeholder="Type something"
-          right={<TextInput.Affix text="/100" />}
           value={email}
           onChangeText={setEmail}
         />
@@ -57,7 +52,13 @@ const RegisterMenu = () => {
           mode="outlined"
           label="Password"
           placeholder="Type something"
-          right={<TextInput.Affix text="/100" />}
+          secureTextEntry={secureText}
+          right={
+            <TextInput.Icon
+              onPress={() => setSecureText(!secureText)}
+              icon={secureText ? 'eye-off' : 'eye'}
+            />
+          }
           value={password}
           onChangeText={setPassword}
         />

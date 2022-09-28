@@ -1,7 +1,7 @@
 import React from 'react';
-import {TabView, SceneMap} from 'react-native-tab-view';
+import {TabView, TabBar, SceneMap} from 'react-native-tab-view';
 import {useWindowDimensions} from 'react-native';
-import IonIcon from 'react-native-vector-icons/Ionicons';
+import MaterialIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
 import {FavoriteVideo} from './FavoriteVideos';
 import {PrivateVideo} from './PrivateVideos';
@@ -20,25 +20,22 @@ const ProfileTabs = () => {
   const [routes] = React.useState([
     {
       key: 'first',
-      title: '',
-      icon: '',
+      icon: 'apps',
     },
     {
       key: 'second',
-      title: '',
-      icon: '',
+      icon: 'lock-outline',
     },
     {
       key: 'third',
-      title: '',
-      icon: '',
+      icon: 'heart-cog-outline',
     },
   ]);
 
   const renderIcon = ({route, focused}) => {
     console.info(route);
     let iconColor = focused ? '#6d578b' : '#c2c3c8';
-    return <Ionicons name="md-contact" size={23} color={iconColor} />;
+    return <MaterialIcons name={route.icon} size={23} color={iconColor} />;
   };
 
   return (
@@ -47,8 +44,9 @@ const ProfileTabs = () => {
       renderScene={renderScene}
       onIndexChange={setIndex}
       initialLayout={{width: layout.width}}
+      swipeEnabled={false}
       renderTabBar={props => {
-        return <TabBar {...props} renderIcon={renderIcon} />;
+        return <TabBar {...props} style={{ backgroundColor: 'white'}} renderIcon={renderIcon} />;
       }}
     />
   );

@@ -1,7 +1,12 @@
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
+import TextInput from '../components/TextInput';
 
 import AuthScreen from '../pages/auth';
+import CheckEmail from '../pages/auth/CheckEmail';
+import ForgotPassword from '../pages/auth/ForgotPassword';
 import LoginForm from '../pages/auth/LoginForm';
+import PasswordReset from '../pages/auth/PasswordReset';
+import RegisterMenu from '../pages/auth/RegisterForm';
 
 import CameraScreen from '../pages/camera';
 import MediaPage from '../pages/camera/MediaPage';
@@ -13,8 +18,12 @@ const Stack = createNativeStackNavigator();
 export const AuthStack = () => {
   return (
     <Stack.Navigator screenOptions={{headerShown: false}}>
+      <Stack.Screen name="Reset" component={PasswordReset} />
+      <Stack.Screen name="CheckMail" component={CheckEmail} />
       <Stack.Screen name="Welcome" component={AuthScreen} />
-      <Stack.Screen name="SignIn" component={LoginForm} />
+      <Stack.Screen name="Login" component={LoginForm} />
+      <Stack.Screen name="Register" component={RegisterMenu} />
+      <Stack.Screen name="Forgot" component={ForgotPassword} />
     </Stack.Navigator>
   );
 };
