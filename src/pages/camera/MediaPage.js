@@ -14,9 +14,13 @@ import {SAFE_AREA_PADDING} from '../../constants/camera';
 import IonIcon from 'react-native-vector-icons/Ionicons';
 import {StatusBarBlurBackground} from '../../components/camera/StatusBlurBar';
 import {useIsFocused} from '@react-navigation/core';
+import {CameraRoll} from '@react-native-camera-roll/camera-roll';
+import {utils} from '@react-native-firebase/app';
+import storage from '@react-native-firebase/storage';
 
 const requestSavePermission = async () => {
   if (Platform.OS !== 'android') return true;
+
 
   const permission = PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE;
   if (permission == null) return false;
@@ -39,6 +43,7 @@ const MediaPage = ({navigation, route}) => {
   const isScreenFocused = useIsFocused();
   const isVideoPaused = !isScreenFocused;
   const [savingState, setSavingState] = useState('none');
+  const reference = storage().ref('camera.mp4');
 
   const onMediaLoad = useCallback(event => {
     if (isVideoOnLoadEvent(event)) {
@@ -56,38 +61,44 @@ const MediaPage = ({navigation, route}) => {
     console.log('media has loaded.');
     setHasMediaLoaded(true);
   }, []);
-  const onMediaLoadError = useCallback((error) => {
+  const onMediaLoadError = useCallback(error => {
     console.log(`failed to load media: ${JSON.stringify(error)}`);
   }, []);
 
-  const onSavePressed = useCallback(
-    async() => {
-      try {
-        setSavingState('saving');
-        const hasPermission = await requestSavePermission();
-        if (!hasPermission) {
-          Alert.alert(
-            'Permission denied!',
-            'Vision Camera does not have permission to save the media to your camera roll.',
-          );
-          return;
-        }
-        await CameraRoll.save(`file://${path}`, {
-          type: type,
+  const onSavePressed = useCallback(async () => {
+    try {
+      setSavingState('saving');
+      const hasPermission = await requestSavePermission();
+      // if (!hasPermission) {
+      //   Alert.alert(
+      //     'Permission denied!',
+      //     'Vision Camera does not have permission to save the media to your camera roll.',
+      //   );
+      //   return;
+      // }
+      await CameraRoll.save(`file://${path}`, {
+        type: type,
+      }).then(() => {
+        // const pathToFile = `${utils.FilePath.PICTURES_DIRECTORY}/camera`
+        const task = reference.putFile(`file://${path}`);
+        task.on('state_changed', taskSnapshot => {
+          console.log(`${taskSnapshot.bytesTransferred} transferred out of ${taskSnapshot.totalBytes}`);
         });
-        setSavingState('saved');
-      } catch (e) {
-        const message = e instanceof Error ? e.message : JSON.stringify(e);
-        setSavingState('none');
-        Alert.alert(
-          'Failed to save!',
-          `An unexpected error occured while trying to save your ${type}. ${message}`,
-        );
-      }
-    },
-    [path, type],
-  )
-  
+        task.then(() => {
+          console.log('Image uploaded to the bucket!');
+        });
+      });
+      setSavingState('saved');
+    } catch (e) {
+      const message = e instanceof Error ? e.message : JSON.stringify(e);
+      setSavingState('none');
+      Alert.alert(
+        'Failed to save!',
+        `An unexpected error occured while trying to save your ${type}. ${message}`,
+      );
+    }
+  }, [path, type]);
+
   const source = useMemo(() => ({uri: `file://${path}`}), [path]);
 
   const screenStyle = useMemo(
@@ -95,10 +106,16 @@ const MediaPage = ({navigation, route}) => {
     [hasMediaLoaded],
   );
 
-
-  return (  <View style={[styles.container, screenStyle]}>
+  return (
+    <View style={[styles.container, screenStyle]}>
       {type === 'photo' && (
-        <Image source={source} style={StyleSheet.absoluteFill} resizeMode="cover" onLoadEnd={onMediaLoadEnd} onLoad={onMediaLoad} />
+        <Image
+          source={source}
+          style={StyleSheet.absoluteFill}
+          resizeMode="cover"
+          onLoadEnd={onMediaLoadEnd}
+          onLoad={onMediaLoad}
+        />
       )}
       {type === 'video' && (
         <Video
@@ -125,16 +142,33 @@ const MediaPage = ({navigation, route}) => {
         <IonIcon name="close" size={35} color="white" style={styles.icon} />
       </Pressable>
 
-      <Pressable style={styles.saveButton} onPress={onSavePressed} disabled={savingState !== 'none'}>
-        {savingState === 'none' && <IonIcon name="download" size={35} color="white" style={styles.icon} />}
-        {savingState === 'saved' && <IonIcon name="checkmark" size={35} color="white" style={styles.icon} />}
+      <Pressable
+        style={styles.saveButton}
+        onPress={onSavePressed}
+        disabled={savingState !== 'none'}>
+        {savingState === 'none' && (
+          <IonIcon
+            name="download"
+            size={35}
+            color="white"
+            style={styles.icon}
+          />
+        )}
+        {savingState === 'saved' && (
+          <IonIcon
+            name="checkmark"
+            size={35}
+            color="white"
+            style={styles.icon}
+          />
+        )}
         {savingState === 'saving' && <ActivityIndicator color="white" />}
       </Pressable>
 
       <StatusBarBlurBackground />
     </View>
   );
-}
+};
 
 const styles = StyleSheet.create({
   container: {
@@ -165,6 +199,6 @@ const styles = StyleSheet.create({
     },
     textShadowRadius: 1,
   },
-})
+});
 
 export default MediaPage;
