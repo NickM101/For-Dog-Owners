@@ -1,9 +1,7 @@
 import React, {useState, useEffect, useContext} from 'react';
 import {View, Text, Image} from 'react-native';
 import Container from '../../components/Container/Container';
-import auth from '@react-native-firebase/auth';
 import {Button} from 'react-native-paper';
-import {useAuth} from '../../context/AuthContext';
 
 const AuthScreen = ({navigation}) => {
 

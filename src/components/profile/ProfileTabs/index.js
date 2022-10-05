@@ -13,7 +13,7 @@ const renderScene = SceneMap({
   third: FavoriteVideo,
 });
 
-const ProfileTabs = () => {
+const ProfileTabs = ({data}) => {
   const layout = useWindowDimensions();
 
   const [index, setIndex] = React.useState(0);
@@ -46,7 +46,13 @@ const ProfileTabs = () => {
       initialLayout={{width: layout.width}}
       swipeEnabled={false}
       renderTabBar={props => {
-        return <TabBar {...props} style={{ backgroundColor: 'white'}} renderIcon={renderIcon} />;
+        return (
+          <TabBar
+            {...props}
+            style={{backgroundColor: 'white'}}
+            renderIcon={renderIcon}
+          />
+        );
       }}
     />
   );

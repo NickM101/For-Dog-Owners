@@ -2,37 +2,26 @@ import React, {useState, useLayoutEffect} from 'react';
 import {View, Text} from 'react-native';
 import {Button, IconButton, TextInput} from 'react-native-paper';
 import Container from '../../components/Container/Container';
-import { useAuth } from '../../context/AuthContext';
+import {useAuth} from '../../context/AuthContext';
+import Toast from 'react-native-toast-message';
 
-import MaterialIcon from 'react-native-vector-icons/MaterialCommunityIcons';
-
-const LoginForm = ({ navigation }) => {
+const LoginForm = ({navigation}) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
-   const [secureText, setSecureText] = useState(true);
+  const [secureText, setSecureText] = useState(true);
 
-  const { emailSignIn, loading } = useAuth();
+  const {emailSignIn, anonymousSignIn, loading} = useAuth();
 
-   useLayoutEffect(() => {
-     navigation.setOptions({
-       headerShown: true,
-       headerBackTitleVisible: false,
-       headerShadowVisible: false,
-       headerTitleAlign: 'center',
-       headerLeft: () => (
-         <MaterialIcon
-           name="chevron-left"
-           size={30}
-           iconStyle={{
-            margin: 0,
-            padding: 0,
-           }}
-           onPress={() => navigation.goBack()}
-         />
-       ),
-     });
-   }, [navigation]);
+  useLayoutEffect(() => {
+    navigation.setOptions({
+      headerShown: true,
+      headerBackTitleVisible: false,
+      headerShadowVisible: false,
+      headerTitleAlign: 'center',
+      headerLeft: null,
+    });
+  }, [navigation]);
 
   return (
     <Container>
@@ -81,13 +70,16 @@ const LoginForm = ({ navigation }) => {
           <Button
             className={'m-3 rounded-sm bg-slate-600'}
             icon={'incognito'}
-            mode="contained">
+            mode="contained"
+            onPress={() => anonymousSignIn()}>
             Continue Anonymous
           </Button>
         </View>
       </View>
       <View className={'flex-1 justify-end'}>
-        <Text className={'text-black font-semibold text-center my-5'}>
+        <Text
+          onPress={() => navigation.navigate('Register')}
+          className={'text-black font-semibold text-center my-5'}>
           Don't have an account? <Text className="text-red-600">Register</Text>
         </Text>
       </View>

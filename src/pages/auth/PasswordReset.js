@@ -29,18 +29,7 @@ const PasswordReset = ({navigation}) => {
            }}
            onPress={() => navigation.goBack()}
          />
-       ),
-       headerRight: () => (
-         <MaterialIcon
-           name="help-circle-outline"
-           size={28}
-           iconStyle={{
-             margin: 0,
-             padding: 0,
-           }}
-           onPress={() => navigation.goBack()}
-         />
-       ),
+       )
      });
    }, [navigation]);
 

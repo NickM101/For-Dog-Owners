@@ -3,19 +3,14 @@ import {useIsFocused} from '@react-navigation/native';
 import {View, Text, StyleSheet, Pressable} from 'react-native';
 import {
   PinchGestureHandler,
-  PinchGestureHandlerGestureEvent,
   TapGestureHandler,
 } from 'react-native-gesture-handler';
+import {createThumbnail} from 'react-native-create-thumbnail';
 import {
   Camera,
   frameRateIncluded,
-  CameraRuntimeError,
-  FrameProcessorPerformanceSuggestion,
-  PhotoFile,
   sortFormats,
   useCameraDevices,
-  useFrameProcessor,
-  VideoFile,
 } from 'react-native-vision-camera';
 import MaterialIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 import IonIcon from 'react-native-vector-icons/Ionicons';
@@ -95,6 +90,13 @@ const CameraScreen = ({navigation}) => {
     setIsPressingButton.value = !isPressingButton;
   }, [isPressingButton]);
 
+  const generateThumbnail = async source => {
+    await createThumbnail({
+      url: source,
+      timeStamp: 3000,
+    });
+  };
+
   const onError = useCallback(() => {
     console.error(error);
   }, []);
@@ -102,11 +104,23 @@ const CameraScreen = ({navigation}) => {
     console.log('Camera initialized!');
     setIsCameraInitialized(true);
   }, []);
-  const onMediaCaptured = useCallback((media, type) => {
+  const onMediaCaptured = useCallback(async (media, type) => {
     console.log(`Media captured! ${JSON.stringify(media)}`);
-    navigation.navigate('Media', {
-      path: media.path,
-      type: type,
+    await createThumbnail({
+      url: `file:///${media.path}`,
+      timeStamp: 1000,
+      format: 'png',
+    }).then(response => {
+      const thumbnail = response.path;
+      if (thumbnail) {
+        navigation.navigate('Media', {
+          path: media.path,
+          type: type,
+          thumbnail,
+        });
+      } else {
+        console.error('thumbnail failed');
+      }
     });
   }, []);
 

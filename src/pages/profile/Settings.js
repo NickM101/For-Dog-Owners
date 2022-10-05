@@ -1,15 +1,11 @@
-import { StyleSheet, Text, View } from 'react-native'
-import React from 'react'
-import Container from '../../components/Container/Container'
+import {StyleSheet} from 'react-native';
+import React from 'react';
+import Container from '../../components/Container/Container';
 
 const Settings = () => {
-  return (
-   <Container>
-    
-   </Container>
-  )
-}
+  return <Container></Container>;
+};
 
-export default Settings
+export default Settings;
 
-const styles = StyleSheet.create({})
+const styles = StyleSheet.create({});

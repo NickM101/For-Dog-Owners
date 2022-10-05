@@ -27,8 +27,10 @@
     "nativewind": "^2.0.10",
     "react": "18.1.0",
     "react-native": "0.70.0",
+    "react-native-create-thumbnail": "^1.6.3",
     "react-native-date-picker": "^4.2.5",
     "react-native-gesture-handler": "^2.6.0",
+    "react-native-get-random-values": "^1.8.0",
     "react-native-pager-view": "^6.0.0",
     "react-native-paper": "5.0.0-rc.5",
     "react-native-reanimated": "2.10.0",
@@ -43,7 +45,8 @@
     "react-native-vision-camera": "^2.14.1",
     "react-redux": "^8.0.2",
     "redux": "^4.2.0",
-    "redux-thunk": "^2.4.1"
+    "redux-thunk": "^2.4.1",
+    "uuid": "^9.0.0"
   },
   "devDependencies": {
     "@babel/core": "^7.12.9",

@@ -10,7 +10,7 @@ import {GestureHandlerRootView} from 'react-native-gesture-handler';
 // enableScreens();
 import React, {useEffect, useState} from 'react';
 import {Provider as PaperProvider, Text} from 'react-native-paper';
-import {Provider as ReduxProvider, useDispatch} from 'react-redux';
+import {Provider as ReduxProvider} from 'react-redux';
 
 import {WithSplashScreen} from './pages/SplashScreen';
 import Router from './router';
@@ -27,7 +27,7 @@ import {AuthProvider} from './context/AuthContext';
 import Container from './components/Container/Container';
 
 auth().useEmulator('http://192.168.0.103:9099');
-firestore().useEmulator('192.168.0.103', 8080);
+firestore().useEmulator('192.168.0.103', 8085);
 database().useEmulator('192.168.0.103', 9000);
 storage().useEmulator('192.168.0.103', 9199);
 functions().useEmulator('192.168.0.103', 5002);
@@ -35,7 +35,7 @@ functions().useEmulator('192.168.0.103', 5002);
 const App = () => {
   return (
     <AuthProvider>
-      {/* <ReduxProvider store={store}> */}
+      <ReduxProvider store={store}>
       <WithSplashScreen isAppReady={true}>
         <PaperProvider>
           <GestureHandlerRootView style={{flex: 1}}>
@@ -44,7 +44,7 @@ const App = () => {
         </PaperProvider>
         <Toast />
       </WithSplashScreen>
-      {/* </ReduxProvider> */}
+      </ReduxProvider>
     </AuthProvider>
   );
 };

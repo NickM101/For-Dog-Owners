@@ -5,7 +5,7 @@ import MaterialIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
 import Container from '../../components/Container/Container'
 
-const CheckEmail = () => {
+const CheckEmail = ({ navigation}) => {
   return (
     <Container className="flex justify-center">
       <View className={'flex-1 justify-center'}>
@@ -22,7 +22,7 @@ const CheckEmail = () => {
           <Button mode={'contained'} className={'rounded my-4'}>
             Open email app
           </Button>
-          <Button className={'my-4'}>Skip, I'll confirm later</Button>
+          <Button className={'my-4'} onPress={() => navigation.navigate("Login")}>Skip, I'll confirm later</Button>
         </View>
       </View>
       <View className={'flex my-5 items-center'}>

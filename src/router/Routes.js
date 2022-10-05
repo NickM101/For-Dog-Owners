@@ -18,12 +18,12 @@ const Stack = createNativeStackNavigator();
 export const AuthStack = () => {
   return (
     <Stack.Navigator screenOptions={{headerShown: false}}>
-      <Stack.Screen name="Reset" component={PasswordReset} />
-      <Stack.Screen name="CheckMail" component={CheckEmail} />
-      <Stack.Screen name="Welcome" component={AuthScreen} />
+      {/* <Stack.Screen name="Welcome" component={AuthScreen} /> */}
       <Stack.Screen name="Login" component={LoginForm} />
       <Stack.Screen name="Register" component={RegisterMenu} />
       <Stack.Screen name="Forgot" component={ForgotPassword} />
+      <Stack.Screen name="Reset" component={PasswordReset} />
+      <Stack.Screen name="CheckMail" component={CheckEmail} />
     </Stack.Navigator>
   );
 };

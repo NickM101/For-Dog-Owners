@@ -17,10 +17,13 @@ import {useIsFocused} from '@react-navigation/core';
 import {CameraRoll} from '@react-native-camera-roll/camera-roll';
 import {utils} from '@react-native-firebase/app';
 import storage from '@react-native-firebase/storage';
+import {useAuth} from '../../context/AuthContext';
+import {useDispatch} from 'react-redux';
+import {createPost} from '../../redux/posts';
+import Container from '../../components/Container/Container';
 
 const requestSavePermission = async () => {
   if (Platform.OS !== 'android') return true;
-
 
   const permission = PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE;
   if (permission == null) return false;
@@ -37,13 +40,18 @@ const requestSavePermission = async () => {
 const isVideoOnLoadEvent = event => 'duration' && 'naturalSize';
 
 const MediaPage = ({navigation, route}) => {
-  const {path, type} = route.params;
+  const {path, type, thumbnail} = route.params;
+  console.log('Thumbnail check it', thumbnail);
   const [hasMediaLoaded, setHasMediaLoaded] = useState(false);
   // const isForeground = useIsForeground();
   const isScreenFocused = useIsFocused();
   const isVideoPaused = !isScreenFocused;
   const [savingState, setSavingState] = useState('none');
-  const reference = storage().ref('camera.mp4');
+  const [requestRunning, setRequestRunning] = useState(false);
+
+  const {user} = useAuth();
+
+  const dispatch = useDispatch();
 
   const onMediaLoad = useCallback(event => {
     if (isVideoOnLoadEvent(event)) {
@@ -65,6 +73,19 @@ const MediaPage = ({navigation, route}) => {
     console.log(`failed to load media: ${JSON.stringify(error)}`);
   }, []);
 
+  // const generateThumbnail = async source => {
+  //   try {
+  //     const {uri} = createThumbnail({
+  //       url: source,
+  //       timeStamp: 1000,
+  //     });
+
+  //     return uri;
+  //   } catch (error) {
+  //     console.error('error generate thumbnail', error);
+  //   }
+  // };
+
   const onSavePressed = useCallback(async () => {
     try {
       setSavingState('saving');
@@ -78,23 +99,26 @@ const MediaPage = ({navigation, route}) => {
       // }
       await CameraRoll.save(`file://${path}`, {
         type: type,
-      }).then(() => {
-        // const pathToFile = `${utils.FilePath.PICTURES_DIRECTORY}/camera`
-        const task = reference.putFile(`file://${path}`);
-        task.on('state_changed', taskSnapshot => {
-          console.log(`${taskSnapshot.bytesTransferred} transferred out of ${taskSnapshot.totalBytes}`);
-        });
-        task.then(() => {
-          console.log('Image uploaded to the bucket!');
-        });
+      }).then(async newURl => {
+        setRequestRunning(true);
+        dispatch(createPost(newURl, user.uid, thumbnail))
+          .then(() => {
+            setRequestRunning(false);
+            // navigation.dispatch(StackActions.popToTop());
+            navigation.goBack();
+          })
+          .catch(error => {
+            setRequestRunning(false);
+            console.error('Error Saving', error);
+          });
       });
-      setSavingState('saved');
+      // setSavingState('saved');
     } catch (e) {
       const message = e instanceof Error ? e.message : JSON.stringify(e);
       setSavingState('none');
       Alert.alert(
         'Failed to save!',
-        `An unexpected error occured while trying to save your ${type}. ${message}`,
+        `An unexpected error occurred while trying to save your ${type}. ${message}`,
       );
     }
   }, [path, type]);
@@ -105,6 +129,14 @@ const MediaPage = ({navigation, route}) => {
     () => ({opacity: hasMediaLoaded ? 1 : 0}),
     [hasMediaLoaded],
   );
+
+  if (requestRunning) {
+    return (
+      <Container className={'content-center justify-center'}>
+        <ActivityIndicator color={'red'} size={'large'} />
+      </Container>
+    );
+  }
 
   return (
     <View style={[styles.container, screenStyle]}>

@@ -27,17 +27,6 @@ const ForgotPassword = ({ navigation }) => {
            onPress={() => navigation.goBack()}
          />
        ),
-       headerRight: () => (
-         <MaterialIcon
-           name="help-circle-outline"
-           size={28}
-           iconStyle={{
-             margin: 0,
-             padding: 0,
-           }}
-           onPress={() => navigation.goBack()}
-         />
-       ),
      });
    }, [navigation]);
 
@@ -60,7 +49,7 @@ const ForgotPassword = ({ navigation }) => {
           className={'my-3 rounded-sm bg-slate-600'}
           icon=""
           mode="contained"
-          onPress={() => {}}>
+          onPress={() => {navigation.navigate('CheckMail')}}>
           Send Instructions
         </Button>
       </View>

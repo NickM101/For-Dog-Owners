@@ -1,37 +1,46 @@
-import React, {useState} from 'react';
-import {View} from 'react-native';
-import {Appbar, TextInput, Button} from 'react-native-paper';
+import React, {useState, useLayoutEffect} from 'react';
+import {View, Text} from 'react-native';
+import {TextInput, Button} from 'react-native-paper';
 import Container from '../../components/Container/Container';
-import Toast from 'react-native-toast-message';
-import auth from '@react-native-firebase/auth';
+import MaterialIcon from 'react-native-vector-icons/MaterialCommunityIcons';
+import InputText from '../../components/TextInput';
+import { useAuth } from '../../context/AuthContext';
 
-const RegisterMenu = () => {
+
+const RegisterMenu = ({ navigation }) => {
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-   const [secureText, setSecureText] = useState(true);
+  const [phoneNumber, setPhoneNumber] = useState('');
+  const [secureText, setSecureText] = useState(true);
 
-  const _handleRegistration = () => {
-    auth()
-      .createUserWithEmailAndPassword(
-        'jane.doe@example.com',
-        'SuperSecretPassword!',
-      )
-      .then(() => {
-        console.log('success registration');
-      })
-      .catch(err => console.error('Error registration', err));
-  };
+    const {signUp, loading} = useAuth();
+
+
+    useLayoutEffect(() => {
+      navigation.setOptions({
+        headerShown: true,
+        headerBackTitleVisible: false,
+        headerShadowVisible: false,
+        headerTitleAlign: 'center',
+        headerLeft: () => (
+          <MaterialIcon
+            name="chevron-left"
+            size={30}
+            iconStyle={{
+              margin: 0,
+              padding: 0,
+            }}
+            onPress={() => navigation.goBack()}
+          />
+        ),
+      });
+    }, [navigation]);
+
   return (
     <Container>
-      <Appbar.Header className={'bg-slate-200'} mode={'center-aligned'}>
-        <Appbar.BackAction className={'m-0 p-0'} onPress={() => {}} />
-        <Appbar.Content title="" />
-        <Appbar.Action icon="help" onPress={() => {}} />
-      </Appbar.Header>
-
-      <View className="flex-auto justify-center">
-        <TextInput
+      <View className="">
+        <InputText
           className={'m-3'}
           mode="outlined"
           label="Username"
@@ -39,7 +48,7 @@ const RegisterMenu = () => {
           value={username}
           onChangeText={setUsername}
         />
-        <TextInput
+        <InputText
           className={'m-3'}
           mode="outlined"
           label="Email Address"
@@ -47,7 +56,8 @@ const RegisterMenu = () => {
           value={email}
           onChangeText={setEmail}
         />
-        <TextInput
+
+        <InputText
           className={'m-3'}
           mode="outlined"
           label="Password"
@@ -66,9 +76,31 @@ const RegisterMenu = () => {
           className={'m-3 rounded-sm bg-slate-600'}
           icon=""
           mode="contained"
-          onPress={_handleRegistration}>
+          onPress={() => signUp()}>
           Register
         </Button>
+      </View>
+      <View>
+        <View className={'relative flex-row py-4 items-center'}>
+          <View className={'flex-grow border-t border-gray-400'}></View>
+          <Text className={'flex-shrink mx-2 font-bold'}>OR</Text>
+          <View className={'flex-grow border-t border-gray-400'}></View>
+        </View>
+        <View>
+          <Button
+            className={'m-3 rounded-sm bg-slate-600'}
+            icon={'incognito'}
+            mode="contained">
+            Continue Anonymous
+          </Button>
+        </View>
+      </View>
+      <View className="flex-1 justify-end">
+        <Text
+          onPress={() => navigation.navigate('Login')}
+          className={'text-black font-semibold text-center my-5'}>
+          Already have an account? <Text className="text-red-600">Login</Text>
+        </Text>
       </View>
     </Container>
   );
