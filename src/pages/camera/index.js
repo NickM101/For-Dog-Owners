@@ -14,7 +14,7 @@ import {
 } from 'react-native-vision-camera';
 import MaterialIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 import IonIcon from 'react-native-vector-icons/Ionicons';
-import Container from '../../components/Container/Container';
+import Container from '../../layouts/Container';
 import Reanimated, {
   Extrapolate,
   interpolate,

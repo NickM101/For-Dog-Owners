@@ -1,7 +1,7 @@
 import React from 'react'
 import { TextInput, Text } from 'react-native-paper';
 
-import Container from './Container/Container';
+import Container from '../layouts/Container';
 
 const InputText = ({message, password, ...props}) => {
   return (

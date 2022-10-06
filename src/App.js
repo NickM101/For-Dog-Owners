@@ -24,7 +24,7 @@ import storage from '@react-native-firebase/storage';
 import Toast from 'react-native-toast-message';
 
 import {AuthProvider} from './context/AuthContext';
-import Container from './components/Container/Container';
+import Container from './layouts/Container';
 
 auth().useEmulator('http://192.168.0.103:9099');
 firestore().useEmulator('192.168.0.103', 8085);

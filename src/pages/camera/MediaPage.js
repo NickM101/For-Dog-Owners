@@ -20,7 +20,7 @@ import storage from '@react-native-firebase/storage';
 import {useAuth} from '../../context/AuthContext';
 import {useDispatch} from 'react-redux';
 import {createPost} from '../../redux/posts';
-import Container from '../../components/Container/Container';
+import Container from '../../layouts/Container';
 
 const requestSavePermission = async () => {
   if (Platform.OS !== 'android') return true;

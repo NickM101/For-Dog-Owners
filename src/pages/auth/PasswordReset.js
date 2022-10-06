@@ -1,6 +1,6 @@
 import {View, Text} from 'react-native';
 import React, {useState, useLayoutEffect} from 'react';
-import Container from '../../components/Container/Container';
+import Container from '../../layouts/Container';
 import {TextInput, Button} from 'react-native-paper';
 
 import MaterialIcon from 'react-native-vector-icons/MaterialCommunityIcons';

@@ -3,7 +3,7 @@ import { View, Text } from 'react-native';
 import { Button } from 'react-native-paper';
 import MaterialIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
-import Container from '../../components/Container/Container'
+import Container from '../../layouts/Container'
 
 const CheckEmail = ({ navigation}) => {
   return (

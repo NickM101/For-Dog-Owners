@@ -11,6 +11,8 @@ import RegisterMenu from '../pages/auth/RegisterForm';
 import CameraScreen from '../pages/camera';
 import MediaPage from '../pages/camera/MediaPage';
 import ProfileScreen from '../pages/profile';
+import EditProfile from '../pages/profile/edit';
+import EditField from '../pages/profile/edit/EditField';
 import {HomeScreen} from './BottomTab';
 
 const Stack = createNativeStackNavigator();
@@ -47,8 +49,12 @@ export const CameraStack = () => {
 
 export const ProfileStack = () => {
   return (
-    <Stack.Navigator screenOptions={{headerShown: false}}>
-      <Stack.Screen name="Profile" component={ProfileScreen} />
+    <Stack.Navigator
+      initialRouteName="Home"
+      screenOptions={{headerShown: false}}>
+      <Stack.Screen name="Home" component={ProfileScreen} />
+      <Stack.Screen name="Edit" component={EditProfile} />
+      <Stack.Screen name="EditField" component={EditField} />
     </Stack.Navigator>
   );
 };

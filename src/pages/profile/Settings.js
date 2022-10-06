@@ -1,6 +1,6 @@
 import {StyleSheet} from 'react-native';
 import React from 'react';
-import Container from '../../components/Container/Container';
+import Container from '../../layouts/Container';
 
 const Settings = () => {
   return <Container></Container>;

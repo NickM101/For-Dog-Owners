@@ -1,7 +1,7 @@
 import React, {useState, useLayoutEffect} from 'react';
 import {View, Text} from 'react-native';
 import {TextInput, Button} from 'react-native-paper';
-import Container from '../../components/Container/Container';
+import Container from '../../layouts/Container';
 import MaterialIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 import InputText from '../../components/TextInput';
 import { useAuth } from '../../context/AuthContext';

@@ -1,5 +1,5 @@
 import {Text} from 'react-native';
-import Container from '../../Container/Container';
+import Container from '../../../layouts/Container';
 
 export const PrivateVideo = () => (
   <Container className="px-6 justify-center items-center">

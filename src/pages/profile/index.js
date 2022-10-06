@@ -1,7 +1,7 @@
 import {View, Text, TouchableOpacity} from 'react-native';
 import React, {useEffect, useState} from 'react';
-import Container from '../../components/Container/Container';
-import ProfileHeader from '../../components/profile/ProfileHeader';
+import Container from '../../layouts/Container';
+import ProfileHeader from '../../layouts/Header';
 import ProfilePicture from '../../components/profile/ProfilePicture';
 import ProfileCount from '../../components/profile/ProfileCount';
 import ProfileEdit from '../../components/profile/ProfileEdit';
@@ -14,7 +14,6 @@ const ProfileScreen = () => {
 
   return (
     <Container>
-      <ProfileHeader />
       <ProfilePicture />
       <ProfileCount />
       <ProfileEdit />

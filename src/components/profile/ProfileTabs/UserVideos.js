@@ -1,6 +1,6 @@
 import {FlatList, Image, View} from 'react-native';
 import {useAuth} from '../../../context/AuthContext';
-import Container from '../../Container/Container';
+import Container from '../../../layouts/Container';
 import firestore from '@react-native-firebase/firestore';
 import React, {useEffect, useState} from 'react';
 

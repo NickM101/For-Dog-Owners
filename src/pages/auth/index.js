@@ -1,6 +1,6 @@
 import React, {useState, useEffect, useContext} from 'react';
 import {View, Text, Image} from 'react-native';
-import Container from '../../components/Container/Container';
+import Container from '../../layouts/Container';
 import {Button} from 'react-native-paper';
 
 const AuthScreen = ({navigation}) => {

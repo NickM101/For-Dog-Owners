@@ -1,16 +1,18 @@
-import { View, Text, TouchableOpacity } from 'react-native'
-import React from 'react'
+import {View, Text, TouchableOpacity} from 'react-native';
+import React from 'react';
 import IonIcon from 'react-native-vector-icons/Ionicons';
-
+import {useNavigation} from '@react-navigation/native';
 
 const ProfileEdit = () => {
+  const navigation = useNavigation();
   return (
     <View className={'flex-row justify-center py-4'}>
       <TouchableOpacity
+        onPress={() => navigation.navigate('Profile', {screen: 'Edit'})}
         className={
           'justify-center items-center h-10 px-3 mx-1 rounded-sm border border-gray-300'
         }>
-        <Text className={"font-semibold text-black"}>Edit Profile</Text>
+        <Text className={'font-semibold text-black'}>Edit Profile</Text>
       </TouchableOpacity>
       <View
         className={
@@ -18,9 +20,8 @@ const ProfileEdit = () => {
         }>
         <IonIcon name={'md-bookmark-outline'} color="black" size={20} />
       </View>
-      
     </View>
   );
-}
+};
 
 export default ProfileEdit;
