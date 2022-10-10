@@ -1407,6 +1407,11 @@
   resolved "https://registry.yarnpkg.com/@react-native-firebase/storage/-/storage-15.6.0.tgz#6891af70b5b55fc2cc70a15c79809685540c77e8"
   integrity sha512-wvg+hedOc+Ryz64JNnxsYgcXZNneZCjsDoCgL/89tiIg5g4yvj2ix74JSQZUyQVxorrzKZslWE3EDyXnzqvoPA==
 
+"@react-native-google-signin/google-signin@^8.0.0":
+  version "8.0.0"
+  resolved "https://registry.yarnpkg.com/@react-native-google-signin/google-signin/-/google-signin-8.0.0.tgz#f8202c121b4df185eb165dc58b35544c643af25f"
+  integrity sha512-GV0EGXUfiqk9Kav74zOq4ww0rAhMUlwmIGEf94X2ptnxfKu9TufeTig1zuDQGasgFlziWju/Ya2WeC+7TYSbxw==
+
 "@react-native/assets@1.0.0":
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/@react-native/assets/-/assets-1.0.0.tgz#c6f9bf63d274bafc8e970628de24986b30a55c8e"
@@ -6604,7 +6609,7 @@ redux-thunk@^2.4.1:
   resolved "https://registry.yarnpkg.com/redux-thunk/-/redux-thunk-2.4.1.tgz#0dd8042cf47868f4b29699941de03c9301a75714"
   integrity sha512-OOYGNY5Jy2TWvTL1KgAlVy6dcx3siPJ1wTq741EPyUKfn6W6nChdICjZwCd0p8AZBs5kWpZlbkXW2nE/zjUa+Q==
 
-redux@^4.1.2, redux@^4.2.0:
+redux@^4.1.2:
   version "4.2.0"
   resolved "https://registry.yarnpkg.com/redux/-/redux-4.2.0.tgz#46f10d6e29b6666df758780437651eeb2b969f13"
   integrity sha512-oSBmcKKIuIR4ME29/AeNUnl5L+hvBq7OaJWzaptTQJAntaPvxIJqfnjbaEiCzzaIz+XmVILfqAM3Ob0aXLPfjA==

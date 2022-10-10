@@ -14,7 +14,6 @@ import {Provider as ReduxProvider} from 'react-redux';
 
 import {WithSplashScreen} from './pages/SplashScreen';
 import Router from './router';
-import {store} from './redux/store';
 
 import auth from '@react-native-firebase/auth';
 import functions from '@react-native-firebase/functions';
@@ -24,27 +23,24 @@ import storage from '@react-native-firebase/storage';
 import Toast from 'react-native-toast-message';
 
 import {AuthProvider} from './context/AuthContext';
-import Container from './layouts/Container';
 
-auth().useEmulator('http://192.168.0.103:9099');
-firestore().useEmulator('192.168.0.103', 8085);
-database().useEmulator('192.168.0.103', 9000);
-storage().useEmulator('192.168.0.103', 9199);
-functions().useEmulator('192.168.0.103', 5002);
+auth().useEmulator('http://10.0.2.2:9099');
+firestore().useEmulator('10.0.2.2', 8085);
+database().useEmulator('10.0.2.2', 9000);
+storage().useEmulator('10.0.2.2', 9199);
+functions().useEmulator('10.0.2.2', 5002);
 
 const App = () => {
   return (
     <AuthProvider>
-      <ReduxProvider store={store}>
-      <WithSplashScreen isAppReady={true}>
-        <PaperProvider>
-          <GestureHandlerRootView style={{flex: 1}}>
-            <Router />
-          </GestureHandlerRootView>
-        </PaperProvider>
-        <Toast />
-      </WithSplashScreen>
-      </ReduxProvider>
+        <WithSplashScreen isAppReady={true}>
+          <PaperProvider>
+            <GestureHandlerRootView style={{flex: 1}}>
+              <Router />
+            </GestureHandlerRootView>
+          </PaperProvider>
+          <Toast />
+        </WithSplashScreen>
     </AuthProvider>
   );
 };

@@ -11,7 +11,7 @@ const LoginForm = ({navigation}) => {
 
   const [secureText, setSecureText] = useState(true);
 
-  const {emailSignIn, anonymousSignIn, loading} = useAuth();
+  const {emailSignIn, anonymousSignIn, loading, googleSignIn} = useAuth();
 
   useLayoutEffect(() => {
     navigation.setOptions({
@@ -73,6 +73,13 @@ const LoginForm = ({navigation}) => {
             mode="contained"
             onPress={() => anonymousSignIn()}>
             Continue Anonymous
+          </Button>
+          <Button
+            className={'m-3 rounded-sm bg-slate-600'}
+            icon={'google'}
+            mode="contained"
+            onPress={() => googleSignIn()}>
+            Continue with Google
           </Button>
         </View>
       </View>
