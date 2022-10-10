@@ -7,7 +7,7 @@ const InputText = ({message, password, ...props}) => {
   return (
     <Container className={"p-0 m-0"}>
       <TextInput {...props} />
-      {message ? <Text className={'font-serif'}>{message}</Text> : null}
+      {message ? <Text className={'text-red-700 font-semibold ml-4'}>{message}</Text> : null}
     </Container>
   );
 }

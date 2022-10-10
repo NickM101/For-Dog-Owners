@@ -18,8 +18,6 @@ import {CameraRoll} from '@react-native-camera-roll/camera-roll';
 import {utils} from '@react-native-firebase/app';
 import storage from '@react-native-firebase/storage';
 import {useAuth} from '../../context/AuthContext';
-import {useDispatch} from 'react-redux';
-import {createPost} from '../../redux/posts';
 import Container from '../../layouts/Container';
 
 const requestSavePermission = async () => {
@@ -101,16 +99,16 @@ const MediaPage = ({navigation, route}) => {
         type: type,
       }).then(async newURl => {
         setRequestRunning(true);
-        dispatch(createPost(newURl, user.uid, thumbnail))
-          .then(() => {
-            setRequestRunning(false);
-            // navigation.dispatch(StackActions.popToTop());
-            navigation.goBack();
-          })
-          .catch(error => {
-            setRequestRunning(false);
-            console.error('Error Saving', error);
-          });
+        // dispatch(createPost(newURl, user.uid, thumbnail))
+        //   .then(() => {
+        //     setRequestRunning(false);
+        //     // navigation.dispatch(StackActions.popToTop());
+        //     navigation.goBack();
+        //   })
+        //   .catch(error => {
+        //     setRequestRunning(false);
+        //     console.error('Error Saving', error);
+        //   });
       });
       // setSavingState('saved');
     } catch (e) {

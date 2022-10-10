@@ -8,9 +8,8 @@ import {GestureHandlerRootView} from 'react-native-gesture-handler';
  */
 // import {enableScreens} from 'react-native-screens';
 // enableScreens();
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import {Provider as PaperProvider, Text} from 'react-native-paper';
-import {Provider as ReduxProvider} from 'react-redux';
 
 import {WithSplashScreen} from './pages/SplashScreen';
 import Router from './router';
@@ -20,7 +19,8 @@ import functions from '@react-native-firebase/functions';
 import firestore from '@react-native-firebase/firestore';
 import database from '@react-native-firebase/database';
 import storage from '@react-native-firebase/storage';
-import Toast from 'react-native-toast-message';
+// import Toast from 'react-native-toast-message';
+import Toast from 'react-native-toast-notifications';
 
 import {AuthProvider} from './context/AuthContext';
 
@@ -33,14 +33,14 @@ functions().useEmulator('10.0.2.2', 5002);
 const App = () => {
   return (
     <AuthProvider>
-        <WithSplashScreen isAppReady={true}>
-          <PaperProvider>
-            <GestureHandlerRootView style={{flex: 1}}>
-              <Router />
-            </GestureHandlerRootView>
-          </PaperProvider>
-          <Toast />
-        </WithSplashScreen>
+      <WithSplashScreen isAppReady={true}>
+        <PaperProvider>
+          <GestureHandlerRootView style={{flex: 1}}>
+            <Router />
+            <Toast ref={ref => (global['toast'] = ref)} />
+          </GestureHandlerRootView>
+        </PaperProvider>
+      </WithSplashScreen>
     </AuthProvider>
   );
 };

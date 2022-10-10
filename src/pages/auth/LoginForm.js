@@ -3,12 +3,10 @@ import {View, Text} from 'react-native';
 import {Button, IconButton, TextInput} from 'react-native-paper';
 import Container from '../../layouts/Container';
 import {useAuth} from '../../context/AuthContext';
-import Toast from 'react-native-toast-message';
+import {useForm, Controller} from 'react-hook-form';
+import InputText from '../../components/TextInput';
 
 const LoginForm = ({navigation}) => {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-
   const [secureText, setSecureText] = useState(true);
 
   const {emailSignIn, anonymousSignIn, loading, googleSignIn} = useAuth();
@@ -23,29 +21,66 @@ const LoginForm = ({navigation}) => {
     });
   }, [navigation]);
 
+  const {
+    control,
+    handleSubmit,
+    formState: {errors},
+  } = useForm({
+    defaultValues: {
+      email: '',
+      password: '',
+    },
+  });
+
+  const onSubmit = data => emailSignIn(data);
+
   return (
     <Container>
       <View className={'flex'}>
-        <TextInput
-          className={'m-3'}
-          mode="outlined"
-          label="Email Address"
-          value={email}
-          onChangeText={setEmail}
-        />
-        <TextInput
-          className={'m-3'}
-          mode="outlined"
-          label="Password"
-          secureTextEntry={secureText}
-          right={
-            <TextInput.Icon
-              onPress={() => setSecureText(!secureText)}
-              icon={secureText ? 'eye-off' : 'eye'}
+        <Controller
+          control={control}
+          rules={{
+            required: true,
+          }}
+          render={({field: {onChange, onBlur, value}}) => (
+            <InputText
+              className={'m-3'}
+              mode="outlined"
+              label="Email Address"
+              value={value}
+              onChangeText={onChange}
+              onBlur={onBlur}
+              error={errors.email}
+              message={errors.email && 'Email Address is required.'}
             />
-          }
-          value={password}
-          onChangeText={setPassword}
+          )}
+          name="email"
+        />
+        <Controller
+          control={control}
+          rules={{
+            required: true,
+          }}
+          render={({field: {onChange, onBlur, value}}) => (
+            <InputText
+              className={'m-3'}
+              mode="outlined"
+              label="Password"
+              secureTextEntry={secureText}
+              right={
+                <TextInput.Icon
+                  onPress={() => setSecureText(!secureText)}
+                  icon={secureText ? 'eye-off' : 'eye'}
+                />
+              }
+              value={value}
+              onChangeText={onChange}
+              onBlur={onBlur}
+              error={errors.password}
+              message={errors.password && 'Password is required.'}
+            />
+          )}
+          name="password"
         />
         <Button
           mode="text"
@@ -58,7 +93,7 @@ const LoginForm = ({navigation}) => {
           icon=""
           mode="contained"
           loading={loading}
-          onPress={() => emailSignIn()}>
+          onPress={handleSubmit(onSubmit)}>
           {loading ? 'Logging in' : 'Login'}
         </Button>
         <View className={'relative flex-row py-4 items-center'}>

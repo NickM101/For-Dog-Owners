@@ -5,6 +5,7 @@ import {
   GoogleSignin,
   statusCodes,
 } from '@react-native-google-signin/google-signin';
+import { firebaseErrors } from '../services/fb_errors';
 
 export const AuthContext = createContext({});
 
@@ -31,13 +32,10 @@ export const AuthProvider = ({children}) => {
       .finally(() => setLoading(false));
   }
 
-  async function emailSignIn() {
+  async function emailSignIn(data) {
     setLoading(true);
     await auth()
-      .signInWithEmailAndPassword(
-        'vavoli3014@migonom.com',
-        'SuperSecretPassword!',
-      )
+      .signInWithEmailAndPassword(data.email, data.password)
       .then(currentUser => {
         setLoading(false);
         console.log('--current user---', currentUser);
@@ -45,17 +43,15 @@ export const AuthProvider = ({children}) => {
         console.log('User account created & signed in!');
       })
       .catch(error => {
-        console.error(error);
+        return firebaseErrors(error.code)
       })
       .finally(() => setLoading(false));
   }
 
-  async function signUp() {
+  async function signUp(data) {
+    console.log('sign up data', data);
     await auth()
-      .createUserWithEmailAndPassword(
-        'vavoli3014@migonom.com',
-        'SuperSecretPassword!',
-      )
+      .createUserWithEmailAndPassword(data.email, data.password)
       .then(currentUser => {
         console.log('--current user---', currentUser);
         setUser({});
