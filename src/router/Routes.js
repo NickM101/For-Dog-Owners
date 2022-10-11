@@ -1,5 +1,5 @@
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
-import TextInput from '../components/TextInput';
+import TextInput from '../layouts/TextInput';
 
 import AuthScreen from '../pages/auth';
 import CheckEmail from '../pages/auth/CheckEmail';
@@ -42,17 +42,13 @@ export const CameraStack = () => {
   return (
     <Stack.Navigator screenOptions={{headerShown: false}}>
       <Stack.Screen name="Capture" component={CameraScreen} />
-      <Stack.Screen name="Media" component={MediaPage} />
     </Stack.Navigator>
   );
 };
 
 export const ProfileStack = () => {
   return (
-    <Stack.Navigator
-      initialRouteName="Home"
-      screenOptions={{headerShown: false}}>
-      <Stack.Screen name="Home" component={ProfileScreen} />
+    <Stack.Navigator screenOptions={{headerShown: false}}>
       <Stack.Screen name="Edit" component={EditProfile} />
       <Stack.Screen name="EditField" component={EditField} />
     </Stack.Navigator>

@@ -9,28 +9,28 @@ import ProfileTabs from '../../components/profile/ProfileTabs';
 import {useAuth} from '../../context/AuthContext';
 import IonIcon from 'react-native-vector-icons/Ionicons';
 
-const ProfileScreen = ({ navigation }) => {
+const ProfileScreen = ({navigation}) => {
   // TODO: get thumbnails for user and display
-  const { signOut } = useAuth()
-
+  const {user, signOut} = useAuth();
+  
   return (
     <Container>
-      <ProfilePicture />
+      <ProfilePicture photo={user.photoURL} username={user.displayName === null ? user.email : user.displayName}/>
       <ProfileCount />
       <View className={'flex-row justify-center py-4'}>
         <TouchableOpacity
-          onPress={() => navigation.navigate('Profile', {screen: 'Edit'})}
+          onPress={() => navigation.navigate('ProfileEdit')}
           className={
             'justify-center items-center h-10 px-3 mx-1 rounded-sm border border-gray-300'
           }>
           <Text className={'font-semibold text-black'}>Edit Profile</Text>
         </TouchableOpacity>
         <TouchableOpacity
-        onPress={() => signOut()}
+          onPress={() => signOut()}
           className={
             'justify-center items-center h-10 w-10 rounded-sm border border-gray-300'
           }>
-          <IonIcon  name={'exit'} color="black" size={20} />
+          <IonIcon name={'exit'} color="black" size={20} />
         </TouchableOpacity>
       </View>
       <View className={'h-5 justify-center items-center'}>

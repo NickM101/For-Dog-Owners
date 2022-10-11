@@ -3,8 +3,13 @@ import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import {Text, View} from 'react-native';
 import {CameraStack, ProfileStack} from './Routes';
+import {createNativeStackNavigator} from '@react-navigation/native-stack';
+import CameraScreen from '../pages/camera';
+import ProfileScreen from '../pages/profile';
+import MediaPage from '../pages/camera/MediaPage';
 
 const Tab = createBottomTabNavigator();
+const Stack = createNativeStackNavigator();
 
 const Screen = ({name}) => {
   return (
@@ -18,9 +23,8 @@ export const HomeScreen = () => <Screen name="DogHome" />;
 export const DiscoverScreen = () => <Screen name="Discover" />;
 
 export const InboxScreen = () => <Screen name="Inbox" />;
-export const ProfileScreen = () => <Screen name="Profile" />;
 
-export default function BottomTab() {
+export function TabStacks() {
   return (
     <Tab.Navigator
       screenOptions={({route}) => ({
@@ -49,9 +53,19 @@ export default function BottomTab() {
       })}>
       <Tab.Screen name="Home" component={HomeScreen} />
       <Tab.Screen name="Discover" component={DiscoverScreen} />
-      <Tab.Screen name="Camera" component={CameraStack} />
+      <Tab.Screen name="Camera" component={CameraScreen} />
       <Tab.Screen name="Inbox" component={InboxScreen} />
-      <Tab.Screen name="Profile" component={ProfileStack} />
+      <Tab.Screen name="Profile" component={ProfileScreen} />
     </Tab.Navigator>
+  );
+}
+
+export default function BottomTabs() {
+  return (
+    <Stack.Navigator screenOptions={{headerShown: false}}>
+      <Stack.Screen name="PetBox" component={TabStacks} />
+      <Stack.Screen name="ProfileEdit" component={ProfileStack} />
+      <Stack.Screen name="Media" component={MediaPage} />
+    </Stack.Navigator>
   );
 }

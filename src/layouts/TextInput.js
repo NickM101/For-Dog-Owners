@@ -1,14 +1,15 @@
 import React from 'react'
+import { View } from 'react-native';
 import { TextInput, Text } from 'react-native-paper';
 
-import Container from '../layouts/Container';
+import Container from './Container';
 
 const InputText = ({message, password, ...props}) => {
   return (
-    <Container className={"p-0 m-0"}>
+    <View>
       <TextInput {...props} />
       {message ? <Text className={'text-red-700 font-semibold ml-4'}>{message}</Text> : null}
-    </Container>
+    </View>
   );
 }
 

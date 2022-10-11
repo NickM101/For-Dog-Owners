@@ -5,7 +5,7 @@ import Container from '../../layouts/Container';
 import MaterialIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {useForm, Controller} from 'react-hook-form';
 
-import InputText from '../../components/TextInput';
+import InputText from '../../layouts/TextInput';
 import {useAuth} from '../../context/AuthContext';
 
 const RegisterMenu = ({navigation}) => {
@@ -96,7 +96,7 @@ const RegisterMenu = ({navigation}) => {
           name="password"
         />
         <Button
-          className={'m-3 rounded-sm bg-slate-600'}
+          className={'m-3 rounded-sm'}
           icon=""
           mode="contained"
           onPress={handleSubmit(onSubmit)}>
@@ -111,7 +111,7 @@ const RegisterMenu = ({navigation}) => {
         </View>
         <View>
           <Button
-            className={'m-3 rounded-sm bg-slate-600'}
+            className={'m-3 rounded-sm'}
             icon={'incognito'}
             mode="contained">
             Continue Anonymous

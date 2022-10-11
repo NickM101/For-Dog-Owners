@@ -4,7 +4,7 @@ import {Button, IconButton, TextInput} from 'react-native-paper';
 import Container from '../../layouts/Container';
 import {useAuth} from '../../context/AuthContext';
 import {useForm, Controller} from 'react-hook-form';
-import InputText from '../../components/TextInput';
+import InputText from '../../layouts/TextInput';
 
 const LoginForm = ({navigation}) => {
   const [secureText, setSecureText] = useState(true);
@@ -89,7 +89,7 @@ const LoginForm = ({navigation}) => {
           Forgot password ?
         </Button>
         <Button
-          className={'m-3 rounded-sm bg-slate-600'}
+          className={'m-3 rounded-sm '}
           icon=""
           mode="contained"
           loading={loading}
@@ -103,14 +103,14 @@ const LoginForm = ({navigation}) => {
         </View>
         <View>
           <Button
-            className={'m-3 rounded-sm bg-slate-600'}
+            className={'m-3 rounded-sm'}
             icon={'incognito'}
             mode="contained"
             onPress={() => anonymousSignIn()}>
             Continue Anonymous
           </Button>
           <Button
-            className={'m-3 rounded-sm bg-slate-600'}
+            className={'m-3 rounded-sm'}
             icon={'google'}
             mode="contained"
             onPress={() => googleSignIn()}>

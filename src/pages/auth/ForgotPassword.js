@@ -5,7 +5,8 @@ import {Button, TextInput} from 'react-native-paper';
 import {useForm, Controller} from 'react-hook-form';
 import auth from '@react-native-firebase/auth';
 import MaterialIcon from 'react-native-vector-icons/MaterialCommunityIcons';
-import InputText from '../../components/TextInput';
+import InputText from '../../layouts/TextInput';
+import {firebaseErrors} from '../../services/fb_errors';
 
 const ForgotPassword = ({navigation}) => {
   const [loading, setLoading] = useState(false);
@@ -46,7 +47,7 @@ const ForgotPassword = ({navigation}) => {
     await auth()
       .sendPasswordResetEmail(data.email)
       .then(() => navigation.navigate('CheckMail'))
-      .catch(error => console.error('error resetting', error));
+      .catch(error => firebaseErrors(error.code));
   };
 
   return (
@@ -64,7 +65,7 @@ const ForgotPassword = ({navigation}) => {
           }}
           render={({field: {onChange, onBlur, value}}) => (
             <InputText
-              className={'m-3'}
+              className={'my-3'}
               mode="outlined"
               label="Email Address"
               value={value}

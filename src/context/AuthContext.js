@@ -1,11 +1,13 @@
 import React, {useState, useEffect, createContext, useContext} from 'react';
 
 import auth from '@react-native-firebase/auth';
+import firestore from '@react-native-firebase/firestore';
 import {
   GoogleSignin,
   statusCodes,
 } from '@react-native-google-signin/google-signin';
-import { firebaseErrors } from '../services/fb_errors';
+import {firebaseErrors} from '../services/fb_errors';
+import {fetchUser} from '../services/user';
 
 export const AuthContext = createContext({});
 
@@ -22,8 +24,6 @@ export const AuthProvider = ({children}) => {
       .signInAnonymously()
       .then(user => {
         setLoading(false);
-        console.log(user);
-        console.log('---Anonymous--- Signed in Successfully');
       })
       .catch(error => {
         setLoading(false);
@@ -36,61 +36,45 @@ export const AuthProvider = ({children}) => {
     setLoading(true);
     await auth()
       .signInWithEmailAndPassword(data.email, data.password)
-      .then(currentUser => {
-        setLoading(false);
-        console.log('--current user---', currentUser);
-        setUser({});
-        console.log('User account created & signed in!');
-      })
+      .then()
       .catch(error => {
-        return firebaseErrors(error.code)
+        return firebaseErrors(error.code);
       })
       .finally(() => setLoading(false));
   }
 
   async function signUp(data) {
-    console.log('sign up data', data);
     await auth()
       .createUserWithEmailAndPassword(data.email, data.password)
       .then(currentUser => {
-        console.log('--current user---', currentUser);
         setUser({});
-        console.log('User account created & signed in!');
       })
       .catch(error => {
-        if (error.code === 'auth/email-already-in-use') {
-          console.log('That email address is already in use!');
-        }
-
-        if (error.code === 'auth/invalid-email') {
-          console.log('That email address is invalid!');
-        }
-
-        console.error(error);
+        firebaseErrors(error.code)
       });
   }
 
   async function sendEmail() {
     await sendPasswordResetEmail('vavoli3014@migonom.com')
       .then(() => {
-        console.log('Sent password reset on email');
+        toast.show('Sent password reset on email');
       })
-      .catch(error => console.error('Error on resetting email', error));
+      .catch(error => firebaseErrors(error.code));
   }
 
   async function confirmPassword({code, newPassword}) {
     await confirmPasswordReset({code, newPassword})
       .then(() => {
-        console.log('Confirmed reset password');
+        toast.show('Confirmed reset password');
       })
-      .catch(error => console.log('Error confirming password', error));
+      .catch(error => firebaseErrors(error.code));
   }
 
   async function signOut() {
     auth()
       .signOut()
       .then(() => {
-        console.log('User signed out!'), setUser(null);
+        setUser(null);
       });
   }
 
@@ -135,10 +119,38 @@ export const AuthProvider = ({children}) => {
 
   // Handle user state changes
   function onAuthStateChanged(user) {
-    if (user) {
-      setUser(user);
+    if (user && !user.isAnonymous) {
+       fetchUser().then(res => {
+         const data = res.data();
+         setUser(data);
+       });
     } else {
+      setUser(user)
     }
+  }
+
+  async function updateProfile(field, value) {
+    let obj = {};
+    obj[field] = value;
+    setLoading(true);
+    firestore()
+      .collection('user')
+      .doc(auth().currentUser.uid)
+      .update(obj)
+      .then(() => {
+        fetchUser()
+          .then(res => {
+            setLoading(false);
+            const data = res.data();
+            setUser(data);
+          })
+          .catch(err => console.error('error', err));
+      })
+      .catch(error => {
+        setLoading(false);
+        reject(error);
+      })
+      .finally(() => setLoading(false));
   }
 
   useEffect(() => {
@@ -158,6 +170,7 @@ export const AuthProvider = ({children}) => {
         sendEmail,
         confirmPassword,
         googleSignIn,
+        updateProfile,
       }}>
       {children}
     </AuthContext.Provider>

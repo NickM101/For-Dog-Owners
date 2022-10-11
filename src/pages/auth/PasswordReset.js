@@ -4,34 +4,34 @@ import Container from '../../layouts/Container';
 import {TextInput, Button} from 'react-native-paper';
 
 import MaterialIcon from 'react-native-vector-icons/MaterialCommunityIcons';
-import InputText from '../../components/TextInput';
+import InputText from '../../layouts/TextInput';
 
-
-const PasswordReset = ({navigation}) => {
-  const [secureText, setSecureText] = useState(true)
+const PasswordReset = ({navigation, route}) => {
+  console.log('Route', route?.params?.id);
+  const [secureText, setSecureText] = useState(true);
   const [password, setPassword] = useState('');
   const [confirm, setConfirm] = useState('');
 
-   useLayoutEffect(() => {
-     navigation.setOptions({
-       headerShown: true,
-       headerBackTitleVisible: false,
-       headerShadowVisible: false,
-       headerTitleAlign: 'center',
-       headerTitle: '',
-       headerLeft: () => (
-         <MaterialIcon
-           name="chevron-left"
-           size={30}
-           iconStyle={{
-             margin: 0,
-             padding: 0,
-           }}
-           onPress={() => navigation.goBack()}
-         />
-       )
-     });
-   }, [navigation]);
+  useLayoutEffect(() => {
+    navigation.setOptions({
+      headerShown: true,
+      headerBackTitleVisible: false,
+      headerShadowVisible: false,
+      headerTitleAlign: 'center',
+      headerTitle: '',
+      headerLeft: () => (
+        <MaterialIcon
+          name="chevron-left"
+          size={30}
+          iconStyle={{
+            margin: 0,
+            padding: 0,
+          }}
+          onPress={() => navigation.goBack()}
+        />
+      ),
+    });
+  }, [navigation]);
 
   return (
     <Container className={'p-5'}>
