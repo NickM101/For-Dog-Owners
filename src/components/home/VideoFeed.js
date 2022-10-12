@@ -1,4 +1,4 @@
-import React, {useRef, useState} from 'react';
+import React, {forwardRef, useImperativeHandle, useRef, useState} from 'react';
 import Video from 'react-native-video';
 import {
   Dimensions,
@@ -13,23 +13,32 @@ import {Avatar} from 'react-native-paper';
 
 import MaterialIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
-const VideoFeed = () => {
-  const ref = useRef(null);
-  
-  const [post, setPost] = useState({likes: 0})
+const VideoFeed = forwardRef((props, parentRef) => {
+  const videoRef = useRef(null);
+
+  useImperativeHandle(parentRef, () => ({
+    playFeed,
+    stopFeed,
+  }));
+
+  const [post, setPost] = useState(props.posts);
   const [isLiked, setIsLiked] = useState(false);
 
   const [paused, setPaused] = useState(false);
 
+  const playFeed = () => setPaused(false);
+
+  const stopFeed = () => setPaused(true);
+
   const onLikePress = () => {
-    const likeAdded = isLiked ? -1 : 1
+    // TODO: likes Reducer
+    const likeAdded = isLiked ? -1 : 1;
     setPost({
       ...post,
-      likes: post.likes + likeAdded
-    })
-    setIsLiked(!isLiked)
-  }
-
+      likes: post.likes + likeAdded,
+    });
+    setIsLiked(!isLiked);
+  };
 
   const onPlayPausePress = () => {
     setPaused(!paused);
@@ -39,40 +48,53 @@ const VideoFeed = () => {
     <View style={styles.container}>
       <TouchableWithoutFeedback style={{flex: 1}} onPress={onPlayPausePress}>
         <Video
-          ref={ref}
+          key={post.id}
+          ref={videoRef}
           source={require('../../assets/TestVideo.mp4')}
           paused={paused}
           resizeMode="cover"
           posterResizeMode="cover"
           allowsExternalPlayback={false}
-          repeat={true}
+          // repeat={true}
           controls={false}
           ignoreSilentSwitch={'obey'}
+          playInBackground={false}
           style={styles.video}
           onError={err => console.log(err)}
+          // Poster, posterResizeMode
         />
       </TouchableWithoutFeedback>
       <View style={styles.description}>
         <View className={'self-end '}>
           <View className="items-center py-4">
             <TouchableOpacity>
-
-            <Avatar.Image
-            
-              size={36}
-              source={require('../../assets/images/logo.png')}
-            />
+              <Avatar.Image
+                className={'bg-slate-700 border border-white '}
+                size={36}
+                source={post.user.imageURL}
+              />
             </TouchableOpacity>
             <TouchableOpacity
               className={
                 'justify-center border border-orange-400 items-center bg-slate-700 h-4 w-4 rounded-full absolute inset-y-11 inset-x-3'
               }>
-              <MaterialIcons name={'plus'} size={12} className={"font-bold"} color={'white'} />
+              <MaterialIcons
+                name={'plus'}
+                size={12}
+                className={'font-bold'}
+                color={'white'}
+              />
             </TouchableOpacity>
           </View>
-          <TouchableOpacity onPress={onLikePress} className={'items-center py-1'}>
-            <MaterialIcons name="cards-heart" size={36} color={isLiked ? 'red' : 'white'} />
-            <Text className={'font-bold text-white'}>{post.likes}</Text>
+          <TouchableOpacity
+            onPress={onLikePress}
+            className={'items-center py-1'}>
+            <MaterialIcons
+              name="cards-heart"
+              size={36}
+              color={isLiked ? 'red' : 'white'}
+            />
+            <Text className={'font-bold text-white'}>{post?.likes}</Text>
           </TouchableOpacity>
           <TouchableOpacity className={'items-center py-1'}>
             <MaterialIcons
@@ -94,7 +116,7 @@ const VideoFeed = () => {
       </View>
     </View>
   );
-};
+});
 
 const styles = StyleSheet.create({
   container: {
