@@ -7,6 +7,7 @@ import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import CameraScreen from '../pages/camera';
 import ProfileScreen from '../pages/profile';
 import MediaPage from '../pages/camera/MediaPage';
+import HomeFeed from '../pages/home';
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
@@ -51,7 +52,7 @@ export function TabStacks() {
         tabBarActiveTintColor: 'tomato',
         tabBarInactiveTintColor: 'gray',
       })}>
-      <Tab.Screen name="Home" component={HomeScreen} />
+      <Tab.Screen name="Home" component={HomeFeed} />
       <Tab.Screen name="Discover" component={DiscoverScreen} />
       <Tab.Screen name="Camera" component={CameraScreen} />
       <Tab.Screen name="Inbox" component={InboxScreen} />
