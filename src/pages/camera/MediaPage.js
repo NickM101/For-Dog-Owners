@@ -8,6 +8,9 @@ import {
   Platform,
   Pressable,
   Alert,
+  TouchableOpacity,
+  TextInput,
+  Dimensions,
 } from 'react-native';
 import Video, {LoadError, OnLoadData} from 'react-native-video';
 import {SAFE_AREA_PADDING} from '../../constants/camera';
@@ -15,10 +18,13 @@ import IonIcon from 'react-native-vector-icons/Ionicons';
 import {StatusBarBlurBackground} from '../../components/camera/StatusBlurBar';
 import {useIsFocused} from '@react-navigation/core';
 import {CameraRoll} from '@react-native-camera-roll/camera-roll';
-import {utils} from '@react-native-firebase/app';
-import storage from '@react-native-firebase/storage';
+import {saveMediaStorage} from '../../services/firebase';
 import {useAuth} from '../../context/AuthContext';
 import Container from '../../layouts/Container';
+import {saveUserPost} from '../../services/posts';
+
+const window = Dimensions.get('window');
+const size = 30;
 
 const requestSavePermission = async () => {
   if (Platform.OS !== 'android') return true;
@@ -39,17 +45,18 @@ const isVideoOnLoadEvent = event => 'duration' && 'naturalSize';
 
 const MediaPage = ({navigation, route}) => {
   const {path, type, thumbnail} = route.params;
-  console.log('Thumbnail check it', thumbnail);
+
   const [hasMediaLoaded, setHasMediaLoaded] = useState(false);
   // const isForeground = useIsForeground();
   const isScreenFocused = useIsFocused();
   const isVideoPaused = !isScreenFocused;
   const [savingState, setSavingState] = useState('none');
   const [requestRunning, setRequestRunning] = useState(false);
+  const [isVisible, setIsVisible] = useState(false);
+  const [text, setText] = useState('');
+  const [height, setHeight] = useState(40);
 
   const {user} = useAuth();
-
-  const dispatch = useDispatch();
 
   const onMediaLoad = useCallback(event => {
     if (isVideoOnLoadEvent(event)) {
@@ -63,6 +70,8 @@ const MediaPage = ({navigation, route}) => {
     }
   }, []);
 
+  const onHeightUpdate = update => setHeight(update);
+
   const onMediaLoadEnd = useCallback(() => {
     console.log('media has loaded.');
     setHasMediaLoaded(true);
@@ -71,46 +80,19 @@ const MediaPage = ({navigation, route}) => {
     console.log(`failed to load media: ${JSON.stringify(error)}`);
   }, []);
 
-  // const generateThumbnail = async source => {
-  //   try {
-  //     const {uri} = createThumbnail({
-  //       url: source,
-  //       timeStamp: 1000,
-  //     });
-
-  //     return uri;
-  //   } catch (error) {
-  //     console.error('error generate thumbnail', error);
-  //   }
-  // };
-
   const onSavePressed = useCallback(async () => {
     try {
       setSavingState('saving');
-      const hasPermission = await requestSavePermission();
-      // if (!hasPermission) {
-      //   Alert.alert(
-      //     'Permission denied!',
-      //     'Vision Camera does not have permission to save the media to your camera roll.',
-      //   );
-      //   return;
-      // }
-      await CameraRoll.save(`file://${path}`, {
-        type: type,
-      }).then(async newURl => {
-        setRequestRunning(true);
-        // dispatch(createPost(newURl, user.uid, thumbnail))
-        //   .then(() => {
-        //     setRequestRunning(false);
-        //     // navigation.dispatch(StackActions.popToTop());
-        //     navigation.goBack();
-        //   })
-        //   .catch(error => {
-        //     setRequestRunning(false);
-        //     console.error('Error Saving', error);
-        //   });
-      });
-      // setSavingState('saved');
+
+      let postSaved = await Promise.all([
+        saveMediaStorage(thumbnail, 'post', true),
+        saveMediaStorage(`file://${path}`, 'post', false),
+      ]);
+      await saveUserPost(postSaved, text)
+        .then(() => console.log('Saved to storage'))
+        .catch(() => console.error('Error saving'));
+
+      setSavingState('saved');
     } catch (e) {
       const message = e instanceof Error ? e.message : JSON.stringify(e);
       setSavingState('none');
@@ -119,7 +101,7 @@ const MediaPage = ({navigation, route}) => {
         `An unexpected error occurred while trying to save your ${type}. ${message}`,
       );
     }
-  }, [path, type]);
+  }, [path, type, text]);
 
   const source = useMemo(() => ({uri: `file://${path}`}), [path]);
 
@@ -136,36 +118,49 @@ const MediaPage = ({navigation, route}) => {
     );
   }
 
+  const handleTextDescription = () => {
+    setIsVisible(true);
+  };
+
   return (
     <View style={[styles.container, screenStyle]}>
-      {type === 'photo' && (
-        <Image
-          source={source}
-          style={StyleSheet.absoluteFill}
-          resizeMode="cover"
-          onLoadEnd={onMediaLoadEnd}
-          onLoad={onMediaLoad}
-        />
-      )}
       {type === 'video' && (
-        <Video
-          source={source}
+        <TouchableOpacity
           style={StyleSheet.absoluteFill}
-          paused={isVideoPaused}
-          resizeMode="cover"
-          posterResizeMode="cover"
-          allowsExternalPlayback={false}
-          automaticallyWaitsToMinimizeStalling={false}
-          disableFocus={true}
-          repeat={true}
-          useTextureView={false}
-          controls={false}
-          playWhenInactive={true}
-          ignoreSilentSwitch="ignore"
-          onReadyForDisplay={onMediaLoadEnd}
-          onLoad={onMediaLoad}
-          onError={onMediaLoadError}
-        />
+          onPress={handleTextDescription}>
+          <Video
+            source={source}
+            style={StyleSheet.absoluteFill}
+            paused={isVideoPaused}
+            resizeMode="cover"
+            posterResizeMode="cover"
+            allowsExternalPlayback={false}
+            automaticallyWaitsToMinimizeStalling={false}
+            disableFocus={true}
+            repeat={true}
+            useTextureView={false}
+            controls={false}
+            playWhenInactive={true}
+            ignoreSilentSwitch="ignore"
+            onReadyForDisplay={onMediaLoadEnd}
+            onLoad={onMediaLoad}
+            onError={onMediaLoadError}
+          />
+          {isVisible && (
+            <TextInput
+              style={[{height: height}, styles.textInput]}
+              autoFocus
+              multiline
+              maxLength={150}
+              underlineColorAndroid={'transparent'}
+              value={text}
+              onChangeText={setText}
+              onContentSizeChange={e =>
+                onHeightUpdate(e.nativeEvent.contentSize.height)
+              }
+            />
+          )}
+        </TouchableOpacity>
       )}
 
       <Pressable style={styles.closeButton} onPress={navigation.goBack}>
@@ -229,6 +224,23 @@ const styles = StyleSheet.create({
     },
     textShadowRadius: 1,
   },
+  textInput: {
+    textAlign: 'center',
+    alignItems: 'center',
+    position: 'absolute',
+    bottom: Dimensions.get('window').height / 5,
+    backgroundColor: 'rgba(0,0,0,0.75)',
+    color: 'white',
+    width: window.width,
+    paddingVertical: 5,
+  },
 });
 
 export default MediaPage;
+
+// await CameraRoll.save(`file://${path}`, {
+//   type: type,
+// }).then(async newURl => {
+//   console.log(newURl);
+//   setRequestRunning(true);
+// });

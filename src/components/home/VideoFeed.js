@@ -44,13 +44,14 @@ const VideoFeed = forwardRef((props, parentRef) => {
     setPaused(!paused);
   };
 
+  console.log('posts', post.mediaURL[0]);
   return (
     <View style={styles.container}>
       <TouchableWithoutFeedback style={{flex: 1}} onPress={onPlayPausePress}>
         <Video
           key={post.id}
           ref={videoRef}
-          source={require('../../assets/TestVideo.mp4')}
+          source={{uri: post.mediaURL[1]}}
           paused={paused}
           resizeMode="cover"
           posterResizeMode="cover"
@@ -61,6 +62,7 @@ const VideoFeed = forwardRef((props, parentRef) => {
           playInBackground={false}
           style={styles.video}
           onError={err => console.log(err)}
+          // poster={{uri: post.mediaURL[1]}}
           // Poster, posterResizeMode
         />
       </TouchableWithoutFeedback>
@@ -71,7 +73,7 @@ const VideoFeed = forwardRef((props, parentRef) => {
               <Avatar.Image
                 className={'bg-slate-700 border border-white '}
                 size={36}
-                source={post.user.imageURL}
+                source={require('../../assets/images/petbox.png')}
               />
             </TouchableOpacity>
             <TouchableOpacity
@@ -94,7 +96,7 @@ const VideoFeed = forwardRef((props, parentRef) => {
               size={36}
               color={isLiked ? 'red' : 'white'}
             />
-            <Text className={'font-bold text-white'}>{post?.likes}</Text>
+            <Text className={'font-bold text-white'}>{post?.likesCount}</Text>
           </TouchableOpacity>
           <TouchableOpacity className={'items-center py-1'}>
             <MaterialIcons
@@ -102,17 +104,19 @@ const VideoFeed = forwardRef((props, parentRef) => {
               size={36}
               color={'white'}
             />
-            <Text className={'font-bold text-white'}>1</Text>
+            <Text className={'font-bold text-white'}>
+              {post?.commentsCount}
+            </Text>
           </TouchableOpacity>
           <TouchableOpacity className={'items-center py-1'}>
             <MaterialIcons name="share" size={36} color={'white'} />
             <Text className={'font-bold text-white'}>1</Text>
           </TouchableOpacity>
         </View>
-        <Text className={'text-white text-base'}>Nick Munene</Text>
-        <Text className={'text-white text-sm'}>
-          this is just a description of something
-        </Text>
+        <Text className={'text-white text-base'}>{`@ ${
+          post.user?.username || ''
+        }`}</Text>
+        <Text className={'text-white text-sm'}>{post.description || ''}</Text>
       </View>
     </View>
   );

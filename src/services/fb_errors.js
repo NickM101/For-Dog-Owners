@@ -1,5 +1,5 @@
 export const firebaseErrors = error => {
-  console.log('firebase error', error);
+  console.error('firebase error', error);
   switch (error) {
     case 'auth/weak-password':
       toast.show('Provided password is weak, try again.');

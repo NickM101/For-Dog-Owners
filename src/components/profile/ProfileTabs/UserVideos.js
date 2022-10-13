@@ -8,7 +8,6 @@ export const UserVideos = () => {
 
   useEffect(() => {
     FBGetUserPosts().then(response => {
-      console.log('response', response);
       return setPosts(response);
     });
   }, []);
@@ -22,8 +21,14 @@ export const UserVideos = () => {
         keyExtractor={item => item.id}
         renderItem={({item}) => {
           return (
-            <View style={{flex: 1 / 3, height: 200, backgroundColor: 'gray'}}>
-              <Image style={{flex: 1}} source={{uri: item.media[1]}} />
+            <View
+              style={{
+                flex: 1 / 3,
+                height: 200,
+                backgroundColor: 'gray',
+                margin: 2,
+              }}>
+              <Image style={{flex: 1}} source={{uri: item.mediaURL[0]}} />
             </View>
           );
         }}

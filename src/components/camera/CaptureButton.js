@@ -43,34 +43,13 @@ const _CaptureButton = ({
   style,
   ...props
 }) => {
+  const tapHandler = useRef();
   const pressDownDate = useRef();
+  const panHandler = useRef();
+
   const isRecording = useRef(false);
   const recordingProgress = useSharedValue(0);
   const isPressingButton = useSharedValue(false);
-
-  // const takePhotoOptions = useMemo(
-  //   () => ({
-  //     photoCodec: 'jpeg',
-  //     qualityPrioritization: 'speed',
-  //     flash: flash,
-  //     quality: 90,
-  //     skipMetadata: true,
-  //   }),
-  //   [flash],
-  // );
-
-  // Camera Capture
-  // const takePhoto = useCallback(async () => {
-  //   try {
-  //     if (camera.current == null) throw new Error('Camera ref is null!');
-  //     console.log('Taking photo...');
-  //     const photo = await camera.current.takeSnapshot(takePhotoOptions);
-  //     console.log('pt')
-  //     onMediaCaptured(photo, 'photo');
-  //   } catch (error) {
-  //     console.error('Failed to take photo!', error);
-  //   }
-  // }, [camera, onMediaCaptured, takePhotoOptions]);
 
   const onStoppedRecording = useCallback(() => {
     isRecording.current = false;
@@ -113,7 +92,6 @@ const _CaptureButton = ({
     }
   }, [camera, flash, onMediaCaptured, onStoppedRecording]);
 
-  const tapHandler = useRef();
   const onHandlerStateChanged = useCallback(
     async ({nativeEvent: event}) => {
       console.debug(`state: ${Object.keys(State)[event.state]}`);
@@ -170,7 +148,6 @@ const _CaptureButton = ({
     ],
   );
 
-  const panHandler = useRef();
   const onPanGestureEvent = useAnimatedGestureHandler({
     onStart: (event, context) => {
       context.startY = event.absoluteY;

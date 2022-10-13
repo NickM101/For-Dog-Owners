@@ -28,11 +28,11 @@ import {LogBox} from 'react-native';
 
 import {AuthProvider} from './context/AuthContext';
 
-auth().useEmulator('http://192.168.0.103:9099');
-firestore().useEmulator('192.168.0.103', 8085);
-database().useEmulator('192.168.0.103', 9000);
-storage().useEmulator('192.168.0.103', 9199);
-functions().useEmulator('192.168.0.103', 5002);
+auth().useEmulator('http://192.168.100.51:9099');
+firestore().useEmulator('192.168.100.51', 8085);
+database().useEmulator('192.168.100.51', 9000);
+storage().useEmulator('192.168.100.51', 9199);
+functions().useEmulator('192.168.100.51', 5002);
 
 const theme = {
   colors: {

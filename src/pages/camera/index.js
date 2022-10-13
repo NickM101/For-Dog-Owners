@@ -42,61 +42,35 @@ const CameraScreen = ({navigation}) => {
   const camera = useRef(null);
   const isPressingButton = useSharedValue(false);
   const zoom = useSharedValue(0);
+  const devices = useCameraDevices();
 
   const [isCameraInitialized, setIsCameraInitialized] = useState(false);
-  const [cameraPermissions, setCameraPermissions] = useState(false);
-  const [audioPermissions, setAudioPermissions] = useState(false);
-
-  // useEffect(() => {
-  //   async () => {
-  //     const cameraStatus = await Camera.getCameraPermissionStatus();
-  //     setCameraPermissions(cameraStatus.status == 'authorized');
-  //     const audioStatus = await Camera.getMicrophonePermissionStatus();
-  //     setAudioPermissions(audioStatus.status == 'authorized');
-  //   };
-  // }, []);
-
-  // if (!cameraPermissions || !audioPermissions) {
-  //   return (
-  //     <Container className={'justify-center, content-center'}>
-  //       <Text className={'text-lg, text-red-500 font-extrabold'}>
-  //         Missing permissions
-  //       </Text>
-  //     </Container>
-  //   );
-  // }
-
   const [cameraPosition, setCameraPosition] = useState('back');
   const [flash, setFlash] = useState('off');
-  const [enableHdr, setEnableHdr] = useState(false);
-  const [enableNightMode, setEnableNightMode] = useState(false);
 
-  const devices = useCameraDevices();
   const device = devices[cameraPosition];
-  const formats = useMemo(() => {
-    if (device?.formats == null) return [];
-    return device.formats.sort(sortFormats);
-  }, [device?.formats]);
+  const supportsFlash = device?.hasFlash ?? false;
 
+  // Camera Flipping
   const supportsCameraFlipping = useMemo(
     () => devices.back != null && devices.front !== null,
     [devices.back, devices.front],
   );
-  const supportsFlash = device?.hasFlash ?? false;
-
-  console.info('supportsFlash', supportsFlash);
 
   const setIsPressingButton = useCallback(() => {
     setIsPressingButton.value = !isPressingButton;
   }, [isPressingButton]);
 
-  const onError = useCallback(() => {
-    console.error(error);
+  // --------------------EVENTS-------------------- //
+  const onError = useCallback(error => {
+    console.error('OnError', error);
   }, []);
+
   const onInitialized = useCallback(() => {
     console.log('Camera initialized!');
     setIsCameraInitialized(true);
   }, []);
+
   const onMediaCaptured = useCallback(async (media, type) => {
     console.log(`Media captured! ${JSON.stringify(media)}`);
     await createThumbnail({
@@ -128,7 +102,7 @@ const CameraScreen = ({navigation}) => {
     onFlipCameraPressed();
   }, [onFlipCameraPressed]);
 
-  // Zoom
+  // ------------  Zoom ---------------- //
   const minZoom = device?.minZoom ?? 1;
   const maxZoom = Math.min(device?.maxZoom ?? 1, MAX_ZOOM_FACTOR);
 
@@ -168,78 +142,16 @@ const CameraScreen = ({navigation}) => {
     },
   });
 
-  // FPS
-  const [is60Fps, setIs60Fps] = useState(true);
-  const fps = useMemo(() => {
-    if (!is60Fps) return 30;
-
-    if (enableNightMode && !device?.supportsLowLightBoost) {
-      // User has enabled Night Mode, but Night Mode is not natively supported, so we simulate it by lowering the frame rate.
-      return 30;
-    }
-
-    const supportsHdrAt60Fps = formats.some(
-      f =>
-        f.supportsVideoHDR &&
-        f.frameRateRanges.some(r => frameRateIncluded(r, 60)),
-    );
-    if (enableHdr && !supportsHdrAt60Fps) {
-      // User has enabled HDR, but HDR is not supported at 60 FPS.
-      return 30;
-    }
-
-    const supports60Fps = formats.some(f =>
-      f.frameRateRanges.some(r => frameRateIncluded(r, 60)),
-    );
-    if (!supports60Fps) {
-      // 60 FPS is not supported by any format.
-      return 30;
-    }
-    // If nothing blocks us from using it, we default to 60 FPS.
-    return 60;
-  }, [
-    device?.supportsLowLightBoost,
-    enableHdr,
-    enableNightMode,
-    formats,
-    is60Fps,
-  ]);
-
-  const supportsHdr = useMemo(
-    () => formats.some(f => f.supportsVideoHDR || f.supportsPhotoHDR),
-    [formats],
-  );
-  const supports60Fps = useMemo(
-    () =>
-      formats.some(f =>
-        f.frameRateRanges.some(rate => frameRateIncluded(rate, 60)),
-      ),
-    [formats],
-  );
-  const canToggleNightMode = enableNightMode
-    ? true // it's enabled so you have to be able to turn it off again
-    : (device?.supportsLowLightBoost ?? false) || fps > 30; // either we have native support, or we can lower the FPS
-
-  const format = useMemo(() => {
-    let result = formats;
-    if (enableHdr) {
-      // We only filter by HDR capable formats if HDR is set to true.
-      // Otherwise we ignore the `supportsVideoHDR` property and accept formats which support HDR `true` or `false`
-      result = result.filter(f => f.supportsVideoHDR || f.supportsPhotoHDR);
-    }
-
-    // find the first format that includes the given FPS
-    return result.find(f =>
-      f.frameRateRanges.some(r => frameRateIncluded(r, fps)),
-    );
-  }, [formats, fps, enableHdr]);
-
-  // // const [galleryPermissions, setGalleryPermissions] = useState(false);
-  // const [galleryItems, setGalleryItems] = useState([]);
+  // ---------------------------------------- //
 
   const isFocused = useIsFocused();
 
-  if (device == null) return <View />;
+  if (device == null)
+    return (
+      <View className={'flex-1 justify-center items-center'}>
+        <Text>Camera not supported.</Text>
+      </View>
+    );
 
   return (
     <Container>
@@ -250,16 +162,13 @@ const CameraScreen = ({navigation}) => {
               ref={camera}
               style={StyleSheet.absoluteFill}
               device={device}
-              format={format[0]}
-              fps={fps}
-              hdr={enableHdr}
-              lowLightBoost={device.supportsLowLightBoost && enableNightMode}
               isActive={isFocused}
               photo={false}
               video={true}
               audio={true}
               orientation="portrait"
               onInitialized={onInitialized}
+              onError={onError}
               enableZoomGesture={false}
               animatedProps={cameraAnimatedProps}
             />
@@ -296,37 +205,6 @@ const CameraScreen = ({navigation}) => {
             disabledOpacity={0.4}>
             <MaterialIcon
               name={flash === 'on' ? 'flash' : 'flash-off'}
-              color="white"
-              size={24}
-            />
-          </Pressable>
-        )}
-        {supports60Fps && (
-          <Pressable style={styles.button} onPress={() => setIs60Fps(!is60Fps)}>
-            <Text style={styles.text}>
-              {is60Fps ? '60' : '30'}
-              {'\n'}FPS
-            </Text>
-          </Pressable>
-        )}
-        {supportsHdr && (
-          <Pressable
-            style={styles.button}
-            onPress={() => setEnableHdr(h => !h)}>
-            <MaterialIcon
-              name={enableHdr ? 'hdr' : 'hdr-off'}
-              color="white"
-              size={24}
-            />
-          </Pressable>
-        )}
-        {canToggleNightMode && (
-          <Pressable
-            style={styles.button}
-            onPress={() => setEnableNightMode(!enableNightMode)}
-            disabledOpacity={0.4}>
-            <IonIcon
-              name={enableNightMode ? 'moon' : 'moon-outline'}
               color="white"
               size={24}
             />

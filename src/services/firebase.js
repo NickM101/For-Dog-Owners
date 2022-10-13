@@ -1,9 +1,14 @@
 import storage from '@react-native-firebase/storage';
-``;
+import auth from '@react-native-firebase/auth';
+import {v4 as uuidv4} from 'uuid';
 
 export const saveMediaStorage = (media, path, metadata) =>
   new Promise((resolve, reject) => {
-    const fileRef = storage().ref(path);
+    const pathToTake =
+      path === 'post'
+        ? `post/${auth().currentUser.uid}/${uuidv4()}`
+        : `profileImage/${auth().currentUser.uid}`;
+    const fileRef = storage().ref(pathToTake);
 
     console.log('metadata', metadata);
 
