@@ -24,7 +24,7 @@ const VideoFeed = forwardRef((props, parentRef) => {
   const [post, setPost] = useState(props.posts);
   const [isLiked, setIsLiked] = useState(false);
 
-  const [paused, setPaused] = useState(false);
+  const [paused, setPaused] = useState(true);
 
   const playFeed = () => setPaused(false);
 

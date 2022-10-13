@@ -12,11 +12,11 @@ const HomeFeed = () => {
       const cell = (mediaRefs.current[0] = element.key);
       console.log(cell);
       if (cell) {
-        if (element.isViewable) {
-          cell.playFeed();
-        } else {
-          cell.stopFeed();
-        }
+        // if (element.isViewable) {
+        //   cell.playFeed();
+        // } else {
+        //   cell.stopFeed();
+        // }
       }
     });
   });

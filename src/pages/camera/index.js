@@ -67,7 +67,7 @@ const CameraScreen = ({navigation}) => {
   // }
 
   const [cameraPosition, setCameraPosition] = useState('back');
-  const [flash, setFlash] = useState('on');
+  const [flash, setFlash] = useState('off');
   const [enableHdr, setEnableHdr] = useState(false);
   const [enableNightMode, setEnableNightMode] = useState(false);
 
@@ -89,13 +89,6 @@ const CameraScreen = ({navigation}) => {
   const setIsPressingButton = useCallback(() => {
     setIsPressingButton.value = !isPressingButton;
   }, [isPressingButton]);
-
-  const generateThumbnail = async source => {
-    await createThumbnail({
-      url: source,
-      timeStamp: 3000,
-    });
-  };
 
   const onError = useCallback(() => {
     console.error(error);
@@ -262,7 +255,7 @@ const CameraScreen = ({navigation}) => {
               hdr={enableHdr}
               lowLightBoost={device.supportsLowLightBoost && enableNightMode}
               isActive={isFocused}
-              photo={true}
+              photo={false}
               video={true}
               audio={true}
               orientation="portrait"

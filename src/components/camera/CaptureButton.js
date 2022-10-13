@@ -1,4 +1,3 @@
-
 import React, {useCallback, useMemo, useRef} from 'react';
 import {StyleSheet, View, ViewProps} from 'react-native';
 import {
@@ -8,7 +7,11 @@ import {
   TapGestureHandler,
   TapGestureHandlerStateChangeEvent,
 } from 'react-native-gesture-handler';
-import {CAPTURE_BUTTON_SIZE, SCREEN_HEIGHT, SCREEN_WIDTH} from '../../constants/camera';
+import {
+  CAPTURE_BUTTON_SIZE,
+  SCREEN_HEIGHT,
+  SCREEN_WIDTH,
+} from '../../constants/camera';
 import Reanimated, {
   cancelAnimation,
   Easing,
@@ -22,13 +25,11 @@ import Reanimated, {
   withRepeat,
 } from 'react-native-reanimated';
 
-
 const PAN_GESTURE_HANDLER_FAIL_X = [-SCREEN_WIDTH, SCREEN_WIDTH];
 const PAN_GESTURE_HANDLER_ACTIVE_Y = [-2, 2];
 
 const START_RECORDING_DELAY = 200;
 const BORDER_WIDTH = CAPTURE_BUTTON_SIZE * 0.1;
-
 
 const _CaptureButton = ({
   camera,
@@ -47,28 +48,29 @@ const _CaptureButton = ({
   const recordingProgress = useSharedValue(0);
   const isPressingButton = useSharedValue(false);
 
-  const takePhotoOptions = useMemo(
-    () => ({
-      photoCodec: 'jpeg',
-      qualityPrioritization: 'speed',
-      flash: flash,
-      quality: 90,
-      skipMetadata: true,
-    }),
-    [flash],
-  );
+  // const takePhotoOptions = useMemo(
+  //   () => ({
+  //     photoCodec: 'jpeg',
+  //     qualityPrioritization: 'speed',
+  //     flash: flash,
+  //     quality: 90,
+  //     skipMetadata: true,
+  //   }),
+  //   [flash],
+  // );
 
   // Camera Capture
-  const takePhoto = useCallback(async () => {
-    try {
-      if (camera.current == null) throw new Error('Camera ref is null!');
-      console.log('Taking photo...');
-      const photo = await camera.current.takePhoto(takePhotoOptions);
-      onMediaCaptured(photo, 'photo');
-    } catch (error) {
-      console.error('Failed to take photo!', error);
-    }
-  }, [camera, onMediaCaptured, takePhotoOptions]);
+  // const takePhoto = useCallback(async () => {
+  //   try {
+  //     if (camera.current == null) throw new Error('Camera ref is null!');
+  //     console.log('Taking photo...');
+  //     const photo = await camera.current.takeSnapshot(takePhotoOptions);
+  //     console.log('pt')
+  //     onMediaCaptured(photo, 'photo');
+  //   } catch (error) {
+  //     console.error('Failed to take photo!', error);
+  //   }
+  // }, [camera, onMediaCaptured, takePhotoOptions]);
 
   const onStoppedRecording = useCallback(() => {
     isRecording.current = false;
@@ -140,7 +142,8 @@ const _CaptureButton = ({
             pressDownDate.current = undefined;
             if (diff < START_RECORDING_DELAY) {
               // user has released the button within 200ms, so his intention is to take a single picture.
-              await takePhoto();
+              // await takePhoto();
+              console.log('image taken');
             } else {
               // user has held the button for more than 200ms, so he has been recording this entire time.
               await stopRecording();
@@ -163,7 +166,7 @@ const _CaptureButton = ({
       setIsPressingButton,
       startRecording,
       stopRecording,
-      takePhoto,
+      // takePhoto,
     ],
   );
 
@@ -211,7 +214,7 @@ const _CaptureButton = ({
   );
 
   const buttonStyle = useAnimatedStyle(() => {
-    let scale
+    let scale;
     if (enabled) {
       if (isPressingButton.value) {
         scale = withRepeat(
