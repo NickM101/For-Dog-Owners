@@ -5,8 +5,15 @@ import Container from '../../layouts/Container';
 import {useAuth} from '../../context/AuthContext';
 import {useForm, Controller} from 'react-hook-form';
 import InputText from '../../layouts/TextInput';
+import {loginUser} from '../../features/user/userActions';
+import {useDispatch, useSelector} from 'react-redux';
 
 const LoginForm = ({navigation}) => {
+  const dispatch = useDispatch();
+
+  const loader = useSelector(state => state.loading);
+
+  console.log('loader', loader);
   const [secureText, setSecureText] = useState(true);
 
   const {emailSignIn, anonymousSignIn, loading, googleSignIn} = useAuth();
@@ -32,7 +39,7 @@ const LoginForm = ({navigation}) => {
     },
   });
 
-  const onSubmit = data => emailSignIn(data);
+  const onSubmit = data => dispatch(loginUser(data));
 
   return (
     <Container>

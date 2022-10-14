@@ -1,18 +1,10 @@
 import {GestureHandlerRootView} from 'react-native-gesture-handler';
-/**
- * Sample React Native App
- * https:github.com/facebook/react-native
- *
- * @format
- * @flow strict-local
- */
-// import {enableScreens} from 'react-native-screens';
-// enableScreens();
-import React, {useEffect, useRef, useState} from 'react';
+import React from 'react';
 import {
   Provider as PaperProvider,
   MD3LightTheme as DefaultTheme,
 } from 'react-native-paper';
+import {Provider as ReduxProvider} from 'react-redux';
 
 import {WithSplashScreen} from './pages/SplashScreen';
 import Router from './router';
@@ -24,9 +16,12 @@ import database from '@react-native-firebase/database';
 import storage from '@react-native-firebase/storage';
 import Toast from 'react-native-toast-notifications';
 
-import {LogBox} from 'react-native';
+import {LogBox, Text} from 'react-native';
 
 import {AuthProvider} from './context/AuthContext';
+import {persistor, store} from './features/store';
+import LoginForm from './pages/auth/LoginForm';
+import {PersistGate} from 'redux-persist/integration/react';
 
 auth().useEmulator('http://192.168.0.103:9099');
 firestore().useEmulator('192.168.0.103', 8085);
@@ -48,16 +43,20 @@ LogBox.ignoreAllLogs(true);
 
 const App = () => {
   return (
-    <AuthProvider>
-      <WithSplashScreen isAppReady={true}>
-        <PaperProvider theme={theme}>
-          <GestureHandlerRootView style={{flex: 1}}>
-            <Router />
-            <Toast ref={ref => (global['toast'] = ref)} />
-          </GestureHandlerRootView>
-        </PaperProvider>
-      </WithSplashScreen>
-    </AuthProvider>
+    // <AuthProvider>
+    <ReduxProvider store={store}>
+      <PersistGate loading={<Text>Loading ...</Text>} persistor={persistor}>
+        <WithSplashScreen isAppReady={true}>
+          <PaperProvider theme={theme}>
+            <GestureHandlerRootView style={{flex: 1}}>
+              <Router />
+              <Toast ref={ref => (global['toast'] = ref)} />
+            </GestureHandlerRootView>
+          </PaperProvider>
+        </WithSplashScreen>
+      </PersistGate>
+    </ReduxProvider>
+    // </AuthProvider>
   );
 };
 

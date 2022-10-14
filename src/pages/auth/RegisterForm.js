@@ -6,12 +6,15 @@ import MaterialIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {useForm, Controller} from 'react-hook-form';
 
 import InputText from '../../layouts/TextInput';
-import {useAuth} from '../../context/AuthContext';
+import {useDispatch, useSelector} from 'react-redux';
+import {registerUser} from '../../features/user/userActions';
 
 const RegisterMenu = ({navigation}) => {
   const [secureText, setSecureText] = useState(true);
 
-  const {signUp, loading} = useAuth();
+  const {loading} = useSelector(state => state.user);
+
+  const dispatch = useDispatch();
 
   useLayoutEffect(() => {
     navigation.setOptions({
@@ -43,7 +46,8 @@ const RegisterMenu = ({navigation}) => {
       password: '',
     },
   });
-  const onSubmit = data => signUp(data);
+
+  const onSubmit = data => dispatch(registerUser(data));
 
   return (
     <Container>
@@ -100,7 +104,7 @@ const RegisterMenu = ({navigation}) => {
           icon=""
           mode="contained"
           onPress={handleSubmit(onSubmit)}>
-          Register
+          {loading ? 'Please Wait ....' : 'Register'}
         </Button>
       </View>
       <View>

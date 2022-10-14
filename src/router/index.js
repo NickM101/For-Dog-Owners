@@ -4,9 +4,13 @@ import {Linking, Text} from 'react-native';
 import {AuthStack} from './Routes';
 import {useAuth} from '../context/AuthContext';
 import BottomTab from './BottomTab';
+import {useSelector} from 'react-redux';
+import {loggedInUser} from '../features/user/userSlice';
 
 export default function Router() {
-  const {user} = useAuth(useAuth);
+  const user = useSelector(loggedInUser);
+
+  console.log(user);
 
   const linking = {
     prefixes: ['tiktok://'],
@@ -61,7 +65,7 @@ export default function Router() {
 
   return (
     <NavigationContainer linking={linking} fallback={<Text>Loading...</Text>}>
-      {user ? <BottomTab /> : <AuthStack />}
+      {user?.id ? <BottomTab /> : <AuthStack />}
     </NavigationContainer>
   );
 }
