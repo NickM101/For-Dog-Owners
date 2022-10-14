@@ -2,8 +2,8 @@ import {View, Text, FlatList, Dimensions} from 'react-native';
 import React, {useRef, useEffect, useState} from 'react';
 import Container from '../../layouts/Container';
 import VideoFeed from '../../components/home/VideoFeed';
-import {feeds} from '../../constants/data';
-import {FBGetUserPosts} from '../../services/posts';
+import firestore from '@react-native-firebase/firestore';
+import auth from '@react-native-firebase/auth';
 
 const HomeFeed = () => {
   const mediaRefs = useRef([]);
@@ -13,13 +13,20 @@ const HomeFeed = () => {
 
   useEffect(() => {
     setLoading(true);
-    FBGetUserPosts()
-      .then(data => {
-        console.log('data', data);
-        setLoading(false), setPosts(data);
-      })
-      .finally(() => setLoading(false));
-  }, []);
+    firestore()
+      .collection('posts')
+      .where('creator.id', '==', auth().currentUser.uid)
+      .orderBy('creation', 'desc')
+      .onSnapshot(snapshot => {
+        let posts = snapshot.docs.map(doc => {
+          const data = doc.data();
+          const id = doc.id;
+          return {id, ...data};
+        });
+        setLoading(false);
+        return setPosts(posts);
+      });
+  }, [firestore]);
 
   const onViewableItemsChanged = useRef(({changed}) => {
     changed.forEach(element => {

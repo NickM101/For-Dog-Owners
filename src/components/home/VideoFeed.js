@@ -1,4 +1,10 @@
-import React, {forwardRef, useImperativeHandle, useRef, useState} from 'react';
+import React, {
+  forwardRef,
+  useImperativeHandle,
+  useRef,
+  useState,
+  useEffect,
+} from 'react';
 import Video from 'react-native-video';
 import {
   Dimensions,
@@ -12,9 +18,13 @@ import {
 import {Avatar} from 'react-native-paper';
 
 import MaterialIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import {handleLikes} from '../../services/posts';
+import {useAuth} from '../../context/AuthContext';
 
 const VideoFeed = forwardRef((props, parentRef) => {
   const videoRef = useRef(null);
+
+  const {user} = useAuth();
 
   useImperativeHandle(parentRef, () => ({
     playFeed,
@@ -22,7 +32,6 @@ const VideoFeed = forwardRef((props, parentRef) => {
   }));
 
   const [post, setPost] = useState(props.posts);
-  const [isLiked, setIsLiked] = useState(false);
 
   const [paused, setPaused] = useState(true);
 
@@ -30,21 +39,10 @@ const VideoFeed = forwardRef((props, parentRef) => {
 
   const stopFeed = () => setPaused(true);
 
-  const onLikePress = () => {
-    // TODO: likes Reducer
-    const likeAdded = isLiked ? -1 : 1;
-    setPost({
-      ...post,
-      likes: post.likes + likeAdded,
-    });
-    setIsLiked(!isLiked);
-  };
-
   const onPlayPausePress = () => {
     setPaused(!paused);
   };
 
-  console.log('posts', post.mediaURL[0]);
   return (
     <View style={styles.container}>
       <TouchableWithoutFeedback style={{flex: 1}} onPress={onPlayPausePress}>
@@ -89,14 +87,19 @@ const VideoFeed = forwardRef((props, parentRef) => {
             </TouchableOpacity>
           </View>
           <TouchableOpacity
-            onPress={onLikePress}
+            onPress={() => {
+              const currentLikedStatus = !post.likes_by_users.includes(user.id);
+              return handleLikes(post.id, currentLikedStatus);
+            }}
             className={'items-center py-1'}>
             <MaterialIcons
               name="cards-heart"
               size={36}
-              color={isLiked ? 'red' : 'white'}
+              color={post.likes_by_users.includes(user.id) ? 'red' : 'white'}
             />
-            <Text className={'font-bold text-white'}>{post?.likesCount}</Text>
+            <Text className={'font-bold text-white'}>
+              {post?.likes_by_users.length}
+            </Text>
           </TouchableOpacity>
           <TouchableOpacity className={'items-center py-1'}>
             <MaterialIcons
@@ -116,7 +119,7 @@ const VideoFeed = forwardRef((props, parentRef) => {
         <Text className={'text-white text-base'}>{`@ ${
           post.user?.username || ''
         }`}</Text>
-        <Text className={'text-white text-sm'}>{post.description || ''}</Text>
+        <Text className={'text-white text-sm'}>{post.caption || ''}</Text>
       </View>
     </View>
   );
