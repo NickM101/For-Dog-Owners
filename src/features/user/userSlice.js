@@ -3,7 +3,6 @@ import {loginUser, registerUser} from './userActions';
 
 const initialState = {
   loading: false,
-  status: false,
   isAnonymous: true,
   user: null,
   error: null,
@@ -14,36 +13,22 @@ const userSlice = createSlice({
   name: 'user',
   initialState,
   reducers: {},
-  extraReducers: {
-    [registerUser.pending]: state => {
-      state.user.status = false;
-      state.user.error = null;
-    },
-    [registerUser.fulfilled]: (state, {payload}) => {
-      state.user.status = false;
-      state.user.success = true;
-      state.user.isAnonymous = false;
-    },
-    [registerUser.rejected]: (state, {payload}) => {
-      state.user.status = false;
-      state.user.error = payload;
-    },
-    [loginUser.pending]: state => {
-      state.user.status = true;
-      state.user.error = null;
-    },
-    [loginUser.fulfilled]: (state, {payload}) => {
-      state.user.status = false;
-      state.user.success = true;
-      state.user.user = payload;
-      state.user.isAnonymous = false;
-    },
-    [loginUser.rejected]: (state, {payload}) => {
-      (state.user.status = false), (state.error = false);
-    },
+  extraReducers: builder => {
+    builder
+      .addCase(loginUser.pending, (state, action) => {
+        state.loading = true;
+      })
+      .addCase(loginUser.fulfilled, (state, action) => {
+        state.loading = false;
+        state.user = action.payload;
+      })
+      .addCase(loginUser.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      });
   },
 });
 
-export const loggedInUser = state => state.user?.user;
+export const loggedInUser = state => state.user.user;
 
 export default userSlice.reducer;

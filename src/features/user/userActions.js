@@ -20,6 +20,7 @@ export const loginUser = createAsyncThunk(
   'user/login',
   async ({email, password}, {rejectWithValue}) => {
     try {
+      console.log('Email', email);
       const response = await auth().signInWithEmailAndPassword(email, password);
       console.log('response', response);
       const userInfo = {

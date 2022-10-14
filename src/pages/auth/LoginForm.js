@@ -11,12 +11,12 @@ import {useDispatch, useSelector} from 'react-redux';
 const LoginForm = ({navigation}) => {
   const dispatch = useDispatch();
 
-  const loader = useSelector(state => state.loading);
+  const loader = useSelector(state => state.user.loading);
 
   console.log('loader', loader);
   const [secureText, setSecureText] = useState(true);
 
-  const {emailSignIn, anonymousSignIn, loading, googleSignIn} = useAuth();
+  // const {emailSignIn, anonymousSignIn, loading, googleSignIn} = useAuth();
 
   useLayoutEffect(() => {
     navigation.setOptions({
@@ -99,9 +99,8 @@ const LoginForm = ({navigation}) => {
           className={'m-3 rounded-sm '}
           icon=""
           mode="contained"
-          loading={loading}
           onPress={handleSubmit(onSubmit)}>
-          {loading ? 'Logging in' : 'Login'}
+          {false ? 'Logging in' : 'Login'}
         </Button>
         <View className={'relative flex-row py-4 items-center'}>
           <View className={'flex-grow border-t border-gray-400'}></View>
@@ -113,14 +112,14 @@ const LoginForm = ({navigation}) => {
             className={'m-3 rounded-sm'}
             icon={'incognito'}
             mode="contained"
-            onPress={() => anonymousSignIn()}>
+            onPress={() => {}}>
             Continue Anonymous
           </Button>
           <Button
             className={'m-3 rounded-sm'}
             icon={'google'}
             mode="contained"
-            onPress={() => googleSignIn()}>
+            onPress={() => {}}>
             Continue with Google
           </Button>
         </View>

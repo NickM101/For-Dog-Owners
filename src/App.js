@@ -45,16 +45,16 @@ const App = () => {
   return (
     // <AuthProvider>
     <ReduxProvider store={store}>
-      <PersistGate loading={<Text>Loading ...</Text>} persistor={persistor}>
-        <WithSplashScreen isAppReady={true}>
-          <PaperProvider theme={theme}>
-            <GestureHandlerRootView style={{flex: 1}}>
-              <Router />
-              <Toast ref={ref => (global['toast'] = ref)} />
-            </GestureHandlerRootView>
-          </PaperProvider>
-        </WithSplashScreen>
-      </PersistGate>
+      {/* <PersistGate loading={<Text>Loading ...</Text>} persistor={persistor}> */}
+      <WithSplashScreen isAppReady={true}>
+        <PaperProvider theme={theme}>
+          <GestureHandlerRootView style={{flex: 1}}>
+            <Router />
+            <Toast ref={ref => (global['toast'] = ref)} />
+          </GestureHandlerRootView>
+        </PaperProvider>
+      </WithSplashScreen>
+      {/* </PersistGate> */}
     </ReduxProvider>
     // </AuthProvider>
   );

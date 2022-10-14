@@ -12,7 +12,8 @@ import {registerUser} from '../../features/user/userActions';
 const RegisterMenu = ({navigation}) => {
   const [secureText, setSecureText] = useState(true);
 
-  const {loading} = useSelector(state => state.user);
+  // const loading = useSelector(state => state);
+  const loading = false;
 
   const dispatch = useDispatch();
 
@@ -47,7 +48,10 @@ const RegisterMenu = ({navigation}) => {
     },
   });
 
-  const onSubmit = data => dispatch(registerUser(data));
+  const onSubmit = data => {
+    console.log('test');
+    dispatch(registerUser(data));
+  };
 
   return (
     <Container>
