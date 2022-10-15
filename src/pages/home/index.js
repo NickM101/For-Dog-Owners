@@ -4,29 +4,23 @@ import Container from '../../layouts/Container';
 import VideoFeed from '../../components/home/VideoFeed';
 import firestore from '@react-native-firebase/firestore';
 import auth from '@react-native-firebase/auth';
+import {useDispatch, useSelector} from 'react-redux';
+import {AllPosts} from '../../features/posts/postSlice';
+import {fetchPosts} from '../../features/posts/postAPI';
+import {useIsFocused} from '@react-navigation/native';
 
 const HomeFeed = () => {
   const mediaRefs = useRef([]);
+  const dispatch = useDispatch();
 
-  const [posts, setPosts] = useState([]);
-  const [loading, setLoading] = useState(false);
+  const {loading, posts} = useSelector(state => state.posts);
+
+  const isFocused = useIsFocused();
 
   useEffect(() => {
-    setLoading(true);
-    firestore()
-      .collection('posts')
-      .where('creator.id', '==', auth().currentUser.uid)
-      .orderBy('creation', 'desc')
-      .onSnapshot(snapshot => {
-        let posts = snapshot.docs.map(doc => {
-          const data = doc.data();
-          const id = doc.id;
-          return {id, ...data};
-        });
-        setLoading(false);
-        return setPosts(posts);
-      });
-  }, [firestore]);
+    console.log('dispatching');
+    dispatch(fetchPosts());
+  }, [isFocused]);
 
   const onViewableItemsChanged = useRef(({changed}) => {
     changed.forEach(element => {
@@ -71,7 +65,7 @@ const HomeFeed = () => {
         showsVerticalScrollIndicator={false}
         snapToInterval={Dimensions.get('window').height - 70}
         snapToAlignment={'start'}
-        decelerationRate={'normal'}
+        decelerationRate={'fast'}
         onViewableItemsChanged={onViewableItemsChanged.current}
       />
     </Container>

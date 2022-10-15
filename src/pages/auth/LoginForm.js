@@ -5,18 +5,15 @@ import Container from '../../layouts/Container';
 import {useAuth} from '../../context/AuthContext';
 import {useForm, Controller} from 'react-hook-form';
 import InputText from '../../layouts/TextInput';
-import {loginUser} from '../../features/user/userActions';
+import {anonymousLogIn, loginUser} from '../../features/user/userAPI';
 import {useDispatch, useSelector} from 'react-redux';
 
 const LoginForm = ({navigation}) => {
   const dispatch = useDispatch();
 
-  const loader = useSelector(state => state.user.loading);
+  const loading = useSelector(state => state.user.loading);
 
-  console.log('loader', loader);
   const [secureText, setSecureText] = useState(true);
-
-  // const {emailSignIn, anonymousSignIn, loading, googleSignIn} = useAuth();
 
   useLayoutEffect(() => {
     navigation.setOptions({
@@ -100,7 +97,7 @@ const LoginForm = ({navigation}) => {
           icon=""
           mode="contained"
           onPress={handleSubmit(onSubmit)}>
-          {false ? 'Logging in' : 'Login'}
+          {loading ? 'Logging in' : 'Login'}
         </Button>
         <View className={'relative flex-row py-4 items-center'}>
           <View className={'flex-grow border-t border-gray-400'}></View>
@@ -112,16 +109,16 @@ const LoginForm = ({navigation}) => {
             className={'m-3 rounded-sm'}
             icon={'incognito'}
             mode="contained"
-            onPress={() => {}}>
+            onPress={() => dispatch(anonymousLogIn())}>
             Continue Anonymous
           </Button>
-          <Button
+          {/* <Button
             className={'m-3 rounded-sm'}
             icon={'google'}
             mode="contained"
             onPress={() => {}}>
             Continue with Google
-          </Button>
+          </Button> */}
         </View>
       </View>
       <View className={'flex-1 justify-end'}>

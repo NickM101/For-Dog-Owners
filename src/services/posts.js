@@ -1,8 +1,10 @@
 import auth from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
 import database from '@react-native-firebase/database';
+import fromUnixTime from 'date-fns/fromUnixTime';
 
 import {firebaseErrors} from './fb_errors';
+import {format} from 'date-fns';
 
 const postCollection = firestore().collection('posts');
 
@@ -52,15 +54,19 @@ export const handleLikes = (postId, status) => {
   }
 };
 
-export const FBGetUserPosts = () =>
-  new Promise((resolve, reject) => {
+export const getUserPosts = () =>
+  new Promise(async (resolve, reject) => {
     try {
-      postCollection
+      await postCollection
         .where('creator.id', '==', auth().currentUser.uid)
         .orderBy('creation', 'desc')
         .onSnapshot(snapshot => {
           let posts = snapshot.docs.map(doc => {
             const data = doc.data();
+            data['creation'] = format(
+              fromUnixTime(data.creation),
+              'MM/dd/yyyy',
+            );
             const id = doc.id;
             return {id, ...data};
           });

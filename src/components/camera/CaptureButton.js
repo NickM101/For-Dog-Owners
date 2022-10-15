@@ -54,15 +54,15 @@ const _CaptureButton = ({
   const onStoppedRecording = useCallback(() => {
     isRecording.current = false;
     cancelAnimation(recordingProgress);
-    console.log('Stopped recording video!');
+    // console.log('Stopped recording video!');
   }, [recordingProgress]);
 
   const stopRecording = useCallback(async () => {
     try {
       if (camera.current == null) throw new Error('Camera ref is null!');
-      console.log('Calling stopRecording()...');
+      // console.log('Calling stopRecording()...');
       await camera.current.stopRecording();
-      console.log('called stopRecording()!');
+      // console.log('called stopRecording()!');
     } catch (error) {
       console.error('failed to stop recording!', error);
     }
@@ -79,13 +79,13 @@ const _CaptureButton = ({
           onStoppedRecording();
         },
         onRecordingFinished: video => {
-          console.log(`Recording successfully finished! ${video.path}`);
+          // console.log(`Recording successfully finished! ${video.path}`);
           onMediaCaptured(video, 'video');
           onStoppedRecording();
         },
       });
       // TODO: wait until startRecording returns to actually find out if the recording has successfully started
-      console.log('called startRecording()!');
+      // console.log('called startRecording()!');
       isRecording.current = true;
     } catch (e) {
       console.error('failed to start recording!', e, 'camera');
@@ -94,7 +94,7 @@ const _CaptureButton = ({
 
   const onHandlerStateChanged = useCallback(
     async ({nativeEvent: event}) => {
-      console.debug(`state: ${Object.keys(State)[event.state]}`);
+      // console.debug(`state: ${Object.keys(State)[event.state]}`);
       switch (event.state) {
         case State.BEGAN:
           recordingProgress.value = 0;
@@ -121,7 +121,7 @@ const _CaptureButton = ({
             if (diff < START_RECORDING_DELAY) {
               // user has released the button within 200ms, so his intention is to take a single picture.
               // await takePhoto();
-              console.log('image taken');
+              // console.log('image taken');
             } else {
               // user has held the button for more than 200ms, so he has been recording this entire time.
               await stopRecording();
@@ -234,7 +234,7 @@ const _CaptureButton = ({
       ref={tapHandler}
       onHandlerStateChange={onHandlerStateChanged}
       shouldCancelWhenOutside={false}
-      maxDurationMs={99999999} // <-- this prevents the TapGestureHandler from going to State.FAILED when the user moves his finger outside of the child view (to zoom)
+      maxDurationMs={99999999}
       simultaneousHandlers={panHandler}>
       <Reanimated.View {...props} style={[buttonStyle, style]}>
         <PanGestureHandler

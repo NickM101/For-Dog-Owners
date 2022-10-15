@@ -21,7 +21,7 @@ const persistConfig = {
   storage: AsyncStorage,
 };
 
-const reducer = combineReducers({user: userReducer, post: postReducer});
+const reducer = combineReducers({user: userReducer, posts: postReducer});
 
 const persistedReducer = persistReducer(persistConfig, reducer);
 

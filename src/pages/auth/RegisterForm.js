@@ -7,7 +7,7 @@ import {useForm, Controller} from 'react-hook-form';
 
 import InputText from '../../layouts/TextInput';
 import {useDispatch, useSelector} from 'react-redux';
-import {registerUser} from '../../features/user/userActions';
+import {registerUser} from '../../features/user/userAPI';
 
 const RegisterMenu = ({navigation}) => {
   const [secureText, setSecureText] = useState(true);
@@ -49,7 +49,6 @@ const RegisterMenu = ({navigation}) => {
   });
 
   const onSubmit = data => {
-    console.log('test');
     dispatch(registerUser(data));
   };
 

@@ -88,7 +88,9 @@ const MediaPage = ({navigation, route}) => {
         saveMediaStorage(thumbnail, 'post', true),
         saveMediaStorage(`file://${path}`, 'post', false),
       ]);
-      await saveUserPost(postSaved, text)
+
+      const contentToSend = isVisible ? text : '';
+      await saveUserPost(postSaved, contentToSend)
         .then(() => console.log('Saved to storage'))
         .catch(() => console.error('Error saving'));
 
@@ -119,7 +121,7 @@ const MediaPage = ({navigation, route}) => {
   }
 
   const handleTextDescription = () => {
-    setIsVisible(true);
+    setIsVisible(!isVisible);
   };
 
   return (

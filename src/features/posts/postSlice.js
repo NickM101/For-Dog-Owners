@@ -1,19 +1,27 @@
 import {createSlice} from '@reduxjs/toolkit';
-import {loginUser, registerUser} from '../user/userActions';
+import {fetchPosts} from './postAPI';
 
 const initialState = {
-  isAnonymous: true,
-  user: null,
-  error: null,
-  success: false,
+  loading: false,
+  posts: [],
 };
 
 const postSlice = createSlice({
-  name: 'post',
+  name: 'posts',
   initialState,
   reducers: {},
+  extraReducers: builder => {
+    builder
+      .addCase(fetchPosts.pending, state => {
+        state.loading = true;
+      })
+      .addCase(fetchPosts.fulfilled, (state, action) => {
+        state.loading = false;
+        state.posts = action.payload;
+      });
+  },
 });
 
-// export const user = state => state.post?.user;
+export const AllPosts = state => state.posts.posts;
 
 export default postSlice.reducer;

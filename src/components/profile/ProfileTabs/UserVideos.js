@@ -6,12 +6,6 @@ import {FBGetUserPosts} from '../../../services/posts';
 export const UserVideos = () => {
   const [posts, setPosts] = useState([]);
 
-  useEffect(() => {
-    FBGetUserPosts().then(response => {
-      return setPosts(response);
-    });
-  }, []);
-
   return (
     <Container className="">
       <FlatList

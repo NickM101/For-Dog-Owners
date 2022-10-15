@@ -8,6 +8,7 @@ import CameraScreen from '../pages/camera';
 import ProfileScreen from '../pages/profile';
 import MediaPage from '../pages/camera/MediaPage';
 import HomeFeed from '../pages/home';
+import CameraPermission from '../pages/camera/MediaPermissions';
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
@@ -23,7 +24,7 @@ const Screen = ({name}) => {
 export const HomeScreen = () => <Screen name="DogHome" />;
 export const DiscoverScreen = () => <Screen name="Discover" />;
 
-export const InboxScreen = () => <Screen name="Inbox" />;
+export const InboxScreen = () => <Screen name="Activity" />;
 
 export function TabStacks() {
   return (
@@ -39,7 +40,7 @@ export function TabStacks() {
             iconName = focused ? 'apple-safari' : 'apple-safari';
           } else if (route.name === 'Camera') {
             iconName = focused ? 'plus-box' : 'plus-box';
-          } else if (route.name === 'Inbox') {
+          } else if (route.name === 'Activity') {
             iconName = focused ? 'message-reply' : 'message-reply-outline';
           } else if (route.name === 'Profile') {
             iconName = focused ? 'account' : 'account-outline';
@@ -55,7 +56,7 @@ export function TabStacks() {
       <Tab.Screen name="Home" component={HomeFeed} />
       <Tab.Screen name="Discover" component={DiscoverScreen} />
       <Tab.Screen name="Camera" component={CameraScreen} />
-      <Tab.Screen name="Inbox" component={InboxScreen} />
+      <Tab.Screen name="Activity" component={InboxScreen} />
       <Tab.Screen name="Profile" component={ProfileScreen} />
     </Tab.Navigator>
   );

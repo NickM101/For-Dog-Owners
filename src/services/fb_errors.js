@@ -25,6 +25,8 @@ export const firebaseErrors = error => {
     case 'auth/invalid-id-token':
       toast.show('The provided ID has been revoked.');
       break;
+    case 'auth/no-current-user':
+      toast.show('No current user available.');
     case 'auth/invalid-email':
       toast.show('Provide email address is invalid.');
       break;

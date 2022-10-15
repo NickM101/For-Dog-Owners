@@ -8,14 +8,21 @@ import ProfileEdit from '../../components/profile/ProfileEdit';
 import ProfileTabs from '../../components/profile/ProfileTabs';
 import {useAuth} from '../../context/AuthContext';
 import IonIcon from 'react-native-vector-icons/Ionicons';
+import {useDispatch, useSelector} from 'react-redux';
+import {loggedInUser} from '../../features/user/userSlice';
+import {logOut} from '../../features/user/userAPI';
 
 const ProfileScreen = ({navigation}) => {
-  // TODO: get thumbnails for user and display
-  const {user, signOut} = useAuth();
-  
+  const dispatch = useDispatch();
+
+  const user = useSelector(loggedInUser);
+
   return (
     <Container>
-      <ProfilePicture photo={user.photoURL} username={user.displayName === null ? user.email : user.displayName}/>
+      <ProfilePicture
+        photo={user.photoURL}
+        username={user.isAnonymous ? 'Anonymous User' : user.email}
+      />
       <ProfileCount />
       <View className={'flex-row justify-center py-4'}>
         <TouchableOpacity
@@ -26,7 +33,7 @@ const ProfileScreen = ({navigation}) => {
           <Text className={'font-semibold text-black'}>Edit Profile</Text>
         </TouchableOpacity>
         <TouchableOpacity
-          onPress={() => signOut()}
+          onPress={() => dispatch(logOut())}
           className={
             'justify-center items-center h-10 w-10 rounded-sm border border-gray-300'
           }>

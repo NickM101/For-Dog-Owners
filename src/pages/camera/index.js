@@ -1,6 +1,20 @@
-import React, {useEffect, useState, useRef, useMemo, useCallback} from 'react';
+import React, {
+  useEffect,
+  useState,
+  useRef,
+  useMemo,
+  useCallback,
+  useLayoutEffect,
+} from 'react';
 import {useIsFocused} from '@react-navigation/native';
-import {View, Text, StyleSheet, Pressable} from 'react-native';
+import {
+  View,
+  Text,
+  StyleSheet,
+  Pressable,
+  PermissionsAndroid,
+  TouchableOpacity,
+} from 'react-native';
 import {
   PinchGestureHandler,
   TapGestureHandler,
@@ -29,6 +43,7 @@ import {
 } from '../../constants/camera';
 import {CaptureButton} from '../../components/camera/CaptureButton';
 import {StatusBarBlurBackground} from '../../components/camera/StatusBlurBar';
+import MediaPermissions from './MediaPermissions';
 
 const ReanimatedCamera = Reanimated.createAnimatedComponent(Camera);
 Reanimated.addWhitelistedNativeProps({
@@ -50,6 +65,57 @@ const CameraScreen = ({navigation}) => {
 
   const device = devices[cameraPosition];
   const supportsFlash = device?.hasFlash ?? false;
+
+  // ------------------ Permissions ------------------ //
+  // TODO: Add to redux then control splash screen
+  const [cameraPermission, setCameraPermission] = useState(false);
+  const [audioPermission, setAudioPermission] = useState(false);
+  const [galleryPermission, setGalleryPermission] = useState(false);
+
+  useEffect(() => {
+    async function checkPermissions() {
+      const camera = await PermissionsAndroid.check(
+        'android.permission.CAMERA',
+      );
+      setCameraPermission(camera);
+      const audio = await PermissionsAndroid.check(
+        'android.permission.RECORD_AUDIO',
+      );
+      setAudioPermission(audio);
+      const gallery = await PermissionsAndroid.check(
+        'android.permission.READ_EXTERNAL_STORAGE',
+      );
+      setGalleryPermission(gallery);
+    }
+
+    checkPermissions();
+  }, []);
+
+  const requestCameraPermission = useCallback(async () => {
+    const permission = await PermissionsAndroid.request(
+      'android.permission.CAMERA',
+    );
+    if (permission === 'denied') await Linking.openSettings();
+    setCameraPermission(permission === 'granted');
+  }, []);
+
+  const requestAudioPermission = useCallback(async () => {
+    const permission = await PermissionsAndroid.request(
+      'android.permission.RECORD_AUDIO',
+    );
+    if (permission === 'denied') await Linking.openSettings();
+    setAudioPermission(permission === 'granted');
+  }, []);
+
+  const requestGalleryPermission = useCallback(async () => {
+    const permission = await PermissionsAndroid.request(
+      'android.permission.READ_EXTERNAL_STORAGE',
+    );
+    if (permission === 'denied') await Linking.openSettings();
+    setGalleryPermission(permission === 'granted');
+  }, []);
+
+  // ------------------------------------------------- //
 
   // Camera Flipping
   const supportsCameraFlipping = useMemo(
@@ -94,6 +160,7 @@ const CameraScreen = ({navigation}) => {
   const onFlipCameraPressed = useCallback(() => {
     setCameraPosition(p => (p === 'back' ? 'front' : 'back'));
   }, []);
+
   const onFlashPressed = useCallback(() => {
     setFlash(f => (f === 'off' ? 'on' : 'off'));
   }, []);
@@ -146,6 +213,18 @@ const CameraScreen = ({navigation}) => {
 
   const isFocused = useIsFocused();
 
+  if ([cameraPermission, audioPermission, galleryPermission].includes(false)) {
+    return (
+      <MediaPermissions
+        cameraPermission={cameraPermission}
+        requestCameraPermission={requestCameraPermission}
+        audioPermission={audioPermission}
+        requestAudioPermission={requestAudioPermission}
+        galleryPermission={galleryPermission}
+        requestGalleryPermission={requestGalleryPermission}
+      />
+    );
+  }
   if (device == null)
     return (
       <View className={'flex-1 justify-center items-center'}>

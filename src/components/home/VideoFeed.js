@@ -20,11 +20,13 @@ import {Avatar} from 'react-native-paper';
 import MaterialIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import {handleLikes} from '../../services/posts';
 import {useAuth} from '../../context/AuthContext';
+import {useSelector} from 'react-redux';
+import {loggedInUser} from '../../features/user/userSlice';
 
 const VideoFeed = forwardRef((props, parentRef) => {
   const videoRef = useRef(null);
 
-  const {user} = useAuth();
+  const user = useSelector(loggedInUser);
 
   useImperativeHandle(parentRef, () => ({
     playFeed,
@@ -42,7 +44,7 @@ const VideoFeed = forwardRef((props, parentRef) => {
   const onPlayPausePress = () => {
     setPaused(!paused);
   };
-
+  console.log('posts', post);
   return (
     <View style={styles.container}>
       <TouchableWithoutFeedback style={{flex: 1}} onPress={onPlayPausePress}>
@@ -108,13 +110,13 @@ const VideoFeed = forwardRef((props, parentRef) => {
               color={'white'}
             />
             <Text className={'font-bold text-white'}>
-              {post?.commentsCount}
+              {post?.comments.length}
             </Text>
           </TouchableOpacity>
-          <TouchableOpacity className={'items-center py-1'}>
+          {/* <TouchableOpacity className={'items-center py-1'}>
             <MaterialIcons name="share" size={36} color={'white'} />
             <Text className={'font-bold text-white'}>1</Text>
-          </TouchableOpacity>
+          </TouchableOpacity> */}
         </View>
         <Text className={'text-white text-base'}>{`@ ${
           post.user?.username || ''
