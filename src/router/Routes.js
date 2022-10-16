@@ -1,4 +1,5 @@
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
+import CommentSection from '../components/home/CommentSection';
 import TextInput from '../layouts/TextInput';
 
 import AuthScreen from '../pages/auth';
@@ -10,6 +11,7 @@ import RegisterMenu from '../pages/auth/RegisterForm';
 
 import CameraScreen from '../pages/camera';
 import MediaPage from '../pages/camera/MediaPage';
+import HomeFeed from '../pages/home';
 import ProfileScreen from '../pages/profile';
 import EditProfile from '../pages/profile/edit';
 import EditField from '../pages/profile/edit/EditField';
@@ -30,10 +32,11 @@ export const AuthStack = () => {
   );
 };
 
-export const AppStack = () => {
+export const HomeStack = () => {
   return (
     <Stack.Navigator screenOptions={{headerShown: false}}>
-      <Stack.Screen name="Home" component={HomeScreen} />
+      <Stack.Screen name="Home" component={HomeFeed} />
+      <Stack.Screen name="CommentSection" component={CommentSection} />
     </Stack.Navigator>
   );
 };

@@ -2,7 +2,7 @@ import React from 'react';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import {Text, View} from 'react-native';
-import {CameraStack, ProfileStack} from './Routes';
+import {CameraStack, HomeStack, ProfileStack} from './Routes';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import CameraScreen from '../pages/camera';
 import ProfileScreen from '../pages/profile';
@@ -53,7 +53,7 @@ export function TabStacks() {
         tabBarActiveTintColor: 'tomato',
         tabBarInactiveTintColor: 'gray',
       })}>
-      <Tab.Screen name="Home" component={HomeFeed} />
+      <Tab.Screen name="Home" component={HomeStack} />
       <Tab.Screen name="Discover" component={DiscoverScreen} />
       <Tab.Screen name="Camera" component={CameraScreen} />
       <Tab.Screen name="Activity" component={InboxScreen} />

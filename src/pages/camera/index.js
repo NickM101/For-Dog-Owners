@@ -20,12 +20,7 @@ import {
   TapGestureHandler,
 } from 'react-native-gesture-handler';
 import {createThumbnail} from 'react-native-create-thumbnail';
-import {
-  Camera,
-  frameRateIncluded,
-  sortFormats,
-  useCameraDevices,
-} from 'react-native-vision-camera';
+import {Camera, useCameraDevices} from 'react-native-vision-camera';
 import MaterialIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 import IonIcon from 'react-native-vector-icons/Ionicons';
 import Container from '../../layouts/Container';
@@ -36,6 +31,7 @@ import Reanimated, {
   useAnimatedProps,
   useSharedValue,
 } from 'react-native-reanimated';
+
 import {
   CONTENT_SPACING,
   MAX_ZOOM_FACTOR,

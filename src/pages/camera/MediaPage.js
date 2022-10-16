@@ -95,6 +95,7 @@ const MediaPage = ({navigation, route}) => {
         .catch(() => console.error('Error saving'));
 
       setSavingState('saved');
+      navigation.goBack();
     } catch (e) {
       const message = e instanceof Error ? e.message : JSON.stringify(e);
       setSavingState('none');

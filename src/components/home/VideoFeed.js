@@ -1,62 +1,64 @@
-import React, {
-  forwardRef,
-  useImperativeHandle,
-  useRef,
-  useState,
-  useEffect,
-} from 'react';
-import Video from 'react-native-video';
+import React, {useRef, useState} from 'react';
 import {
+  Text,
+  View,
   Dimensions,
   StyleSheet,
-  View,
-  Text,
-  TouchableWithoutFeedback,
   TouchableOpacity,
+  TouchableWithoutFeedback,
 } from 'react-native';
-
+import Video from 'react-native-video';
 import {Avatar} from 'react-native-paper';
-
+import BottomSheet from '@gorhom/bottom-sheet';
 import MaterialIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import {handleLikes} from '../../services/posts';
-import {useAuth} from '../../context/AuthContext';
+import InViewPort from '@coffeebeanslabs/react-native-inviewport';
 import {useSelector} from 'react-redux';
-import {loggedInUser} from '../../features/user/userSlice';
 
-const VideoFeed = forwardRef((props, parentRef) => {
+import {loggedInUser} from '../../features/user/userSlice';
+import CommentSection from './CommentSection';
+import {useFocusEffect} from '@react-navigation/native';
+
+const VideoFeed = ({posts}) => {
   const videoRef = useRef(null);
+  const commentRef = useRef(null);
 
   const user = useSelector(loggedInUser);
 
-  useImperativeHandle(parentRef, () => ({
-    playFeed,
-    stopFeed,
-  }));
-
-  const [post, setPost] = useState(props.posts);
-
+  const [post, setPost] = useState(posts);
   const [paused, setPaused] = useState(true);
+  const [visible, setVisible] = useState(true);
 
-  const playFeed = () => setPaused(false);
+  const snapPoints = React.useMemo(() => ['1%', '60%'], []);
 
-  const stopFeed = () => setPaused(true);
+  useFocusEffect(
+    React.useCallback(() => {
+      return () => commentRef.current?.close();
+    }, []),
+  );
+
+  const openBottomSheet = () => commentRef.current.snapToIndex(1);
+  const closeBottomSheet = () => commentRef.current.close();
 
   const onPlayPausePress = () => {
     setPaused(!paused);
   };
-  console.log('posts', post);
+
   return (
-    <View style={styles.container}>
+    <InViewPort
+      style={styles.container}
+      onChange={isVisible => {
+        setVisible(isVisible);
+      }}>
       <TouchableWithoutFeedback style={{flex: 1}} onPress={onPlayPausePress}>
         <Video
           key={post.id}
           ref={videoRef}
-          source={{uri: post.mediaURL[1]}}
-          paused={paused}
+          source={post.videoURL}
+          paused={!paused === visible}
           resizeMode="cover"
           posterResizeMode="cover"
           allowsExternalPlayback={false}
-          // repeat={true}
+          repeat={true}
           controls={false}
           ignoreSilentSwitch={'obey'}
           playInBackground={false}
@@ -89,21 +91,17 @@ const VideoFeed = forwardRef((props, parentRef) => {
             </TouchableOpacity>
           </View>
           <TouchableOpacity
-            onPress={() => {
-              const currentLikedStatus = !post.likes_by_users.includes(user.id);
-              return handleLikes(post.id, currentLikedStatus);
-            }}
+            // onPress={() => {
+            //   const currentLikedStatus = !post.likes_by_users.includes(user.id);
+            //   return handleLikes(post.id, currentLikedStatus);
+            // }}
             className={'items-center py-1'}>
-            <MaterialIcons
-              name="cards-heart"
-              size={36}
-              color={post.likes_by_users.includes(user.id) ? 'red' : 'white'}
-            />
-            <Text className={'font-bold text-white'}>
-              {post?.likes_by_users.length}
-            </Text>
+            <MaterialIcons name="cards-heart" size={36} color={post.likes} />
+            <Text className={'font-bold text-white'}>{post?.likes}</Text>
           </TouchableOpacity>
-          <TouchableOpacity className={'items-center py-1'}>
+          <TouchableOpacity
+            className={'items-center py-1'}
+            onPress={openBottomSheet}>
             <MaterialIcons
               name="comment-processing"
               size={36}
@@ -113,19 +111,25 @@ const VideoFeed = forwardRef((props, parentRef) => {
               {post?.comments.length}
             </Text>
           </TouchableOpacity>
-          {/* <TouchableOpacity className={'items-center py-1'}>
-            <MaterialIcons name="share" size={36} color={'white'} />
-            <Text className={'font-bold text-white'}>1</Text>
-          </TouchableOpacity> */}
         </View>
         <Text className={'text-white text-base'}>{`@ ${
           post.user?.username || ''
         }`}</Text>
         <Text className={'text-white text-sm'}>{post.caption || ''}</Text>
       </View>
-    </View>
+
+      <BottomSheet
+        ref={commentRef}
+        index={-1}
+        snapPoints={snapPoints}
+        keyboardBehavior={'interactive'}
+        keyboardBlurBehavior={'restore'}
+        enablePanDownToClose={true}>
+        <CommentSection id={post.id} status={!paused === visible} />
+      </BottomSheet>
+    </InViewPort>
   );
-});
+};
 
 const styles = StyleSheet.create({
   container: {
