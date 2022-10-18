@@ -1,11 +1,4 @@
-import {
-  View,
-  Text,
-  FlatList,
-  Dimensions,
-  StyleSheet,
-  RefreshControl,
-} from 'react-native';
+import {View, Text, FlatList, Dimensions, StyleSheet} from 'react-native';
 import React, {useRef, useEffect, useCallback, useState} from 'react';
 import Container from '../../layouts/Container';
 import VideoFeed from '../../components/home/VideoFeed';
@@ -20,7 +13,7 @@ import {fetchPosts} from '../../features/posts/postAPI';
 import {useIsFocused} from '@react-navigation/native';
 import {feeds} from '../../constants/data';
 
-const HomeFeed = () => {
+const DiscoverFeed = () => {
   const mediaRefs = useRef(0);
 
   const dispatch = useDispatch();
@@ -52,12 +45,6 @@ const HomeFeed = () => {
             posts={item}
           />
         )}
-        refreshControl={
-          <RefreshControl
-            refreshing={loading}
-            onRefresh={() => dispatch(fetchPosts())}
-          />
-        }
         initialNumToRender={0}
         maxToRenderPerBatch={2}
         removeClippedSubviews={true}
@@ -72,7 +59,7 @@ const HomeFeed = () => {
   );
 };
 
-export default HomeFeed;
+export default DiscoverFeed;
 
 // const onViewableItemsChanged = useRef(({changed}) => {
 //   changed.forEach(element => {

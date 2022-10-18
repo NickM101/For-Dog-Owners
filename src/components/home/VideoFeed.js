@@ -1,4 +1,4 @@
-import React, {useRef, useState} from 'react';
+import React, {useRef, useState, useCallback} from 'react';
 import {
   Text,
   View,
@@ -12,21 +12,27 @@ import {Avatar} from 'react-native-paper';
 import BottomSheet from '@gorhom/bottom-sheet';
 import MaterialIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import InViewPort from '@coffeebeanslabs/react-native-inviewport';
-import {useSelector} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 
 import {loggedInUser} from '../../features/user/userSlice';
 import CommentSection from './CommentSection';
 import {useFocusEffect} from '@react-navigation/native';
+import {followUser, likeUpdate} from '../../features/posts/postSlice';
 
 const VideoFeed = ({posts}) => {
   const videoRef = useRef(null);
   const commentRef = useRef(null);
 
+  const dispatch = useDispatch();
   const user = useSelector(loggedInUser);
 
-  const [post, setPost] = useState(posts);
   const [paused, setPaused] = useState(true);
-  const [visible, setVisible] = useState(true);
+  const [visible, setVisible] = useState(false);
+  const [sheetIndex, setSheetIndex] = useState(-1);
+
+  const handleSheetChanges = useCallback(index => {
+    setSheetIndex(index);
+  }, []);
 
   const snapPoints = React.useMemo(() => ['1%', '60%'], []);
 
@@ -47,24 +53,26 @@ const VideoFeed = ({posts}) => {
     <InViewPort
       style={styles.container}
       onChange={isVisible => {
-        setVisible(isVisible);
+        setTimeout(() => {
+          setVisible(isVisible);
+        }, 2000);
       }}>
       <TouchableWithoutFeedback style={{flex: 1}} onPress={onPlayPausePress}>
         <Video
-          key={post.id}
+          key={posts.id}
           ref={videoRef}
-          source={post.videoURL}
+          source={{uri: posts?.mediaURL[1]}}
           paused={!paused === visible}
           resizeMode="cover"
           posterResizeMode="cover"
           allowsExternalPlayback={false}
-          repeat={true}
+          // repeat={true}
           controls={false}
           ignoreSilentSwitch={'obey'}
           playInBackground={false}
           style={styles.video}
           onError={err => console.log(err)}
-          // poster={{uri: post.mediaURL[1]}}
+          // poster={{uri: posts?.mediaURL[0]}}
           // Poster, posterResizeMode
         />
       </TouchableWithoutFeedback>
@@ -81,9 +89,17 @@ const VideoFeed = ({posts}) => {
             <TouchableOpacity
               className={
                 'justify-center border border-orange-400 items-center bg-slate-700 h-4 w-4 rounded-full absolute inset-y-11 inset-x-3'
-              }>
+              }
+              onPress={() => {
+                dispatch(
+                  followUser({
+                    followerId: posts.creator.id,
+                    userId: user.id,
+                  }),
+                );
+              }}>
               <MaterialIcons
-                name={'plus'}
+                name={posts.followed_status ? 'check' : 'plus'}
                 size={12}
                 className={'font-bold'}
                 color={'white'}
@@ -91,13 +107,25 @@ const VideoFeed = ({posts}) => {
             </TouchableOpacity>
           </View>
           <TouchableOpacity
-            // onPress={() => {
-            //   const currentLikedStatus = !post.likes_by_users.includes(user.id);
-            //   return handleLikes(post.id, currentLikedStatus);
-            // }}
+            onPress={() => {
+              const currentLikedStatus = posts.likes_by_users.includes(user.id);
+              return dispatch(
+                likeUpdate({
+                  postId: posts.id,
+                  userId: user.id,
+                  currentLikedStatus,
+                }),
+              );
+            }}
             className={'items-center py-1'}>
-            <MaterialIcons name="cards-heart" size={36} color={post.likes} />
-            <Text className={'font-bold text-white'}>{post?.likes}</Text>
+            <MaterialIcons
+              name="cards-heart"
+              size={36}
+              color={posts.likes_by_users.includes(user.id) ? 'red' : 'white'}
+            />
+            <Text className={'font-bold text-white'}>
+              {posts?.likes_by_users.length}
+            </Text>
           </TouchableOpacity>
           <TouchableOpacity
             className={'items-center py-1'}
@@ -108,14 +136,14 @@ const VideoFeed = ({posts}) => {
               color={'white'}
             />
             <Text className={'font-bold text-white'}>
-              {post?.comments.length}
+              {posts?.comments.length}
             </Text>
           </TouchableOpacity>
         </View>
         <Text className={'text-white text-base'}>{`@ ${
-          post.user?.username || ''
+          posts.user?.username || ''
         }`}</Text>
-        <Text className={'text-white text-sm'}>{post.caption || ''}</Text>
+        <Text className={'text-white text-sm'}>{posts.caption || ''}</Text>
       </View>
 
       <BottomSheet
@@ -124,8 +152,13 @@ const VideoFeed = ({posts}) => {
         snapPoints={snapPoints}
         keyboardBehavior={'interactive'}
         keyboardBlurBehavior={'restore'}
+        onChange={handleSheetChanges}
         enablePanDownToClose={true}>
-        <CommentSection id={post.id} status={!paused === visible} />
+        <CommentSection
+          id={posts.id}
+          status={!paused === visible}
+          sheetIndex={sheetIndex}
+        />
       </BottomSheet>
     </InViewPort>
   );

@@ -21,6 +21,8 @@ export const saveUserPost = (mediaURL, text) =>
     try {
       console.log('---- Beginning User Post Firestore ----');
       postCollection
+        .doc(userID)
+        .collection('personal')
         .add({
           mediaURL,
           creator: user,
@@ -58,17 +60,15 @@ export const getUserPosts = () =>
   new Promise(async (resolve, reject) => {
     try {
       await postCollection
-        .where('creator.id', '==', auth().currentUser.uid)
-        .orderBy('creation', 'desc')
+        .where('creator.id', '!=', auth().currentUser.uid)
+        // .orderBy('creation', 'desc')
         .onSnapshot(snapshot => {
           let posts = snapshot.docs.map(doc => {
             const data = doc.data();
-            data['creation'] = format(
-              fromUnixTime(data.creation),
-              'MM/dd/yyyy',
-            );
+            data['creation'] = '90999';
             const id = doc.id;
-            return {id, ...data};
+            const followed_status = false;
+            return {id, followed_status, ...data};
           });
           return resolve(posts);
         });

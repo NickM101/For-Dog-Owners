@@ -1,9 +1,9 @@
-import { View, Text } from 'react-native'
-import React from 'react'
+import {View, Text} from 'react-native';
+import React from 'react';
 
 const ProfileCount = () => {
   return (
-    <View className={'flex-row justify-evenly'}>
+    <View className={'flex-row justify-around'}>
       <View />
       <View className={'items-center'}>
         <Text className={'font-bold text-black'}>3</Text>
@@ -13,13 +13,9 @@ const ProfileCount = () => {
         <Text className={'font-bold text-black'}>3</Text>
         <Text>Followers</Text>
       </View>
-      <View className={'items-center '}>
-        <Text className={'font-bold text-black'}>3</Text>
-        <Text>Like</Text>
-      </View>
       <View />
     </View>
   );
-}
+};
 
-export default ProfileCount
+export default ProfileCount;

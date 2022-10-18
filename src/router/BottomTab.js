@@ -9,6 +9,7 @@ import ProfileScreen from '../pages/profile';
 import MediaPage from '../pages/camera/MediaPage';
 import HomeFeed from '../pages/home';
 import CameraPermission from '../pages/camera/MediaPermissions';
+import DiscoverFeed from '../pages/discover';
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
@@ -54,7 +55,7 @@ export function TabStacks() {
         tabBarInactiveTintColor: 'gray',
       })}>
       <Tab.Screen name="Home" component={HomeStack} />
-      <Tab.Screen name="Discover" component={DiscoverScreen} />
+      <Tab.Screen name="Discover" component={DiscoverFeed} />
       <Tab.Screen name="Camera" component={CameraScreen} />
       <Tab.Screen name="Activity" component={InboxScreen} />
       <Tab.Screen name="Profile" component={ProfileScreen} />
