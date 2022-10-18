@@ -1,7 +1,9 @@
-import {FlatList, Image, View, Text} from 'react-native';
-import Container from '../../../layouts/Container';
 import React, {useEffect, useState} from 'react';
-import {FBGetUserPosts} from '../../../services/posts';
+import {FlatList, Image, View, Text} from 'react-native';
+import {Button} from 'react-native-paper';
+import MaterialIcon from 'react-native-vector-icons/MaterialCommunityIcons';
+
+import Container from '@layouts/Container';
 
 export const UserVideos = () => {
   const [posts, setPosts] = useState([]);
@@ -31,13 +33,17 @@ export const UserVideos = () => {
         }}
         ListEmptyComponent={
           <Container className="px-6 justify-center items-center">
-            <Text className={'font-semibold text-black'}>
-              Your private videos
+            <MaterialIcon
+              name={'image-multiple-outline'}
+              size={45}
+              color={'light-grey'}
+            />
+            <Text className={'m-2 font-semibold text-black'}>
+              Share a throwback video
             </Text>
-            <Text className={'text-center'}>
-              To make your videos only visible to you, set them to 'Private' in
-              settings.
-            </Text>
+            <Button className={'m-2 rounded'} mode="contained">
+              Upload
+            </Button>
           </Container>
         }
       />

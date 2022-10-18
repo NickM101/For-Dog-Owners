@@ -1,19 +1,18 @@
 import React, {useState, useLayoutEffect} from 'react';
 import {View, Text} from 'react-native';
 import {TextInput, Button} from 'react-native-paper';
-import Container from '../../layouts/Container';
 import MaterialIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {useForm, Controller} from 'react-hook-form';
-
-import InputText from '../../layouts/TextInput';
 import {useDispatch, useSelector} from 'react-redux';
-import {registerUser} from '../../features/user/userAPI';
+
+import Container from '@layouts/Container';
+import InputText from '@layouts/TextInput';
+import {registerUser} from '@features/user/userActions';
 
 const RegisterMenu = ({navigation}) => {
   const [secureText, setSecureText] = useState(true);
 
-  // const loading = useSelector(state => state);
-  const loading = false;
+  const loading = useSelector(state => state.user.loading);
 
   const dispatch = useDispatch();
 
@@ -45,6 +44,7 @@ const RegisterMenu = ({navigation}) => {
     defaultValues: {
       email: '',
       password: '',
+      username: '',
     },
   });
 
@@ -55,6 +55,26 @@ const RegisterMenu = ({navigation}) => {
   return (
     <Container>
       <View className="">
+        <Controller
+          control={control}
+          rules={{
+            required: true,
+          }}
+          render={({field: {onChange, onBlur, value}}) => (
+            <InputText
+              className={'mx-3 my-1'}
+              mode="outlined"
+              label="Username"
+              placeholder="Type something"
+              value={value}
+              onChangeText={onChange}
+              onBlur={onBlur}
+              error={errors.username}
+              message={errors.username && 'Username is required.'}
+            />
+          )}
+          name="username"
+        />
         <Controller
           control={control}
           rules={{

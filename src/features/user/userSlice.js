@@ -1,9 +1,16 @@
 import {createSlice} from '@reduxjs/toolkit';
-import {anonymousLogIn, loginUser, logOut, registerUser} from './userAPI';
+import {
+  anonymousLogIn,
+  fetchUserDetails,
+  loginUser,
+  logOut,
+  registerUser,
+  updateUserProfile,
+} from './userActions';
 
 const initialState = {
   loading: false,
-  isAnonymous: true,
+  updateStatus: false,
   user: null,
   error: null,
 };
@@ -21,7 +28,6 @@ const userSlice = createSlice({
       .addCase(loginUser.fulfilled, (state, {payload}) => {
         state.loading = false;
         state.user = payload;
-        state.isAnonymous = payload.isAnonymous;
       })
       .addCase(loginUser.rejected, (state, {payload}) => {
         state.loading = false;
@@ -46,21 +52,29 @@ const userSlice = createSlice({
       .addCase(anonymousLogIn.fulfilled, (state, {payload}) => {
         state.loading = false;
         state.user = payload;
-        state.isAnonymous = payload.isAnonymous;
       })
       .addCase(anonymousLogIn.rejected, (state, action) => {
         state.loading = false;
         state.error = action.error;
       })
+      .addCase(fetchUserDetails.fulfilled, (state, action) => {
+        state.user = action.payload;
+      })
+      .addCase(updateUserProfile.pending, state => {
+        state.updateStatus = true;
+      })
+      .addCase(updateUserProfile.fulfilled, state => {
+        state.updateStatus = false;
+      })
       .addCase(logOut.fulfilled, state => {
         state.user = null;
         state.loading = null;
         state.error = null;
-        state.isAnonymous = true;
       });
   },
 });
 
 export const loggedInUser = state => state.user.user;
+export const userStatus = state => state.user;
 
 export default userSlice.reducer;

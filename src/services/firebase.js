@@ -6,10 +6,10 @@ import {v4 as uuidv4} from 'uuid';
 
 export const saveMediaStorage = (media, path, metadata) =>
   new Promise(async (resolve, reject) => {
-    const channelId = await notifee.createChannel({
-      id: 'in-app',
-      name: 'In-App Notification',
-    });
+    // const channelId = await notifee.createChannel({
+    //   id: 'in-app',
+    //   name: 'In-App Notification',
+    // });
     const pathToTake =
       path === 'post'
         ? `post/${auth().currentUser.uid}/${uuidv4()}`

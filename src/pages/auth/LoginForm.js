@@ -1,12 +1,12 @@
 import React, {useState, useLayoutEffect} from 'react';
 import {View, Text} from 'react-native';
-import {Button, IconButton, TextInput} from 'react-native-paper';
-import Container from '../../layouts/Container';
-import {useAuth} from '../../context/AuthContext';
+import {Button, TextInput} from 'react-native-paper';
 import {useForm, Controller} from 'react-hook-form';
-import InputText from '../../layouts/TextInput';
-import {anonymousLogIn, loginUser} from '../../features/user/userAPI';
 import {useDispatch, useSelector} from 'react-redux';
+
+import Container from '@layouts/Container';
+import InputText from '@layouts/TextInput';
+import {anonymousLogIn, loginUser} from '@features/user/userActions';
 
 const LoginForm = ({navigation}) => {
   const dispatch = useDispatch();

@@ -1,16 +1,15 @@
+import React from 'react';
 import {View, Text, TouchableOpacity} from 'react-native';
-import React, {useEffect, useState} from 'react';
-import Container from '../../layouts/Container';
-import ProfileHeader from '../../layouts/Header';
-import ProfilePicture from '../../components/profile/ProfilePicture';
-import ProfileCount from '../../components/profile/ProfileCount';
-import ProfileEdit from '../../components/profile/ProfileEdit';
-import ProfileTabs from '../../components/profile/ProfileTabs';
-import {useAuth} from '../../context/AuthContext';
-import IonIcon from 'react-native-vector-icons/Ionicons';
 import {useDispatch, useSelector} from 'react-redux';
-import {loggedInUser} from '../../features/user/userSlice';
-import {logOut} from '../../features/user/userAPI';
+import IonIcon from 'react-native-vector-icons/Ionicons';
+
+import Container from '@layouts/Container';
+import ProfilePicture from '@components/profile/ProfilePicture';
+import ProfileCount from '@components/profile/ProfileCount';
+import ProfileTabs from '@components/profile/ProfileTabs';
+
+import {loggedInUser} from '@features/user/userSlice';
+import {logOut} from '@features/user/userActions';
 
 const ProfileScreen = ({navigation}) => {
   const dispatch = useDispatch();
@@ -20,18 +19,24 @@ const ProfileScreen = ({navigation}) => {
   return (
     <Container>
       <ProfilePicture
-        photo={user.photoURL}
-        username={user.isAnonymous ? 'Anonymous User' : user.email}
+        photo={user.imageURL}
+        username={user.isAnonymous ? 'username' : `@${user.username}`}
       />
-      <ProfileCount />
+      <ProfileCount
+        following={user.following}
+        followers={user.followers}
+        likes={0}
+      />
       <View className={'flex-row justify-center py-4'}>
-        <TouchableOpacity
-          onPress={() => navigation.navigate('ProfileEdit')}
-          className={
-            'justify-center items-center h-10 px-3 mx-1 rounded-sm border border-gray-300'
-          }>
-          <Text className={'font-semibold text-black'}>Edit Profile</Text>
-        </TouchableOpacity>
+        {!user.isAnonymous && (
+          <TouchableOpacity
+            onPress={() => navigation.navigate('ProfileEdit')}
+            className={
+              'justify-center items-center h-10 px-3 mx-1 rounded-sm border border-gray-300'
+            }>
+            <Text className={'font-semibold text-black'}>Edit Profile</Text>
+          </TouchableOpacity>
+        )}
         <TouchableOpacity
           onPress={() => dispatch(logOut())}
           className={
@@ -41,8 +46,14 @@ const ProfileScreen = ({navigation}) => {
         </TouchableOpacity>
       </View>
       <View className={'h-5 justify-center items-center'}>
-        <TouchableOpacity>
-          <Text>Tap to add bio</Text>
+        <TouchableOpacity
+          onPress={() =>
+            navigation.navigate('ProfileEdit', {
+              screen: 'EditField',
+              params: {title: 'Biography', value: user?.bio, field: 'bio'},
+            })
+          }>
+          <Text className={'bg-slate-300'}>Tap to add bio</Text>
         </TouchableOpacity>
       </View>
       <ProfileTabs />

@@ -23,11 +23,11 @@ import {persistor, store} from './features/store';
 import LoginForm from './pages/auth/LoginForm';
 import {PersistGate} from 'redux-persist/integration/react';
 
-auth().useEmulator('http://192.168.0.103:9099');
-firestore().useEmulator('192.168.0.103', 8085);
-database().useEmulator('192.168.0.103', 9000);
-storage().useEmulator('192.168.0.103', 9199);
-functions().useEmulator('192.168.0.103', 5002);
+auth().useEmulator('http://10.0.2.2:9099');
+firestore().useEmulator('10.0.2.2', 8085);
+database().useEmulator('10.0.2.2', 9000);
+storage().useEmulator('10.0.2.2', 9199);
+functions().useEmulator('10.0.2.2', 5002);
 
 const theme = {
   colors: {

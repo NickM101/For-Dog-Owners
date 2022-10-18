@@ -1,28 +1,27 @@
-import {StyleSheet, Text, View} from 'react-native';
 import React from 'react';
-import Container from '../../../layouts/Container';
 import {Button, TextInput} from 'react-native-paper';
-import Header from '../../../layouts/Header';
-import {saveUserField} from '../../../services/user';
-import {firebaseErrors} from '../../../services/fb_errors';
-import { useAuth } from '../../../context/AuthContext';
+import {useDispatch, useSelector} from 'react-redux';
+
+import Container from '@layouts/Container';
+import Header from '@layouts/Header';
+
+import {updateUserProfile} from '@features/user/userActions';
+import {userStatus} from '@features/user/userSlice';
+import {fetchUserDetails} from '@features/user/userActions';
 
 const EditField = ({navigation, route}) => {
-  const {title, value, field} = route.params;
+  const {title, value, field, type} = route.params;
+
+  const dispatch = useDispatch();
+  const {updateStatus} = useSelector(userStatus);
+
   const [text, setText] = React.useState(value);
-  const { loading, updateProfile } = useAuth()
 
   const onSave = () => {
-    setLoading(true);
-    saveUserField(field, text)
-      .then(() => {
-        setLoading(false);
-        navigation.goBack();
-      })
-      .catch(error => {
-        setLoading(false);
-        firebaseErrors(error.code);
-      });
+    Promise.all([
+      dispatch(updateUserProfile({field, text})),
+      dispatch(fetchUserDetails()),
+    ]).then(navigation.goBack());
   };
 
   return (
@@ -34,12 +33,14 @@ const EditField = ({navigation, route}) => {
         label={title}
         value={text}
         onChangeText={text => setText(text)}
+        keyboardType={type}
       />
       <Button
         mode="contained"
-        onPress={() => updateProfile(field, text)}
+        disabled={updateStatus}
+        onPress={onSave}
         className={'m-3 rounded-sm'}>
-        {loading ? 'Updating' : 'Update'} {`${title}`}
+        {updateStatus ? 'Updating' : 'Update'} {`${title}`}
       </Button>
     </Container>
   );

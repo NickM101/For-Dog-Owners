@@ -1,38 +1,40 @@
 import React from 'react';
-import Container from '../../../layouts/Container';
 import {Avatar} from 'react-native-paper';
-import auth from '@react-native-firebase/auth';
-import ProfileHeader from '../../../layouts/Header';
-import UserDetail from '../../../components/profile/UserDetail';
 import {TouchableOpacity, View} from 'react-native';
-import MaterialIcon from 'react-native-vector-icons/MaterialCommunityIcons';
-import {launchImageLibrary} from 'react-native-image-picker';
 import {useToast} from 'react-native-toast-notifications';
-import { saveProfileImage } from '../../../services/user';
-import { useAuth } from '../../../context/AuthContext';
-import { saveMediaStorage } from '../../../services/firebase';
-import { firebaseErrors } from '../../../services/fb_errors';
+import {launchImageLibrary} from 'react-native-image-picker';
+import MaterialIcon from 'react-native-vector-icons/MaterialCommunityIcons';
+import {useDispatch, useSelector} from 'react-redux';
+
+import Container from '@layouts/Container';
+import ProfileHeader from '@layouts/Header';
+import UserDetail from '@components/profile/UserDetail';
+
+import {loggedInUser} from '@features/user/userSlice';
+import {uploadProfilePhoto} from '@features/user/userActions';
+import {fetchUserDetails} from '../../../features/user/userActions';
 
 const EditProfile = ({navigation}) => {
-  const {user, updateProfile} = useAuth();
   const toast = useToast();
+  const dispatch = useDispatch();
+
+  const user = useSelector(loggedInUser);
 
   const fetchPhotos = async () => {
     await launchImageLibrary({mediaType: 'photo'})
-      .then(res => {
+      .then(async res => {
         if (res.didCancel) {
           toast.show('User cancelled image picker');
         } else if (res.error) {
-          toast.show('Error picking Image')
+          toast.show('Error picking Image');
           console.log('ImagePicker Error: ', res.error);
         } else {
           let source = res.assets[0].uri;
 
-          saveMediaStorage(source, `profileImage/${auth().currentUser.uid}`).then(uri => {
-            if(uri){
-              updateProfile('photoURL', uri)
-            }
-          }).catch(error => firebaseErrors(error.code))
+          Promise.all([
+            dispatch(uploadProfilePhoto(source)),
+            dispatch(fetchUserDetails()),
+          ]);
         }
       })
       .catch(error => console.error('Error', error));
@@ -46,7 +48,7 @@ const EditProfile = ({navigation}) => {
           style={{alignSelf: 'center', margin: 20}}
           size={120}
           source={{
-            uri: user.photoURL,
+            uri: user.imageURL,
           }}
         />
         <View
@@ -56,27 +58,30 @@ const EditProfile = ({navigation}) => {
           <MaterialIcon name="plus" size={24} color={'orange'} />
         </View>
       </TouchableOpacity>
-      <UserDetail
-        title={'Display Name'}
-        value={user.displayName}
-        field={'displayName'}
-      />
+      <UserDetail title={'Username'} value={user.username} field={'username'} />
       <UserDetail
         title={"Pet's Name"}
         value={user?.petsName}
         field={'petsName'}
       />
-      <UserDetail title={"Pet's Age"} value={user?.petsAge} field={'petsAge'} />
+      <UserDetail
+        title={"Pet's Age"}
+        value={user?.petsAge}
+        field={'petsAge'}
+        type={'number-pad'}
+      />
       <UserDetail
         title={'Email Address'}
         value={user.email}
         field={'email'}
         disabled={true}
+        type={'email-address'}
       />
       <UserDetail
         title={'Phone Number'}
         value={user.phoneNumber}
         field={'phoneNumber'}
+        type={'phone-pad'}
       />
     </Container>
   );

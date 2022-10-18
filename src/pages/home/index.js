@@ -1,3 +1,4 @@
+import React, {useEffect} from 'react';
 import {
   View,
   Text,
@@ -6,37 +7,30 @@ import {
   StyleSheet,
   RefreshControl,
 } from 'react-native';
-import React, {useRef, useEffect, useCallback, useState} from 'react';
-import Container from '../../layouts/Container';
-import VideoFeed from '../../components/home/VideoFeed';
-import firestore from '@react-native-firebase/firestore';
-import auth from '@react-native-firebase/auth';
 import {useDispatch, useSelector} from 'react-redux';
-import BottomSheet, {
-  BottomSheetFooter,
-  BottomSheetTextInput,
-} from '@gorhom/bottom-sheet';
-import {fetchPosts} from '../../features/posts/postAPI';
-import {useIsFocused} from '@react-navigation/native';
-import {feeds} from '../../constants/data';
+
+import {fetchPosts} from '@features/posts/postAPI';
+
+import Container from '@layouts/Container';
+import VideoFeed from '@components/home/VideoFeed';
+import {ActivityIndicator} from 'react-native-paper';
+import NewFeeds from '../../components/pages/NewFeeds';
 
 const HomeFeed = () => {
-  const mediaRefs = useRef(0);
-
   const dispatch = useDispatch();
 
   const {loading, posts} = useSelector(state => state.posts);
-
-  const isFocused = useIsFocused();
 
   useEffect(() => {
     dispatch(fetchPosts());
   }, []);
 
+  const _renderItem = ({item, index}) => <VideoFeed posts={item} />;
+
   if (loading) {
     return (
-      <View className={'flex bg-slate-400 justify-center items-center'}>
-        <Text>Loading...</Text>
+      <View className={'justify-center items-center bg-slate-400'}>
+        <Text className={' text-white'}>Loading...</Text>
       </View>
     );
   }
@@ -46,18 +40,7 @@ const HomeFeed = () => {
       <FlatList
         keyExtractor={item => item.id}
         data={posts}
-        renderItem={({item, index}) => (
-          <VideoFeed
-            // ref={FeedSingleRef => (mediaRefs.current[item] = FeedSingleRef)}
-            posts={item}
-          />
-        )}
-        refreshControl={
-          <RefreshControl
-            refreshing={loading}
-            onRefresh={() => dispatch(fetchPosts())}
-          />
-        }
+        renderItem={_renderItem}
         initialNumToRender={0}
         maxToRenderPerBatch={2}
         removeClippedSubviews={true}
@@ -67,6 +50,14 @@ const HomeFeed = () => {
         snapToInterval={Dimensions.get('window').height - 70}
         snapToAlignment={'start'}
         decelerationRate={'fast'}
+        contentContainerStyle={{flexGrow: 1}}
+        ListEmptyComponent={NewFeeds}
+        refreshControl={
+          <RefreshControl
+            refreshing={loading}
+            onRefresh={() => dispatch(fetchPosts())}
+          />
+        }
       />
     </Container>
   );

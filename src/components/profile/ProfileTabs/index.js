@@ -1,19 +1,17 @@
 import React from 'react';
-import {TabView, TabBar, SceneMap} from 'react-native-tab-view';
 import {useWindowDimensions} from 'react-native';
+import {TabView, TabBar, SceneMap} from 'react-native-tab-view';
 import MaterialIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
 import {FavoriteVideo} from './FavoriteVideos';
-import {PrivateVideo} from './PrivateVideos';
 import {UserVideos} from './UserVideos';
 
 const renderScene = SceneMap({
   first: UserVideos,
-  second: PrivateVideo,
-  third: FavoriteVideo,
+  second: FavoriteVideo,
 });
 
-const ProfileTabs = ({data}) => {
+const ProfileTabs = () => {
   const layout = useWindowDimensions();
 
   const [index, setIndex] = React.useState(0);
@@ -24,16 +22,11 @@ const ProfileTabs = ({data}) => {
     },
     {
       key: 'second',
-      icon: 'lock-outline',
-    },
-    {
-      key: 'third',
       icon: 'heart-cog-outline',
     },
   ]);
 
   const renderIcon = ({route, focused}) => {
-    console.info(route);
     let iconColor = focused ? '#6d578b' : '#c2c3c8';
     return <MaterialIcons name={route.icon} size={23} color={iconColor} />;
   };
