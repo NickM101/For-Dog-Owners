@@ -6,14 +6,14 @@ import Container from '@layouts/Container';
 import Header from '@layouts/Header';
 
 import {updateUserProfile} from '@features/user/userActions';
-import {userStatus} from '@features/user/userSlice';
+import {userInfo} from '@features/user/userSlice';
 import {fetchUserDetails} from '@features/user/userActions';
 
 const EditField = ({navigation, route}) => {
   const {title, value, field, type} = route.params;
 
   const dispatch = useDispatch();
-  const {updateStatus} = useSelector(userStatus);
+  const {updateStatus} = useSelector(userInfo);
 
   const [text, setText] = React.useState(value);
 

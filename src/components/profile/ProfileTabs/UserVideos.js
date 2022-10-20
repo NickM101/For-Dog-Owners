@@ -2,12 +2,23 @@ import React, {useEffect, useState} from 'react';
 import {FlatList, Image, View, Text} from 'react-native';
 import {Button} from 'react-native-paper';
 import MaterialIcon from 'react-native-vector-icons/MaterialCommunityIcons';
+import {useDispatch, useSelector} from 'react-redux';
 
 import Container from '@layouts/Container';
 
-export const UserVideos = () => {
-  const [posts, setPosts] = useState([]);
+import {fetchUserPosts} from '@features/user/userActions';
+import {userInfo} from '@features/user/userSlice';
 
+export const UserVideos = () => {
+  const dispatch = useDispatch();
+
+  const {posts, postLoading} = useSelector(userInfo);
+
+  useEffect(() => {
+    dispatch(fetchUserPosts());
+  }, []);
+
+  console.log('response posts user', posts);
   return (
     <Container className="">
       <FlatList

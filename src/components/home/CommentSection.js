@@ -1,20 +1,22 @@
 import {View, Text, TouchableOpacity} from 'react-native';
-import React, {useCallback, useEffect, useState} from 'react';
-import Container from '../../layouts/Container';
+import React, {useEffect, useState} from 'react';
+import {useDispatch, useSelector} from 'react-redux';
+import database from '@react-native-firebase/database';
 import {ActivityIndicator, Avatar} from 'react-native-paper';
-import InputText from '../../layouts/TextInput';
-import Header from '../../layouts/Header';
+import {useToast} from 'react-native-toast-notifications';
 import {BottomSheetFlatList, BottomSheetTextInput} from '@gorhom/bottom-sheet';
 import CommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import {useToast} from 'react-native-toast-notifications';
-import {postComment} from '../../services/comments';
-import {useSelector} from 'react-redux';
-import {loggedInUser} from '../../features/user/userSlice';
-import database from '@react-native-firebase/database';
-import {Item} from 'react-native-paper/lib/typescript/components/List/List';
+
+import Container from '@layouts/Container';
+import Header from '@layouts/Header';
+
+import {postComment} from '@services/comments';
+import {loggedInUser} from '@features/user/userSlice';
+import {addComment} from '@features/posts/postSlice';
 
 const CommentSection = ({navigation, id, sheetIndex}) => {
   const toast = useToast();
+  const dispatch = useDispatch();
   const user = useSelector(loggedInUser);
 
   const [comments, setComments] = useState([]);
@@ -58,6 +60,7 @@ const CommentSection = ({navigation, id, sheetIndex}) => {
         },
         comment,
       };
+      dispatch(addComment(id));
       return postComment(data).then(() => setComment(''));
     }
   };

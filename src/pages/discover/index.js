@@ -1,30 +1,24 @@
-import {View, Text, FlatList, Dimensions, StyleSheet} from 'react-native';
-import React, {useRef, useEffect, useCallback, useState} from 'react';
-import Container from '../../layouts/Container';
-import VideoFeed from '../../components/home/VideoFeed';
-import firestore from '@react-native-firebase/firestore';
-import auth from '@react-native-firebase/auth';
+import React, {useEffect} from 'react';
 import {useDispatch, useSelector} from 'react-redux';
-import BottomSheet, {
-  BottomSheetFooter,
-  BottomSheetTextInput,
-} from '@gorhom/bottom-sheet';
-import {fetchPosts} from '../../features/posts/postAPI';
-import {useIsFocused} from '@react-navigation/native';
-import {feeds} from '../../constants/data';
+import {View, Text, FlatList, Dimensions, RefreshControl} from 'react-native';
+
+import Container from '@layouts/Container';
+import VideoFeed from '@components/home/VideoFeed';
+
+import {fetchDiscover} from '@features/discover/discoverAPI';
 
 const DiscoverFeed = () => {
-  const mediaRefs = useRef(0);
-
   const dispatch = useDispatch();
 
-  const {loading, posts} = useSelector(state => state.posts);
-
-  const isFocused = useIsFocused();
+  const {loading, discover} = useSelector(state => state.discover);
 
   useEffect(() => {
-    dispatch(fetchPosts());
+    dispatch(fetchDiscover());
   }, []);
+
+  console.log('discover', discover);
+
+  const _renderItem = ({item, index}) => <VideoFeed posts={item} />;
 
   if (loading) {
     return (
@@ -38,13 +32,8 @@ const DiscoverFeed = () => {
     <Container className={'p-0'}>
       <FlatList
         keyExtractor={item => item.id}
-        data={posts}
-        renderItem={({item, index}) => (
-          <VideoFeed
-            // ref={FeedSingleRef => (mediaRefs.current[item] = FeedSingleRef)}
-            posts={item}
-          />
-        )}
+        data={discover}
+        renderItem={_renderItem}
         initialNumToRender={0}
         maxToRenderPerBatch={2}
         removeClippedSubviews={true}
@@ -54,26 +43,16 @@ const DiscoverFeed = () => {
         snapToInterval={Dimensions.get('window').height - 70}
         snapToAlignment={'start'}
         decelerationRate={'fast'}
+        contentContainerStyle={{flexGrow: 1}}
+        refreshControl={
+          <RefreshControl
+            refreshing={loading}
+            onRefresh={() => dispatch(fetchDiscover())}
+          />
+        }
       />
     </Container>
   );
 };
 
 export default DiscoverFeed;
-
-// const onViewableItemsChanged = useRef(({changed}) => {
-//   changed.forEach(element => {
-//     const cell = (mediaRefs.current = element.key);
-//     console.log(cell);
-//     if (cell) {
-//       console.log('isViewable', element.isViewable);
-//       if (element.isViewable) {
-//         console.log('-------------Play Video-----------');
-//         cell.playFeed();
-//       } else {
-//         console.log('------------ Pause Video ------------');
-//         cell.stopFeed();
-//       }
-//     }
-//   });
-// });

@@ -1,20 +1,12 @@
 import React, {useEffect} from 'react';
-import {
-  View,
-  Text,
-  FlatList,
-  Dimensions,
-  StyleSheet,
-  RefreshControl,
-} from 'react-native';
+import {View, Text, FlatList, Dimensions, RefreshControl} from 'react-native';
 import {useDispatch, useSelector} from 'react-redux';
 
 import {fetchPosts} from '@features/posts/postAPI';
 
 import Container from '@layouts/Container';
 import VideoFeed from '@components/home/VideoFeed';
-import {ActivityIndicator} from 'react-native-paper';
-import NewFeeds from '../../components/pages/NewFeeds';
+import NewFeeds from '@components/pages/NewFeeds';
 
 const HomeFeed = () => {
   const dispatch = useDispatch();

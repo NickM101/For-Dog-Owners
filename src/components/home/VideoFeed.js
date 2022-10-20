@@ -53,9 +53,7 @@ const VideoFeed = ({posts}) => {
     <InViewPort
       style={styles.container}
       onChange={isVisible => {
-        setTimeout(() => {
-          setVisible(isVisible);
-        }, 2000);
+        setVisible(isVisible);
       }}>
       <TouchableWithoutFeedback style={{flex: 1}} onPress={onPlayPausePress}>
         <Video
@@ -73,7 +71,6 @@ const VideoFeed = ({posts}) => {
           style={styles.video}
           onError={err => console.log(err)}
           // poster={{uri: posts?.mediaURL[0]}}
-          // Poster, posterResizeMode
         />
       </TouchableWithoutFeedback>
       <View style={styles.description}>
@@ -86,25 +83,27 @@ const VideoFeed = ({posts}) => {
                 source={require('../../assets/images/petbox.png')}
               />
             </TouchableOpacity>
-            <TouchableOpacity
-              className={
-                'justify-center border border-orange-400 items-center bg-slate-700 h-4 w-4 rounded-full absolute inset-y-11 inset-x-3'
-              }
-              onPress={() => {
-                dispatch(
-                  followUser({
-                    followerId: posts.creator.id,
-                    userId: user.id,
-                  }),
-                );
-              }}>
-              <MaterialIcons
-                name={posts.followed_status ? 'check' : 'plus'}
-                size={12}
-                className={'font-bold'}
-                color={'white'}
-              />
-            </TouchableOpacity>
+            {!posts.followed_status && (
+              <TouchableOpacity
+                className={
+                  'justify-center border border-orange-400 items-center bg-slate-700 h-4 w-4 rounded-full absolute inset-y-11 inset-x-3'
+                }
+                onPress={() => {
+                  dispatch(
+                    followUser({
+                      followerId: posts.creator.id,
+                      userId: user.id,
+                    }),
+                  );
+                }}>
+                <MaterialIcons
+                  name={'plus'}
+                  size={12}
+                  className={'font-bold'}
+                  color={'white'}
+                />
+              </TouchableOpacity>
+            )}
           </View>
           <TouchableOpacity
             onPress={() => {

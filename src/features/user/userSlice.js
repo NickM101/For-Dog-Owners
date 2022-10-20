@@ -2,6 +2,7 @@ import {createSlice} from '@reduxjs/toolkit';
 import {
   anonymousLogIn,
   fetchUserDetails,
+  fetchUserPosts,
   loginUser,
   logOut,
   registerUser,
@@ -13,6 +14,8 @@ const initialState = {
   updateStatus: false,
   user: null,
   error: null,
+  postLoading: false,
+  posts: [],
 };
 
 const userSlice = createSlice({
@@ -66,6 +69,13 @@ const userSlice = createSlice({
       .addCase(updateUserProfile.fulfilled, state => {
         state.updateStatus = false;
       })
+      .addCase(fetchUserPosts.pending, (state, action) => {
+        state.postLoading = true;
+      })
+      .addCase(fetchUserPosts.fulfilled, (state, action) => {
+        state.postLoading = false;
+        state.posts = action.payload;
+      })
       .addCase(logOut.fulfilled, state => {
         state.user = null;
         state.loading = null;
@@ -75,6 +85,6 @@ const userSlice = createSlice({
 });
 
 export const loggedInUser = state => state.user.user;
-export const userStatus = state => state.user;
+export const userInfo = state => state.user;
 
 export default userSlice.reducer;

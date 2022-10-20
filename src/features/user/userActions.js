@@ -56,6 +56,8 @@ export const loginUser = createAsyncThunk(
 
       return response.data();
     } catch (error) {
+      console.log('error login', error);
+      firebaseErrors(error.code);
       rejectWithValue(error);
     }
   },
@@ -87,6 +89,27 @@ export const fetchUserDetails = createAsyncThunk('user/fetching', async () => {
       .doc(auth().currentUser.uid)
       .get();
     return response.data();
+  } catch (error) {
+    firebaseErrors(error.code);
+  }
+});
+
+export const fetchUserPosts = createAsyncThunk('user/posts', async () => {
+  try {
+    const response = await firestore()
+      .collectionGroup('personal')
+      .where('creator.id', '==', auth().currentUser.uid)
+      .orderBy('creation', 'desc')
+      .get();
+
+    const posts = [];
+    response.forEach(post => {
+      const id = post.id;
+      const data = post.data();
+      posts.push({id, ...data});
+    });
+
+    return posts;
   } catch (error) {
     firebaseErrors(error.code);
   }

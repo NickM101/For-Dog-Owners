@@ -2,8 +2,8 @@ import auth from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
 import {createAsyncThunk} from '@reduxjs/toolkit';
 
-import {firebaseErrors} from '../../services/fb_errors';
-import {getUserPosts} from '../../services/posts';
+import {firebaseErrors} from '@services/fb_errors';
+import {getUserPosts} from '@services/posts';
 
 const postsCollection = firestore().collection('posts');
 

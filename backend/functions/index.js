@@ -15,13 +15,11 @@ exports.newPost = functions.firestore
 
     db.collection('followers')
       .doc(context.params.userID)
-      .collection(`myFollowers`)
-      .where('id', 'array-contains', context.params.userID)
-      .orderBy('creation', 'desc')
-      .limit(25)
+      .collection(`followers_users`)
       .get()
       .then(documentSnapshot => {
-        if (!documentSnapshot.empty) {
+        console.log('doc', documentSnapshot.empty());
+        if (!documentSnapshot.empty()) {
           const batch = admin.firestore().batch();
 
           documentSnapshot.forEach(item => {
@@ -40,7 +38,7 @@ exports.newPost = functions.firestore
 // ---------------- Follow & Followers --------------- //
 
 exports.onFollowCreate = functions.firestore
-  .document('following/{userID}/myFollowing/{id}')
+  .document('following/{userID}/following_users/{id}')
   .onCreate((snap, context) => {
     db.collection('user')
       .doc(context.params.userID)
@@ -51,7 +49,7 @@ exports.onFollowCreate = functions.firestore
 
     db.collection('followers')
       .doc(context.params.id)
-      .collection('myFollowers')
+      .collection('followers_users')
       .doc(context.params.userID)
       .set({uid: context.params.userID, timeStamp: new Date()})
       .then(() => {
@@ -64,7 +62,7 @@ exports.onFollowCreate = functions.firestore
   });
 
 exports.onFollowDelete = functions.firestore
-  .document('following/{userID}/myFollowing/{id}')
+  .document('following/{userID}/followers_users/{id}')
   .onDelete((snap, context) => {
     db.collection('user')
       .doc(context.params.userID)
@@ -72,7 +70,7 @@ exports.onFollowDelete = functions.firestore
       .catch(er => console.log(er));
     db.collection('followers')
       .doc(context.params.id)
-      .collection('myFollowers')
+      .collection('followers_users')
       .doc(context.params.userID)
       .delete()
       .catch(er => console.log(er));

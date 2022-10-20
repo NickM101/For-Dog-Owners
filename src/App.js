@@ -18,16 +18,14 @@ import Toast from 'react-native-toast-notifications';
 
 import {LogBox, Text} from 'react-native';
 
-import {AuthProvider} from './context/AuthContext';
 import {persistor, store} from './features/store';
-import LoginForm from './pages/auth/LoginForm';
 import {PersistGate} from 'redux-persist/integration/react';
 
 auth().useEmulator('http://10.0.2.2:9099');
-firestore().useEmulator('10.0.2.2', 8085);
+firestore().useEmulator('10.0.2.2', 8080);
 database().useEmulator('10.0.2.2', 9000);
 storage().useEmulator('10.0.2.2', 9199);
-functions().useEmulator('10.0.2.2', 5002);
+functions().useEmulator('10.0.2.2', 5001);
 
 const theme = {
   colors: {
@@ -43,7 +41,6 @@ LogBox.ignoreAllLogs(true);
 
 const App = () => {
   return (
-    // <AuthProvider>
     <ReduxProvider store={store}>
       {/* <PersistGate loading={<Text>Loading ...</Text>} persistor={persistor}> */}
       <WithSplashScreen isAppReady={true}>
@@ -56,7 +53,6 @@ const App = () => {
       </WithSplashScreen>
       {/* </PersistGate> */}
     </ReduxProvider>
-    // </AuthProvider>
   );
 };
 
