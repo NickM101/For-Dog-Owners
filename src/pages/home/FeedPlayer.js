@@ -15,7 +15,7 @@ import {useFocusEffect} from '@react-navigation/native';
 import InViewPort from '@coffeebeanslabs/react-native-inviewport';
 import MaterialIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
-import CommentSection from '../player/CommentSection';
+import CommentSection from '@components/player/CommentSection';
 import {loggedInUser} from '@features/user/userSlice';
 import {likePostUpdate, addPostComment} from '@features/posts/postSlice';
 import {

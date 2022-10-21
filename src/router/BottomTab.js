@@ -7,9 +7,8 @@ import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import CameraScreen from '../pages/camera';
 import ProfileScreen from '../pages/profile';
 import MediaPage from '../pages/camera/MediaPage';
-import HomeFeed from '../pages/home';
-import CameraPermission from '../pages/camera/MediaPermissions';
 import DiscoverFeed from '../pages/discover';
+import SearchHome from '../pages/search';
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
@@ -35,13 +34,13 @@ export function TabStacks() {
         tabBarIcon: ({focused, color, size}) => {
           let iconName;
 
-          if (route.name === 'Home') {
+          if (route.name === 'Feed') {
             iconName = focused ? 'dog-side' : 'dog-side';
           } else if (route.name === 'Discover') {
             iconName = focused ? 'apple-safari' : 'apple-safari';
           } else if (route.name === 'Camera') {
             iconName = focused ? 'plus-box' : 'plus-box';
-          } else if (route.name === 'Activity') {
+          } else if (route.name === 'Search') {
             iconName = focused ? 'message-reply' : 'message-reply-outline';
           } else if (route.name === 'Profile') {
             iconName = focused ? 'account' : 'account-outline';
@@ -54,10 +53,10 @@ export function TabStacks() {
         tabBarActiveTintColor: 'tomato',
         tabBarInactiveTintColor: 'gray',
       })}>
-      <Tab.Screen name="Home" component={HomeStack} />
+      <Tab.Screen name="Feed" component={HomeStack} />
       <Tab.Screen name="Discover" component={DiscoverFeed} />
       <Tab.Screen name="Camera" component={CameraScreen} />
-      <Tab.Screen name="Activity" component={InboxScreen} />
+      <Tab.Screen name="Search" component={SearchHome} />
       <Tab.Screen name="Profile" component={ProfileScreen} />
     </Tab.Navigator>
   );

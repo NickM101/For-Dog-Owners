@@ -1,9 +1,9 @@
 import firestore from '@react-native-firebase/firestore';
 
 import {createSlice} from '@reduxjs/toolkit';
+import {dislikePost, likePost} from '../../services/posts';
 
-import {updatePostLikes} from '../posts/postAPI';
-import {fetchDiscover} from './discoverAPI';
+import {fetchDiscover, updateDiscoverLikes} from './discoverAPI';
 
 const initialState = {
   loading: false,
@@ -14,49 +14,47 @@ const discoverSlice = createSlice({
   name: 'discover',
   initialState,
   reducers: {
-    followUser(state, action) {
+    followDiscoverUser(state, action) {
       const {userId, followerId} = action.payload;
+
       const followed_user = state.discover.filter(
         post => post.creator.id === followerId,
       );
 
-      const checkStatus = followed_user
-        .map(items => items.followed_status)
-        .includes(false);
+      followed_user.map(items => (items.followed_status = true));
 
-      if (checkStatus) {
-        followed_user.map(items => (items.followed_status = true));
-        firestore()
-          .collection('following')
-          .doc(userId)
-          .collection('following_users')
-          .doc(followerId)
-          .set({
-            id: followerId,
-            creation: firestore.FieldValue.serverTimestamp(),
-          });
-      } else {
-        followed_user.map(items => (items.followed_status = false));
-        firestore()
-          .collection('following')
-          .doc(followerId)
-          .collection('following_users')
-          .doc(userId)
-          .delete();
-      }
+      firestore()
+        .collection('following')
+        .doc(userId)
+        .collection('following_users')
+        .doc(followerId)
+        .set({
+          id: followerId,
+          creation: firestore.FieldValue.serverTimestamp(),
+        });
     },
-    likeUpdate(state, action) {
-      const {postId, userId, currentLikedStatus} = action.payload;
+    likeDiscoverUpdate(state, action) {
+      const {postId, userId, creator, currentLikedStatus} = action.payload;
+
       const existingPost = state.discover.find(post => post.id === postId);
+
+      console.log('existingPost postId', postId, userId);
       if (existingPost && currentLikedStatus) {
         existingPost.likes_by_users = existingPost.likes_by_users.filter(
           id => id !== userId,
         );
-        return updatePostLikes(true);
+        dislikePost({creator, postId, userId});
       } else {
         existingPost.likes_by_users.push(userId);
-        return updatePostLikes(false);
+        likePost({creator, postId, userId});
       }
+    },
+    addDiscoverComment(state, action) {
+      const {postId} = action.payload;
+      console.log('log', postId);
+      const existingPost = state.discover.find(post => post.id === postId);
+      console.log('-----existing', existingPost);
+      existingPost.comments.push(postId);
     },
   },
   extraReducers: builder => {
@@ -68,7 +66,7 @@ const discoverSlice = createSlice({
         state.loading = false;
         state.discover = action.payload;
       })
-      .addCase(updatePostLikes.fulfilled, state => {
+      .addCase(updateDiscoverLikes.fulfilled, state => {
         toast.show('Post liked');
       });
   },
@@ -76,6 +74,17 @@ const discoverSlice = createSlice({
 
 export const DiscoverPosts = state => state.discover.discover;
 
-export const {followUser, likeUpdate} = discoverSlice.actions;
+export const {followDiscoverUser, likeDiscoverUpdate, addDiscoverComment} =
+  discoverSlice.actions;
 
 export default discoverSlice.reducer;
+
+// } else {
+//   followed_user.map(items => (items.followed_status = false));
+//   firestore()
+//     .collection('following')
+//     .doc(followerId)
+//     .collection('following_users')
+//     .doc(userId)
+//     .delete();
+// }

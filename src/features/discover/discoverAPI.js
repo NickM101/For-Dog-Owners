@@ -7,14 +7,13 @@ import {firebaseErrors} from '@services/fb_errors';
 
 const discoverDate = addDays(new Date(), 4);
 
-const discoverCollection = firestore()
-  .collectionGroup('personal')
-  .where('creator.id', '!=', auth().currentUser.uid)
-  .limit(15);
-
 export const fetchDiscover = createAsyncThunk('discover/feed', async () => {
   try {
-    const response = await discoverCollection.get();
+    const response = await firestore()
+      .collectionGroup('personal')
+      .where('creator.id', '!=', auth()?.currentUser?.uid)
+      .limit(15)
+      .get();
     let arr = [];
     if (!response.empty) {
       response.forEach(querySnapshot => {
@@ -25,6 +24,7 @@ export const fetchDiscover = createAsyncThunk('discover/feed', async () => {
         arr.push({
           id: querySnapshot.id,
           creation: creation_format,
+          followed_status: false,
           ...querySnapshot.data(),
         });
       });
@@ -36,3 +36,24 @@ export const fetchDiscover = createAsyncThunk('discover/feed', async () => {
     firebaseErrors(error.code);
   }
 });
+
+export const updateDiscoverLikes = createAsyncThunk(
+  'discover/likes',
+  async ({userId, postId}) => {
+    try {
+      const response = await firestore()
+        .collection('posts')
+        .doc(userId)
+        .collection('personal')
+        .doc(postId)
+        .update({
+          likes_by_users: initialPost.like
+            ? firestore.FieldValue.arrayUnion(userId)
+            : firestore.FieldValue.arrayRemove(userId),
+        });
+      return response;
+    } catch (error) {
+      firebaseErrors(error?.code);
+    }
+  },
+);

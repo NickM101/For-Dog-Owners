@@ -10,13 +10,7 @@ const postCollection = firestore().collection('posts');
 
 const userID = auth().currentUser.uid;
 
-const user = {
-  id: userID,
-  username: auth().currentUser.displayName,
-  imageURL: auth().currentUser.photoURL,
-};
-
-export const saveUserPost = (mediaURL, text) =>
+export const saveUserPost = (mediaURL, text, user) =>
   new Promise((resolve, reject) => {
     try {
       console.log('---- Beginning User Post Firestore ----');
@@ -28,7 +22,7 @@ export const saveUserPost = (mediaURL, text) =>
           creator: user,
           caption: text,
           likes_by_users: [],
-          comments: [],
+          comments: 0,
           creation: firestore.FieldValue.serverTimestamp(),
         })
         .then(user => {
@@ -43,19 +37,6 @@ export const saveUserPost = (mediaURL, text) =>
     }
   });
 
-export const handleLikes = (postId, status) => {
-  console.debug(postId, status);
-  try {
-    postCollection.doc(postId).update({
-      likes_by_users: !status
-        ? firestore.FieldValue.arrayUnion(userID)
-        : firestore.FieldValue.arrayRemove(userID),
-    });
-  } catch (error) {
-    console.error(error);
-  }
-};
-
 export const getUserPosts = () =>
   new Promise(async (resolve, reject) => {
     try {
@@ -65,7 +46,6 @@ export const getUserPosts = () =>
         .onSnapshot(snapshot => {
           let posts = snapshot.docs.map(doc => {
             const data = doc.data();
-            data['creation'] = '90999';
             const id = doc.id;
             const followed_status = false;
             return {id, followed_status, ...data};
@@ -77,35 +57,24 @@ export const getUserPosts = () =>
     }
   });
 
-export const onLikes = postId => {
-  const postReference = database().ref(`feeds/${postId}`);
-
-  return postReference.transaction(post => {
-    console.log(post);
-    if (post) {
-      if (post.likes && post.likes[userID]) {
-        console.log('add');
-      } else {
-        if (!post.likes) {
-          post.likes = [];
-        }
-        post.likes[userID] = true;
-      }
-    }
-    // if (currentData?.likes === undefined) {
-    //   return (currentData);
-    // } else {
-    //   currentData.likes.includes(userID)
-    //     ? currentData.likes.filter(id => id === userID)
-    //     : currentData.likes.concat(userID);
-    // }
-  });
+export const likePost = ({creator, postId, userId}) => {
+  firestore()
+    .collection('posts')
+    .doc(creator)
+    .collection('personal')
+    .doc(postId)
+    .update({
+      likes_by_users: firestore.FieldValue.arrayUnion(userId),
+    });
 };
 
-export const onGetCounts = postId => {
-  const postReference = database().ref(`feeds/${postId}`);
-
-  return postReference.on('value', snapshot => {
-    console.log('snapshot likes', snapshot);
-  });
+export const dislikePost = ({creator, postId, userId}) => {
+  firestore()
+    .collection('posts')
+    .doc(creator)
+    .collection('personal')
+    .doc(postId)
+    .update({
+      likes_by_users: firestore.FieldValue.arrayRemove(userId),
+    });
 };

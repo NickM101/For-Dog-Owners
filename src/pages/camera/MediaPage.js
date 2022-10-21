@@ -22,6 +22,8 @@ import {saveMediaStorage} from '../../services/firebase';
 import {useAuth} from '../../context/AuthContext';
 import Container from '../../layouts/Container';
 import {saveUserPost} from '../../services/posts';
+import {useSelector} from 'react-redux';
+import {loggedInUser} from '../../features/user/userSlice';
 
 const window = Dimensions.get('window');
 const size = 30;
@@ -46,8 +48,9 @@ const isVideoOnLoadEvent = event => 'duration' && 'naturalSize';
 const MediaPage = ({navigation, route}) => {
   const {path, type, thumbnail} = route.params;
 
+  const user = useSelector(loggedInUser);
+
   const [hasMediaLoaded, setHasMediaLoaded] = useState(false);
-  // const isForeground = useIsForeground();
   const isScreenFocused = useIsFocused();
   const isVideoPaused = !isScreenFocused;
   const [savingState, setSavingState] = useState('none');
@@ -55,8 +58,6 @@ const MediaPage = ({navigation, route}) => {
   const [isVisible, setIsVisible] = useState(false);
   const [text, setText] = useState('');
   const [height, setHeight] = useState(40);
-
-  const {user} = useAuth();
 
   const onMediaLoad = useCallback(event => {
     if (isVideoOnLoadEvent(event)) {
@@ -90,7 +91,13 @@ const MediaPage = ({navigation, route}) => {
       ]);
 
       const contentToSend = isVisible ? text : '';
-      await saveUserPost(postSaved, contentToSend)
+
+      const user = {
+        id: user.id,
+        imageURL: user.imageURL,
+        username: user.username,
+      };
+      await saveUserPost(postSaved, contentToSend, user)
         .then(() => console.log('Saved to storage'))
         .catch(() => console.error('Error saving'));
 

@@ -17,7 +17,9 @@ const HomeFeed = () => {
     dispatch(fetchPosts());
   }, []);
 
-  const _renderItem = ({item, index}) => <VideoFeed posts={item} />;
+  const _renderItem = ({item, index}) => (
+    <VideoFeed type={'posts'} posts={item} />
+  );
 
   if (loading) {
     return (

@@ -1,5 +1,5 @@
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
-import CommentSection from '../components/home/CommentSection';
+import CommentSection from '../components/player/CommentSection';
 import TextInput from '../layouts/TextInput';
 
 import AuthScreen from '../pages/auth';

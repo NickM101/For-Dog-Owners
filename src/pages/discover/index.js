@@ -6,6 +6,7 @@ import Container from '@layouts/Container';
 import VideoFeed from '@components/home/VideoFeed';
 
 import {fetchDiscover} from '@features/discover/discoverAPI';
+import DiscoverPlayer from './DiscoverPlayer';
 
 const DiscoverFeed = () => {
   const dispatch = useDispatch();
@@ -16,9 +17,7 @@ const DiscoverFeed = () => {
     dispatch(fetchDiscover());
   }, []);
 
-  console.log('discover', discover);
-
-  const _renderItem = ({item, index}) => <VideoFeed posts={item} />;
+  const _renderItem = ({item, index}) => <DiscoverPlayer posts={item} />;
 
   if (loading) {
     return (

@@ -36,7 +36,6 @@ const theme = {
   },
 };
 
-// LogBox.ignoreAllLogs()
 LogBox.ignoreAllLogs(true);
 
 const App = () => {

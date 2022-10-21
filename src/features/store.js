@@ -15,6 +15,7 @@ import {
 import userReducer from '../features/user/userSlice';
 import postReducer from '../features/posts/postSlice';
 import discoverReducer from '../features/discover/discoverSlice';
+import searchReducer from '../features/search/searchSlice';
 
 const persistConfig = {
   key: 'root',
@@ -26,6 +27,7 @@ const reducer = combineReducers({
   user: userReducer,
   posts: postReducer,
   discover: discoverReducer,
+  search: searchReducer,
 });
 
 const persistedReducer = persistReducer(persistConfig, reducer);
@@ -34,11 +36,7 @@ export const store = configureStore({
   reducer: persistedReducer,
   middleware: getDefaultMiddleware =>
     getDefaultMiddleware({
-      serializableCheck: {
-        ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
-        ignoredActionPaths: ['payload'],
-        ignoredPaths: ['discover.creation'],
-      },
+      serializableCheck: false,
     }),
 });
 

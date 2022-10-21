@@ -1,37 +1,13 @@
 const functions = require('firebase-functions');
 
 const admin = require('firebase-admin');
+const {FieldValue} = require('firebase-admin/firestore');
 
 admin.initializeApp();
 
 const db = admin.firestore();
 
 // ---------------------- POSTS --------------------- //
-
-exports.newPost = functions.firestore
-  .document('posts/{userID}/personal/{postID}')
-  .onCreate((snap, context) => {
-    const document_id = snap.id;
-
-    db.collection('followers')
-      .doc(context.params.userID)
-      .collection(`followers_users`)
-      .get()
-      .then(documentSnapshot => {
-        console.log('doc', documentSnapshot.empty());
-        if (!documentSnapshot.empty()) {
-          const batch = admin.firestore().batch();
-
-          documentSnapshot.forEach(item => {
-            console.log('items', item);
-            const ref = db.collection('feeds').doc(item.id);
-            batch.create(ref, document_id);
-          });
-
-          batch.commit();
-        }
-      });
-  });
 
 // --------------------------------------------------- //
 
@@ -40,9 +16,10 @@ exports.newPost = functions.firestore
 exports.onFollowCreate = functions.firestore
   .document('following/{userID}/following_users/{id}')
   .onCreate((snap, context) => {
-    db.collection('user')
+    console.log('params', context.params);
+    db.collection('users')
       .doc(context.params.userID)
-      .update({following: admin.firestore.FieldValue.increment(1)})
+      .update({following: FieldValue.increment(1)})
       .catch(er => {
         console.log(er);
       });
@@ -54,7 +31,7 @@ exports.onFollowCreate = functions.firestore
       .set({uid: context.params.userID, timeStamp: new Date()})
       .then(() => {
         console.log('------- followers complete ------');
-        db.collection('user')
+        db.collection('users')
           .doc(context.params.id)
           .update({followers: admin.firestore.FieldValue.increment(1)});
       })
@@ -64,7 +41,7 @@ exports.onFollowCreate = functions.firestore
 exports.onFollowDelete = functions.firestore
   .document('following/{userID}/followers_users/{id}')
   .onDelete((snap, context) => {
-    db.collection('user')
+    db.collection('users')
       .doc(context.params.userID)
       .update({following: admin.firestore.FieldValue.increment(-1)})
       .catch(er => console.log(er));

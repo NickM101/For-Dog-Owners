@@ -4,6 +4,12 @@ import {useDispatch, useSelector} from 'react-redux';
 import database from '@react-native-firebase/database';
 import {ActivityIndicator, Avatar} from 'react-native-paper';
 import {useToast} from 'react-native-toast-notifications';
+import {
+  formatDistanceToNow,
+  formatDistanceToNowStrict,
+  formatDuration,
+  fromUnixTime,
+} from 'date-fns';
 import {BottomSheetFlatList, BottomSheetTextInput} from '@gorhom/bottom-sheet';
 import CommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
@@ -12,7 +18,7 @@ import Header from '@layouts/Header';
 
 import {postComment} from '@services/comments';
 import {loggedInUser} from '@features/user/userSlice';
-import {addComment} from '@features/posts/postSlice';
+import {addDiscoverComment} from '@features/discover/discoverSlice';
 
 const CommentSection = ({navigation, id, sheetIndex}) => {
   const toast = useToast();
@@ -60,7 +66,7 @@ const CommentSection = ({navigation, id, sheetIndex}) => {
         },
         comment,
       };
-      dispatch(addComment(id));
+      dispatch(addDiscoverComment({postId: id}));
       return postComment(data).then(() => setComment(''));
     }
   };
@@ -74,14 +80,14 @@ const CommentSection = ({navigation, id, sheetIndex}) => {
             source={require('../../assets/images/logo.png')}
             size={30}
           />
-          <View className={'w-80'}>
+          <View className={'w-30'}>
             <Text className={'text-black font-semibold text-base'}>
               {item?.creator?.username}
             </Text>
             <Text className={'flex-wrap'}>{item.comment}</Text>
           </View>
         </View>
-        <Text>2h</Text>
+        <Text>{time}</Text>
       </View>
     );
   };

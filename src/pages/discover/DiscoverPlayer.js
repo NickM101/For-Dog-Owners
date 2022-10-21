@@ -15,16 +15,18 @@ import {useFocusEffect} from '@react-navigation/native';
 import InViewPort from '@coffeebeanslabs/react-native-inviewport';
 import MaterialIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
-import CommentSection from '../player/CommentSection';
 import {loggedInUser} from '@features/user/userSlice';
-import {likePostUpdate, addPostComment} from '@features/posts/postSlice';
 import {
   likeDiscoverUpdate,
   addDiscoverComment,
   followDiscoverUser,
 } from '@features/discover/discoverSlice';
 
-const VideoFeed = ({posts, type}) => {
+import FollowButton from '@components/player/FollowButton';
+import CommentSection from '@components/player/CommentSection';
+import LikeButton from '@components/player/LikeButton';
+
+const DiscoverPlayer = ({posts}) => {
   const videoRef = useRef(null);
   const commentRef = useRef(null);
 
@@ -69,7 +71,7 @@ const VideoFeed = ({posts, type}) => {
           resizeMode="cover"
           posterResizeMode="cover"
           allowsExternalPlayback={false}
-          // repeat={true}
+          repeat={true}
           controls={false}
           ignoreSilentSwitch={'obey'}
           style={styles.video}
@@ -83,12 +85,6 @@ const VideoFeed = ({posts, type}) => {
             bufferForPlaybackMs: 1500,
             bufferForPlaybackAfterRebufferMs: 1500,
           }}
-          onReadyForDisplay={index =>
-            console.log('-----im ready for display----', index)
-          }
-          // onProgress={progress =>
-          //   console.log('---------- Progress in Percentage:', progress)
-          // }
         />
       </TouchableWithoutFeedback>
       <View style={styles.description}>
@@ -101,56 +97,11 @@ const VideoFeed = ({posts, type}) => {
                 source={require('../../assets/images/petbox.png')}
               />
             </TouchableOpacity>
-
-            <TouchableOpacity
-              className={
-                'justify-center border border-orange-400 items-center bg-slate-700 h-4 w-4 rounded-full absolute inset-y-11 inset-x-3'
-              }
-              onPress={() => {
-                dispatch(
-                  followDiscoverUser({
-                    followerId: posts.creator.id,
-                    userId: user.id,
-                  }),
-                );
-              }}>
-              <MaterialIcons
-                name={'plus'}
-                size={12}
-                className={'font-bold'}
-                color={'white'}
-              />
-            </TouchableOpacity>
+            {!posts.followed_status && (
+              <FollowButton follower={posts.creator.id} />
+            )}
           </View>
-          <TouchableOpacity
-            onPress={() => {
-              const currentLikedStatus = posts.likes_by_users.includes(user.id);
-              type == 'posts'
-                ? dispatch(
-                    likePostUpdate({
-                      postId: posts.id,
-                      userId: user.id,
-                      currentLikedStatus,
-                    }),
-                  )
-                : dispatch(
-                    likeDiscoverUpdate({
-                      postId: posts.id,
-                      userId: user.id,
-                      currentLikedStatus,
-                    }),
-                  );
-            }}
-            className={'items-center py-1'}>
-            <MaterialIcons
-              name="cards-heart"
-              size={36}
-              color={posts.likes_by_users.includes(user.id) ? 'red' : 'white'}
-            />
-            <Text className={'font-bold text-white'}>
-              {posts.likes_by_users.length}
-            </Text>
-          </TouchableOpacity>
+          <LikeButton post={posts} user={user.id} />
           <TouchableOpacity
             className={'items-center py-1'}
             onPress={openBottomSheet}>
@@ -207,4 +158,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default VideoFeed;
+export default DiscoverPlayer;
