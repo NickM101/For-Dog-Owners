@@ -12,10 +12,8 @@ const DiscoverFeed = () => {
 
   const {loading, discover} = useSelector(state => state.discover);
 
-  console.log('discover', discover);
-
   useEffect(() => {
-    if (discover?.length === 0 && discover) {
+    if (discover) {
       dispatch(fetchDiscover());
     }
   }, []);
