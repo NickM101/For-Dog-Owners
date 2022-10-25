@@ -4,9 +4,10 @@ import {getUsersToFollow} from './searchAPI';
 const initialState = {
   loading: false,
   success: false,
+  search: '',
   users: [],
-  search_list: [],
   error: null,
+  history: [],
 };
 
 const searchSlice = createSlice({
@@ -17,7 +18,13 @@ const searchSlice = createSlice({
       state.loading = payload;
     },
     setUsers(state, {payload}) {
-      state.search_list = payload;
+      state.users = payload;
+    },
+    setHistory(state, {payload}) {
+      state.history.push(payload);
+    },
+    clearHistory(state) {
+      state.history = [];
     },
   },
   extraReducers: builder => {
@@ -28,8 +35,8 @@ const searchSlice = createSlice({
   },
 });
 
-export const UsersList = state => state.search.users;
-export const SearchList = state => state.search.search_list;
+export const SearchList = state => state.search;
+export const SearchTerm = state => state.search.search;
 
 export const {setLoading, setUsers} = searchSlice.actions;
 

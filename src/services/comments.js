@@ -3,7 +3,6 @@ import {firebaseErrors} from './fb_errors';
 
 export const postComment = ({postID, user, comment}) =>
   new Promise(async (resolve, reject) => {
-    console.log('postID', postID, user, comment);
     try {
       const key = await database().ref(`/feeds/${postID}/comments`).push();
       key
@@ -13,7 +12,6 @@ export const postComment = ({postID, user, comment}) =>
           comment: comment,
         })
         .then(() => {
-          console.log('sent');
           toast.show('Comment Sent');
           resolve();
         });

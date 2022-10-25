@@ -18,7 +18,6 @@ export const UserVideos = () => {
     dispatch(fetchUserPosts());
   }, []);
 
-  console.log('response posts user', posts);
   return (
     <Container className="">
       <FlatList
@@ -50,11 +49,8 @@ export const UserVideos = () => {
               color={'light-grey'}
             />
             <Text className={'m-2 font-semibold text-black'}>
-              Share a throwback video
+              Your videos will be present once you share them.
             </Text>
-            <Button className={'m-2 rounded'} mode="contained">
-              Upload
-            </Button>
           </Container>
         }
       />

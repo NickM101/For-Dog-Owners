@@ -38,7 +38,6 @@ export const saveProfileImage = image =>
             resolve();
           })
           .catch(error => {
-            console.error('error user update', error);
             firebaseErrors(error.code);
             reject(error);
           });

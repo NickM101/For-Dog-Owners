@@ -4,22 +4,32 @@ import {Text, TouchableOpacity} from 'react-native';
 import MaterialIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
 import {likeDiscoverUpdate} from '@features/discover/discoverSlice';
+import {likePostUpdate} from '../../features/posts/postSlice';
 
-const LikeButton = ({post, user}) => {
+const LikeButton = ({post, user, type}) => {
   const dispatch = useDispatch();
 
   return (
     <TouchableOpacity
       onPress={() => {
         const currentLikedStatus = post.likes_by_users.includes(user);
-        dispatch(
-          likeDiscoverUpdate({
-            postId: post.id,
-            userId: user,
-            currentLikedStatus,
-            creator: post.creator.id,
-          }),
-        );
+        type == 'posts'
+          ? dispatch(
+              likePostUpdate({
+                postId: post.id,
+                userId: user,
+                currentLikedStatus,
+                creator: post.creator.id,
+              }),
+            )
+          : dispatch(
+              likeDiscoverUpdate({
+                postId: post.id,
+                userId: user,
+                currentLikedStatus,
+                creator: post.creator.id,
+              }),
+            );
       }}
       className={'items-center py-1'}>
       <MaterialIcons

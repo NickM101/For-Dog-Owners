@@ -1,10 +1,18 @@
 import * as React from 'react';
 import {Animated, Dimensions, StyleSheet, TextInput} from 'react-native';
 import {Searchbar} from 'react-native-paper';
+import {useDispatch, useSelector} from 'react-redux';
+
+import firestore from '@react-native-firebase/firestore';
+import {setLoading, setUsers} from '../../features/search/searchSlice';
+import {firebaseErrors} from '../../services/fb_errors';
 
 const SearchComponent = ({clampedScroll}) => {
-  const [searchQuery, setSearchQuery] = React.useState('');
+  const dispatch = useDispatch();
 
+  const loading = useSelector(state => state.search.loading);
+
+  const [search, setSearch] = React.useState('');
   const searchBarTranslate = clampedScroll.interpolate({
     inputRange: [0, 50],
     outputRange: [0, -250],
@@ -16,8 +24,43 @@ const SearchComponent = ({clampedScroll}) => {
     extrapolate: 'clamp',
   });
 
-  const onChangeSearch = query => setSearchQuery(query);
+  React.useEffect(() => {
+    if (!search.length) {
+      setSearch('');
+    }
+  }, [search]);
 
+  const onSearchUser = async () => {
+    setLoading(true);
+    console.log('search', search);
+    await firestore()
+      .collection('users')
+      .where('username', '>=', search)
+      // .where('username', '<=', search + '\uf8ff')
+      .get()
+      .then(querySnapshot => {
+        console.log('is emptry', querySnapshot);
+        let users = querySnapshot.forEach(doc => {
+          console.log('id', doc.id);
+          const data = doc.data();
+          const id = doc.id;
+
+          return {id, ...data};
+        });
+        console.log('users', users);
+        setLoading(false);
+        return dispatch(setUsers(users));
+      })
+      .catch(error => {
+        firebaseErrors(error.code);
+        setLoading(false);
+      })
+      .finally(() => setLoading(false));
+  };
+
+  const clearText = () => {
+    console.log('item cleared');
+  };
   return (
     <Animated.View
       style={[
@@ -33,9 +76,12 @@ const SearchComponent = ({clampedScroll}) => {
       ]}>
       <Searchbar
         placeholder="Search"
-        onChangeText={onChangeSearch}
-        value={searchQuery}
+        onChangeText={setSearch}
+        value={search}
         className={'rounded-lg'}
+        onSubmitEditing={onSearchUser}
+        loading={loading}
+        onIconPress={onSearchUser}
       />
     </Animated.View>
   );

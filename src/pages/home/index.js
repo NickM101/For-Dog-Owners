@@ -1,12 +1,12 @@
 import React, {useEffect} from 'react';
-import {View, Text, FlatList, Dimensions, RefreshControl} from 'react-native';
+import {FlatList, Dimensions, RefreshControl} from 'react-native';
 import {useDispatch, useSelector} from 'react-redux';
 
 import {fetchPosts} from '@features/posts/postAPI';
 
 import Container from '@layouts/Container';
-import VideoFeed from '@components/home/VideoFeed';
 import NewFeeds from '@components/pages/NewFeeds';
+import FeedPlayer from './FeedPlayer';
 
 const HomeFeed = () => {
   const dispatch = useDispatch();
@@ -14,20 +14,14 @@ const HomeFeed = () => {
   const {loading, posts} = useSelector(state => state.posts);
 
   useEffect(() => {
-    dispatch(fetchPosts());
+    if (posts?.length === 0 && posts) {
+      return dispatch(fetchPosts());
+    } else {
+      return;
+    }
   }, []);
 
-  const _renderItem = ({item, index}) => (
-    <VideoFeed type={'posts'} posts={item} />
-  );
-
-  if (loading) {
-    return (
-      <View className={'justify-center items-center bg-slate-400'}>
-        <Text className={' text-white'}>Loading...</Text>
-      </View>
-    );
-  }
+  const _renderItem = ({item, index}) => <FeedPlayer posts={item} />;
 
   return (
     <Container className={'p-0'}>

@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {Animated, SafeAreaView, Text} from 'react-native';
 import firestore from '@react-native-firebase/firestore';
 
@@ -6,14 +6,11 @@ import SearchComponent from '../../components/search/SearchComponent';
 import LoaderComponent from '../../components/search/LoaderComponent';
 import UserListComponent from '../../components/search/UserListComponent';
 import {useDispatch, useSelector} from 'react-redux';
-import {SearchList, UsersList} from '../../features/search/searchSlice';
+import {SearchList} from '../../features/search/searchSlice';
 import Container from '../../layouts/Container';
 
 const SearchHome = () => {
-  const dispatch = useDispatch();
-
-  const users_arr = useSelector(UsersList);
-  const search_arr = useSelector(SearchList);
+  const {history, users, loading} = useSelector(SearchList);
 
   const [scrollYValue, setScrollYValue] = useState(new Animated.Value(0));
 
@@ -30,8 +27,6 @@ const SearchHome = () => {
     50,
   );
 
-  const loading = false;
-
   if (loading) {
     return <LoaderComponent />;
   }
@@ -46,22 +41,19 @@ const SearchHome = () => {
           contentContainerStyle={{
             display: 'flex',
             justifyContent: 'space-around',
+            backgroundColor: 'white',
           }}
           onScroll={Animated.event(
             [{nativeEvent: {contentOffset: {y: scrollYValue}}}],
-            // { useNativeDriver: true },
+            {useNativeDriver: true},
             () => {}, // Optional async listener
           )}
           contentInsetAdjustmentBehavior="automatic">
-          {users_arr.length === 0 && users_arr.length === 0 ? (
-            <Container className={'justify-center items-center'}>
-              <Text>No Users Available</Text>
-            </Container>
+          {/* {users.length ? (
+            <UserListComponent usersArrayList={users} />
           ) : (
-            <UserListComponent
-              usersArrayList={search_arr.length ? search_arr : users_arr}
-            />
-          )}
+            <UserListComponent usersArrayList={history} />
+          )} */}
         </Animated.ScrollView>
       </SafeAreaView>
     </Animated.View>

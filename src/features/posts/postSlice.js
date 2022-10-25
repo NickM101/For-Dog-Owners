@@ -1,4 +1,5 @@
 import {createSlice} from '@reduxjs/toolkit';
+import {dislikePost, likePost} from '../../services/posts';
 import {fetchPosts, updatePostLikes} from './postAPI';
 
 const initialState = {
@@ -11,24 +12,24 @@ const postSlice = createSlice({
   initialState,
   reducers: {
     likePostUpdate(state, action) {
-      const {postId, userId, currentLikedStatus} = action.payload;
-      console.log('state posts', state.posts);
+      const {postId, userId, creator, currentLikedStatus} = action.payload;
+
       const existingPost = state.posts.find(post => post.id === postId);
-      console.log('existing post', existingPost);
+
       if (existingPost && currentLikedStatus) {
         existingPost.likes_by_users = existingPost.likes_by_users.filter(
           id => id !== userId,
         );
-        return updatePostLikes(true);
+        dislikePost({creator, postId, userId});
       } else {
         existingPost.likes_by_users.push(userId);
-        return updatePostLikes(false);
+        likePost({creator, postId, userId});
       }
     },
     addPostComment(state, action) {
       const {postId} = action.payload;
       const existingPost = state.posts.find(post => post.id === postId);
-      existingPost.comment = existingPost.comment++;
+      existingPost.comments.push(postId);
     },
   },
   extraReducers: builder => {

@@ -41,7 +41,9 @@ export function TabStacks() {
           } else if (route.name === 'Camera') {
             iconName = focused ? 'plus-box' : 'plus-box';
           } else if (route.name === 'Search') {
-            iconName = focused ? 'message-reply' : 'message-reply-outline';
+            iconName = focused
+              ? 'account-multiple'
+              : 'account-multiple-outline';
           } else if (route.name === 'Profile') {
             iconName = focused ? 'account' : 'account-outline';
           }
@@ -57,7 +59,11 @@ export function TabStacks() {
       <Tab.Screen name="Discover" component={DiscoverFeed} />
       <Tab.Screen name="Camera" component={CameraScreen} />
       <Tab.Screen name="Search" component={SearchHome} />
-      <Tab.Screen name="Profile" component={ProfileScreen} />
+      <Tab.Screen
+        name="Profile"
+        component={ProfileScreen}
+        initialParams={{type: null, linked: undefined}}
+      />
     </Tab.Navigator>
   );
 }

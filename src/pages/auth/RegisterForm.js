@@ -45,6 +45,7 @@ const RegisterMenu = ({navigation}) => {
       email: '',
       password: '',
       username: '',
+      pets_name: '',
     },
   });
 
@@ -55,6 +56,26 @@ const RegisterMenu = ({navigation}) => {
   return (
     <Container>
       <View className="">
+        <Controller
+          control={control}
+          rules={{
+            required: true,
+          }}
+          render={({field: {onChange, onBlur, value}}) => (
+            <InputText
+              className={'mx-3 my-1'}
+              mode="outlined"
+              label="Pets Name"
+              placeholder="Type something"
+              value={value}
+              onChangeText={onChange}
+              onBlur={onBlur}
+              error={errors.pets_name}
+              message={errors.pets_name && "Pet's name is required."}
+            />
+          )}
+          name="pets_name"
+        />
         <Controller
           control={control}
           rules={{

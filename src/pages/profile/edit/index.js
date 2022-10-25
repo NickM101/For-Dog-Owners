@@ -61,13 +61,13 @@ const EditProfile = ({navigation}) => {
       <UserDetail title={'Username'} value={user.username} field={'username'} />
       <UserDetail
         title={"Pet's Name"}
-        value={user?.petsName}
-        field={'petsName'}
+        value={user?.pets_name}
+        field={'pets_name'}
       />
       <UserDetail
         title={"Pet's Age"}
-        value={user?.petsAge}
-        field={'petsAge'}
+        value={user?.pets_age}
+        field={'pets_age'}
         type={'number-pad'}
       />
       <UserDetail

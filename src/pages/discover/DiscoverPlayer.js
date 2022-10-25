@@ -16,11 +16,6 @@ import InViewPort from '@coffeebeanslabs/react-native-inviewport';
 import MaterialIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
 import {loggedInUser} from '@features/user/userSlice';
-import {
-  likeDiscoverUpdate,
-  addDiscoverComment,
-  followDiscoverUser,
-} from '@features/discover/discoverSlice';
 
 import FollowButton from '@components/player/FollowButton';
 import CommentSection from '@components/player/CommentSection';
@@ -101,7 +96,7 @@ const DiscoverPlayer = ({posts}) => {
               <FollowButton follower={posts.creator.id} />
             )}
           </View>
-          <LikeButton post={posts} user={user.id} />
+          <LikeButton post={posts} user={user.id} type={'discover'} />
           <TouchableOpacity
             className={'items-center py-1'}
             onPress={openBottomSheet}>
@@ -133,6 +128,7 @@ const DiscoverPlayer = ({posts}) => {
           id={posts.id}
           status={!paused === visible}
           sheetIndex={sheetIndex}
+          type={'discover'}
         />
       </BottomSheet>
     </InViewPort>

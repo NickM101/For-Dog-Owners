@@ -3,7 +3,6 @@ import {useDispatch, useSelector} from 'react-redux';
 import {View, Text, FlatList, Dimensions, RefreshControl} from 'react-native';
 
 import Container from '@layouts/Container';
-import VideoFeed from '@components/home/VideoFeed';
 
 import {fetchDiscover} from '@features/discover/discoverAPI';
 import DiscoverPlayer from './DiscoverPlayer';
@@ -13,19 +12,23 @@ const DiscoverFeed = () => {
 
   const {loading, discover} = useSelector(state => state.discover);
 
+  console.log('discover', discover);
+
   useEffect(() => {
-    dispatch(fetchDiscover());
+    if (discover?.length === 0 && discover) {
+      dispatch(fetchDiscover());
+    }
   }, []);
 
   const _renderItem = ({item, index}) => <DiscoverPlayer posts={item} />;
 
-  if (loading) {
-    return (
-      <View className={'flex bg-slate-400 justify-center items-center'}>
-        <Text>Loading...</Text>
-      </View>
-    );
-  }
+  // if (loading) {
+  //   return (
+  //     <View className={'flex bg-slate-400 justify-center items-center'}>
+  //       <Text>Loading...</Text>
+  //     </View>
+  //   );
+  // }
 
   return (
     <Container className={'p-0'}>

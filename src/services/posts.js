@@ -10,6 +10,27 @@ const postCollection = firestore().collection('posts');
 
 const userID = auth().currentUser.uid;
 
+export const getFollowers = async () => {
+  const response = await firestore()
+    .collection('following')
+    .doc(userID)
+    .collection('following_users')
+    .get();
+
+  const arr = [];
+
+  if (!response.empty) {
+    response.forEach(doc => {
+      arr.push(doc.id);
+    });
+  } else {
+    return [];
+  }
+
+  console.log('arr', arr);
+  return arr;
+};
+
 export const saveUserPost = (mediaURL, text, user) =>
   new Promise((resolve, reject) => {
     try {
@@ -40,19 +61,22 @@ export const saveUserPost = (mediaURL, text, user) =>
 export const getUserPosts = () =>
   new Promise(async (resolve, reject) => {
     try {
-      await postCollection
-        .where('creator.id', '!=', auth().currentUser.uid)
-        // .orderBy('creation', 'desc')
+      const followers_arr = await getFollowers();
+      firestore()
+        .collectionGroup('personal')
+        .where('creator.id', 'in', followers_arr)
+        .orderBy('creation', 'desc')
+        .limit(10)
         .onSnapshot(snapshot => {
           let posts = snapshot.docs.map(doc => {
             const data = doc.data();
             const id = doc.id;
-            const followed_status = false;
-            return {id, followed_status, ...data};
+            return {id, ...data};
           });
           return resolve(posts);
         });
     } catch (error) {
+      firebaseErrors(error.code);
       reject(error);
     }
   });

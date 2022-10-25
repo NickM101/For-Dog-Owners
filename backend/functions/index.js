@@ -33,7 +33,7 @@ exports.onFollowCreate = functions.firestore
         console.log('------- followers complete ------');
         db.collection('users')
           .doc(context.params.id)
-          .update({followers: admin.firestore.FieldValue.increment(1)});
+          .update({followers: FieldValue.increment(1)});
       })
       .catch(er => console.log(er));
   });

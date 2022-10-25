@@ -4,10 +4,11 @@ import {createAsyncThunk} from '@reduxjs/toolkit';
 
 import {saveMediaStorage} from '@services/firebase';
 import {firebaseErrors} from '@services/fb_errors';
+import {convertNaming} from '../../constants/helper';
 
 export const registerUser = createAsyncThunk(
   'user/register',
-  async ({email, password, username}, {rejectWithValue}) => {
+  async ({email, password, username, pets_name}, {rejectWithValue}) => {
     try {
       const registration = await auth().createUserWithEmailAndPassword(
         email,
@@ -16,6 +17,7 @@ export const registerUser = createAsyncThunk(
 
       await firestore().collection('users').doc(registration.user.uid).set({
         username,
+        pets_name,
         phoneNumber: null,
         imageURL: null,
         email: registration.user.email,

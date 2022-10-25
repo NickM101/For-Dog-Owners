@@ -1,13 +1,45 @@
 import React, {useEffect, useRef, useState} from 'react';
 import {Animated, StyleSheet} from 'react-native';
+import {useDispatch, useSelector} from 'react-redux';
+import {fetchDiscover} from '../features/discover/discoverAPI';
+import {fetchPosts} from '../features/posts/postAPI';
+import {loggedInUser} from '../features/user/userSlice';
 
-export function WithSplashScreen({children, isAppReady}) {
+export function WithSplashScreen({children}) {
+  const [isReady, setIsReady] = useState(true);
+  const dispatch = useDispatch();
+
+  // const user = useSelector(loggedInUser);
+
+  // useEffect(() => {
+  //   async function fetchData() {
+  //     const response = await Promise.all([
+  //       dispatch(fetchDiscover()),
+  //       dispatch(fetchPosts()),
+  //     ])
+  //       .then(
+  //         () => console.log('console.logged ----- Fulfilled'),
+  //         setIsReady(true),
+  //       )
+  //       .catch(
+  //         error => console.log('console.logged ----- rejected', error),
+  //         setIsReady(true),
+  //       )
+  //       .finally(
+  //         () => console.log('console.logged ----- Finally'),
+  //         setIsReady(true),
+  //       );
+
+  //     return response;
+  //   }
+  //   user ? dispatch(fetchDiscover()) : setIsReady(true);
+  // }, []);
 
   return (
     <>
-      {isAppReady && children}
+      {isReady && children}
 
-      <Splash isAppReady={isAppReady} />
+      <Splash isAppReady={isReady} />
     </>
   );
 }

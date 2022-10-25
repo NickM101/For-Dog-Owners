@@ -14,6 +14,7 @@ const initialState = {
   updateStatus: false,
   user: null,
   error: null,
+  followers: [],
   postLoading: false,
   posts: [],
 };
@@ -21,7 +22,11 @@ const initialState = {
 const userSlice = createSlice({
   name: 'user',
   initialState,
-  reducers: {},
+  reducers: {
+    setFollowers(state, {payload}) {
+      state.followers = payload;
+    },
+  },
   extraReducers: builder => {
     builder
       .addCase(loginUser.pending, state => {
@@ -86,5 +91,7 @@ const userSlice = createSlice({
 
 export const loggedInUser = state => state.user.user;
 export const userInfo = state => state.user;
+
+export const {setFollowers} = userSlice.actions;
 
 export default userSlice.reducer;

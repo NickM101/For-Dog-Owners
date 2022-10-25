@@ -38,7 +38,6 @@ const discoverSlice = createSlice({
 
       const existingPost = state.discover.find(post => post.id === postId);
 
-      console.log('existingPost postId', postId, userId);
       if (existingPost && currentLikedStatus) {
         existingPost.likes_by_users = existingPost.likes_by_users.filter(
           id => id !== userId,
@@ -51,9 +50,7 @@ const discoverSlice = createSlice({
     },
     addDiscoverComment(state, action) {
       const {postId} = action.payload;
-      console.log('log', postId);
       const existingPost = state.discover.find(post => post.id === postId);
-      console.log('-----existing', existingPost);
       existingPost.comments.push(postId);
     },
   },

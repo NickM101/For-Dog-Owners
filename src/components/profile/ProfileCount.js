@@ -12,10 +12,10 @@ const ProfileCount = ({followers = 0, following = 0, likes = 0}) => {
         <Text className={'font-bold text-black'}>{followers}</Text>
         <Text>Followers</Text>
       </View>
-      <View className={'items-center w-20'}>
+      {/* <View className={'items-center w-20'}>
         <Text className={'font-bold text-black'}>{likes}</Text>
         <Text>Likes</Text>
-      </View>
+      </View> */}
     </View>
   );
 };

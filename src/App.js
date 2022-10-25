@@ -21,11 +21,11 @@ import {LogBox, Text} from 'react-native';
 import {persistor, store} from './features/store';
 import {PersistGate} from 'redux-persist/integration/react';
 
-auth().useEmulator('http://10.0.2.2:9099');
-firestore().useEmulator('10.0.2.2', 8080);
-database().useEmulator('10.0.2.2', 9000);
-storage().useEmulator('10.0.2.2', 9199);
-functions().useEmulator('10.0.2.2', 5001);
+auth().useEmulator('http://192.168.0.104:9099');
+firestore().useEmulator('192.168.0.104', 8080);
+database().useEmulator('192.168.0.104', 9000);
+storage().useEmulator('192.168.0.104', 9199);
+functions().useEmulator('192.168.0.104', 5001);
 
 const theme = {
   colors: {

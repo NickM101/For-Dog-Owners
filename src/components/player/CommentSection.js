@@ -19,8 +19,9 @@ import Header from '@layouts/Header';
 import {postComment} from '@services/comments';
 import {loggedInUser} from '@features/user/userSlice';
 import {addDiscoverComment} from '@features/discover/discoverSlice';
+import {addPostComment} from '../../features/posts/postSlice';
 
-const CommentSection = ({navigation, id, sheetIndex}) => {
+const CommentSection = ({navigation, id, sheetIndex, type}) => {
   const toast = useToast();
   const dispatch = useDispatch();
   const user = useSelector(loggedInUser);
@@ -66,7 +67,9 @@ const CommentSection = ({navigation, id, sheetIndex}) => {
         },
         comment,
       };
-      dispatch(addDiscoverComment({postId: id}));
+      type === 'posts'
+        ? dispatch(addPostComment({postId: id}))
+        : dispatch(addDiscoverComment({postId: id}));
       return postComment(data).then(() => setComment(''));
     }
   };
@@ -87,7 +90,7 @@ const CommentSection = ({navigation, id, sheetIndex}) => {
             <Text className={'flex-wrap'}>{item.comment}</Text>
           </View>
         </View>
-        <Text>{time}</Text>
+        {/* <Text>{time}</Text> */}
       </View>
     );
   };
