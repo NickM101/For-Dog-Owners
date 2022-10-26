@@ -11,7 +11,7 @@ const discoverDate = addDays(new Date(), 4);
 export const fetchDiscover = createAsyncThunk(
   'discover/feed',
   async (params, thunkAPI) => {
-    console.log('reading');
+    console.log('-----Thunk Fetching Discover posts -------');
     try {
       const response = await firestore()
         .collection('following')

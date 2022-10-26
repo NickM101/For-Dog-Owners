@@ -13,13 +13,12 @@ const HomeFeed = () => {
 
   const {loading, posts} = useSelector(state => state.posts);
 
-  useEffect(() => {
-    if (posts?.length === 0 && posts) {
-      return dispatch(fetchPosts());
-    } else {
-      return;
-    }
-  }, []);
+  // useEffect(() => {
+  //   if (posts.length) {
+  //     console.log('---------Home Feed Fetching Data -------');
+  //     dispatch(fetchPosts());
+  //   }
+  // }, []);
 
   const _renderItem = ({item, index}) => <FeedPlayer posts={item} />;
 

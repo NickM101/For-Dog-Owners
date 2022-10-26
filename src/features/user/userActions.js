@@ -85,7 +85,8 @@ export const anonymousLogIn = createAsyncThunk('user/anonymous', async () => {
 
 export const fetchUserDetails = createAsyncThunk(
   'user/fetching',
-  async userId => {
+  async ({userId}) => {
+    console.log('fetching user data================', userId);
     try {
       const response = await firestore().collection('users').doc(userId).get();
       return response.data();
@@ -95,26 +96,33 @@ export const fetchUserDetails = createAsyncThunk(
   },
 );
 
-export const fetchUserPosts = createAsyncThunk('user/posts', async () => {
-  try {
-    const response = await firestore()
-      .collectionGroup('personal')
-      .where('creator.id', '==', auth().currentUser.uid)
-      .orderBy('creation', 'desc')
-      .get();
+export const fetchUserPosts = createAsyncThunk(
+  'user/posts',
+  async ({userId}) => {
+    console.log(
+      '----------------Fetching user posts---------------------',
+      userId,
+    );
+    try {
+      const response = await firestore()
+        .collectionGroup('personal')
+        .where('creator.id', '==', userId)
+        .orderBy('creation', 'desc')
+        .get();
 
-    const posts = [];
-    response.forEach(post => {
-      const id = post.id;
-      const data = post.data();
-      posts.push({id, ...data});
-    });
+      const posts = [];
+      response.forEach(post => {
+        const id = post.id;
+        const data = post.data();
+        posts.push({id, ...data});
+      });
 
-    return posts;
-  } catch (error) {
-    firebaseErrors(error.code);
-  }
-});
+      return posts;
+    } catch (error) {
+      firebaseErrors(error.code);
+    }
+  },
+);
 
 export const updateUserProfile = createAsyncThunk(
   'user/update',

@@ -9,30 +9,26 @@ export function WithSplashScreen({children}) {
   const [isReady, setIsReady] = useState(true);
   const dispatch = useDispatch();
 
-  // const user = useSelector(loggedInUser);
+  const user = useSelector(loggedInUser);
 
   // useEffect(() => {
   //   async function fetchData() {
-  //     const response = await Promise.all([
-  //       dispatch(fetchDiscover()),
-  //       dispatch(fetchPosts()),
-  //     ])
-  //       .then(
-  //         () => console.log('console.logged ----- Fulfilled'),
-  //         setIsReady(true),
-  //       )
-  //       .catch(
-  //         error => console.log('console.logged ----- rejected', error),
-  //         setIsReady(true),
-  //       )
-  //       .finally(
-  //         () => console.log('console.logged ----- Finally'),
-  //         setIsReady(true),
-  //       );
-
-  //     return response;
+  //     console.log('-------------- Fetching Data on Splashscreen -----------');
+  //     await Promise.all([dispatch(fetchDiscover()), dispatch(fetchPosts())])
+  //       .then(() => {
+  //         console.log('console.logged ----- Fulfilled');
+  //         setIsReady(true);
+  //       })
+  //       .catch(error => {
+  //         console.log('console.logged ----- rejected', error);
+  //         setIsReady(true);
+  //       })
+  //       .finally(() => {
+  //         console.log('console.logged ----- Finally');
+  //         setIsReady(true);
+  //       });
   //   }
-  //   user ? dispatch(fetchDiscover()) : setIsReady(true);
+  //   user ? fetchData() : setIsReady(true);
   // }, []);
 
   return (

@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {Animated, SafeAreaView, Text} from 'react-native';
+import {Animated, SafeAreaView, ScrollView, Text} from 'react-native';
 import firestore from '@react-native-firebase/firestore';
 
 import SearchComponent from '../../components/search/SearchComponent';
@@ -8,6 +8,7 @@ import UserListComponent from '../../components/search/UserListComponent';
 import {useDispatch, useSelector} from 'react-redux';
 import {SearchList} from '../../features/search/searchSlice';
 import Container from '../../layouts/Container';
+import {FlatList} from 'react-native-gesture-handler';
 
 const SearchHome = () => {
   const {history, users, loading} = useSelector(SearchList);

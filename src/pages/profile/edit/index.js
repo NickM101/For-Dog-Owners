@@ -33,7 +33,7 @@ const EditProfile = ({navigation}) => {
 
           Promise.all([
             dispatch(uploadProfilePhoto(source)),
-            dispatch(fetchUserDetails(user.id)),
+            dispatch(fetchUserDetails({userId: user.id})),
           ]);
         }
       })

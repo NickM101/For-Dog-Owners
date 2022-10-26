@@ -19,20 +19,7 @@ const SearchProfile = ({route}) => {
   const [isFollower, setFollower] = useState(false);
 
   useEffect(() => {
-    async function isFollowing() {
-      const response = await firestore()
-        .collection('following')
-        .doc(auth().currentUser.uid)
-        .collection('following_users')
-        .doc(user.id)
-        .get();
-
-      console.log('response', response.exists);
-
-      response.exists ? setFollower(true) : setFollower(false);
-    }
-
-    Promise.all([dispatch(fetchUserDetails(user.id)), isFollowing()]);
+    dispatch(fetchUserDetails({userId: user.id}));
   }, []);
 
   const unfollowUser = async () => {
@@ -70,20 +57,22 @@ const SearchProfile = ({route}) => {
         likes={0}
       />
       <View className={'flex-row justify-center py-4'}>
-        <TouchableOpacity
-          onPress={unfollowUser}
-          style={{backgroundColor: '#FF5A00'}}
-          className={
-            'justify-center items-center h-10 w-20 rounded-sm border border-gray-300'
-          }>
-          <Text className={'font-semibold text-white'}>
-            {isFollower ? 'Unfollow' : 'Follow'}
-          </Text>
-        </TouchableOpacity>
+        {!auth().currentUser.isAnonymous && (
+          <TouchableOpacity
+            onPress={unfollowUser}
+            style={{backgroundColor: '#FF5A00'}}
+            className={
+              'justify-center items-center h-10 w-20 rounded-sm border border-gray-300'
+            }>
+            <Text className={'font-semibold text-white'}>
+              {isFollower ? 'Unfollow' : 'Follow'}
+            </Text>
+          </TouchableOpacity>
+        )}
       </View>
 
       <Divider />
-      <UserVideos />
+      <UserVideos user={user.id} />
     </Container>
   );
 };

@@ -18,10 +18,10 @@ const EditField = ({navigation, route}) => {
 
   const [text, setText] = React.useState(value);
 
-  const onSave = () => {
-    Promise.all([
+  const onSave = async () => {
+    await Promise.all([
       dispatch(updateUserProfile({field, text})),
-      dispatch(fetchUserDetails(auth().currentUser.uid)),
+      dispatch(fetchUserDetails({userId: auth().currentUser.uid})),
     ]).then(navigation.goBack());
   };
 

@@ -20,7 +20,7 @@ const ProfileScreen = ({navigation, route}) => {
   const {user, followers} = useSelector(userInfo);
 
   useEffect(() => {
-    dispatch(fetchUserDetails(user.id));
+    user.isAnonymous ? null : dispatch(fetchUserDetails({userId: user.id}));
   }, []);
 
   return (
@@ -55,7 +55,7 @@ const ProfileScreen = ({navigation, route}) => {
       </View>
 
       <Divider />
-      <UserVideos />
+      {user.isAnonymous ? null : <UserVideos user={user.id} />}
     </Container>
   );
 };

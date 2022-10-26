@@ -12,14 +12,12 @@ import {
   TextInput,
   Dimensions,
 } from 'react-native';
-import Video, {LoadError, OnLoadData} from 'react-native-video';
+import Video from 'react-native-video';
 import {SAFE_AREA_PADDING} from '../../constants/camera';
 import IonIcon from 'react-native-vector-icons/Ionicons';
 import {StatusBarBlurBackground} from '../../components/camera/StatusBlurBar';
 import {useIsFocused} from '@react-navigation/core';
-import {CameraRoll} from '@react-native-camera-roll/camera-roll';
 import {saveMediaStorage} from '../../services/firebase';
-import {useAuth} from '../../context/AuthContext';
 import Container from '../../layouts/Container';
 import {saveUserPost} from '../../services/posts';
 import {useSelector} from 'react-redux';

@@ -1,15 +1,10 @@
-import React, {useCallback, useEffect, useState} from 'react';
-import {
-  Linking,
-  StyleSheet,
-  View,
-  Text,
-  Image,
-  PermissionsAndroid,
-  TouchableOpacity,
-} from 'react-native';
-import {Camera, CameraPermissionStatus} from 'react-native-vision-camera';
+import React from 'react';
+import {View, Text, TouchableOpacity} from 'react-native';
+import auth from '@react-native-firebase/auth';
+import {useDispatch} from 'react-redux';
+import {logOut} from '../../features/user/userActions';
 import Container from '../../layouts/Container';
+import {Button} from 'react-native-paper';
 
 const BANNER_IMAGE = require('../../assets/images/logo.png');
 
@@ -21,6 +16,22 @@ const MediaPermissions = ({
   galleryPermission,
   requestGalleryPermission,
 }) => {
+  const dispatch = useDispatch();
+
+  if (auth().currentUser.isAnonymous) {
+    return (
+      <Container className={'justify-center items-center'}>
+        <Button
+          mode="contained"
+          contentStyle={{flex: 1}}
+          className={'rounded h-24'}
+          onPress={() => dispatch(logOut())}>
+          Login to PetBox
+        </Button>
+      </Container>
+    );
+  }
+
   return (
     <Container className={'justify-center items-center'}>
       <Text className={'text-3xl text-black font-extrabold underline'}>

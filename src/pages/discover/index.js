@@ -6,6 +6,7 @@ import Container from '@layouts/Container';
 
 import {fetchDiscover} from '@features/discover/discoverAPI';
 import DiscoverPlayer from './DiscoverPlayer';
+import NewFeeds from '../../components/pages/NewFeeds';
 
 const DiscoverFeed = () => {
   const dispatch = useDispatch();
@@ -14,19 +15,21 @@ const DiscoverFeed = () => {
 
   useEffect(() => {
     if (discover) {
+      console.log('---------Discover Fetching Data -------');
+
       dispatch(fetchDiscover());
     }
   }, []);
 
   const _renderItem = ({item, index}) => <DiscoverPlayer posts={item} />;
 
-  // if (loading) {
-  //   return (
-  //     <View className={'flex bg-slate-400 justify-center items-center'}>
-  //       <Text>Loading...</Text>
-  //     </View>
-  //   );
-  // }
+  if (loading) {
+    return (
+      <View className={'flex bg-slate-400 justify-center items-center'}>
+        <Text>Loading...</Text>
+      </View>
+    );
+  }
 
   return (
     <Container className={'p-0'}>
@@ -44,6 +47,7 @@ const DiscoverFeed = () => {
         snapToAlignment={'start'}
         decelerationRate={'fast'}
         contentContainerStyle={{flexGrow: 1}}
+        ListEmptyComponent={NewFeeds}
         refreshControl={
           <RefreshControl
             refreshing={loading}

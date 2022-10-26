@@ -9,14 +9,16 @@ import Container from '@layouts/Container';
 import {fetchUserPosts} from '@features/user/userActions';
 import {userInfo} from '@features/user/userSlice';
 
-export const UserVideos = () => {
+export const UserVideos = ({user}) => {
   const dispatch = useDispatch();
 
   const {posts, postLoading} = useSelector(userInfo);
 
+  console.log('posts', posts);
+
   useEffect(() => {
-    dispatch(fetchUserPosts());
-  }, []);
+    dispatch(fetchUserPosts({userId: user}));
+  }, [user]);
 
   return (
     <Container className="">

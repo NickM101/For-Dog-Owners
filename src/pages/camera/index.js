@@ -22,7 +22,7 @@ import {
 import {createThumbnail} from 'react-native-create-thumbnail';
 import {Camera, useCameraDevices} from 'react-native-vision-camera';
 import MaterialIcon from 'react-native-vector-icons/MaterialCommunityIcons';
-import IonIcon from 'react-native-vector-icons/Ionicons';
+import auth from '@react-native-firebase/auth';
 import Container from '../../layouts/Container';
 import Reanimated, {
   Extrapolate,
@@ -208,8 +208,16 @@ const CameraScreen = ({navigation}) => {
   // ---------------------------------------- //
 
   const isFocused = useIsFocused();
+  const isAnonymous = !auth().currentUser.isAnonymous;
 
-  if ([cameraPermission, audioPermission, galleryPermission].includes(false)) {
+  if (
+    [
+      cameraPermission,
+      audioPermission,
+      galleryPermission,
+      isAnonymous,
+    ].includes(false)
+  ) {
     return (
       <MediaPermissions
         cameraPermission={cameraPermission}
