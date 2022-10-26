@@ -4,7 +4,6 @@ import {createAsyncThunk} from '@reduxjs/toolkit';
 
 import {saveMediaStorage} from '@services/firebase';
 import {firebaseErrors} from '@services/fb_errors';
-import {convertNaming} from '../../constants/helper';
 
 export const registerUser = createAsyncThunk(
   'user/register',
@@ -84,17 +83,17 @@ export const anonymousLogIn = createAsyncThunk('user/anonymous', async () => {
   }
 });
 
-export const fetchUserDetails = createAsyncThunk('user/fetching', async () => {
-  try {
-    const response = await firestore()
-      .collection('users')
-      .doc(auth().currentUser.uid)
-      .get();
-    return response.data();
-  } catch (error) {
-    firebaseErrors(error.code);
-  }
-});
+export const fetchUserDetails = createAsyncThunk(
+  'user/fetching',
+  async userId => {
+    try {
+      const response = await firestore().collection('users').doc(userId).get();
+      return response.data();
+    } catch (error) {
+      firebaseErrors(error.code);
+    }
+  },
+);
 
 export const fetchUserPosts = createAsyncThunk('user/posts', async () => {
   try {

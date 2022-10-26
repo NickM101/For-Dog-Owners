@@ -22,9 +22,7 @@ const UserListComponent = ({usersArrayList = []}) => {
             size={40}
           />
         )}
-        onPress={() =>
-          navigation.navigate('users_profile', {type: 'linked', linked: item})
-        }
+        onPress={() => navigation.navigate('SearchProfile', {user: item})}
       />
     </View>
   ));

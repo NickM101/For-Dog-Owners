@@ -1,6 +1,7 @@
 import React from 'react';
 import {Button, TextInput} from 'react-native-paper';
 import {useDispatch, useSelector} from 'react-redux';
+import auth from '@react-native-firebase/auth';
 
 import Container from '@layouts/Container';
 import Header from '@layouts/Header';
@@ -20,7 +21,7 @@ const EditField = ({navigation, route}) => {
   const onSave = () => {
     Promise.all([
       dispatch(updateUserProfile({field, text})),
-      dispatch(fetchUserDetails()),
+      dispatch(fetchUserDetails(auth().currentUser.uid)),
     ]).then(navigation.goBack());
   };
 

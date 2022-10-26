@@ -35,18 +35,21 @@ const SearchComponent = ({clampedScroll}) => {
     console.log('search', search);
     await firestore()
       .collection('users')
-      .where('username', '>=', search)
-      // .where('username', '<=', search + '\uf8ff')
+      .where('email', '>=', search)
+      .where('email', '<=', search + '\uf8ff')
       .get()
       .then(querySnapshot => {
-        console.log('is emptry', querySnapshot);
-        let users = querySnapshot.forEach(doc => {
-          console.log('id', doc.id);
-          const data = doc.data();
-          const id = doc.id;
+        console.log('is empty', querySnapshot.empty);
+        let users = [];
+        if (!querySnapshot.empty) {
+          querySnapshot.forEach(doc => {
+            console.log('id', doc.id);
+            const data = doc.data();
+            const id = doc.id;
 
-          return {id, ...data};
-        });
+            users.push({id, ...data});
+          });
+        }
         console.log('users', users);
         setLoading(false);
         return dispatch(setUsers(users));

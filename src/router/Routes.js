@@ -15,6 +15,7 @@ import HomeFeed from '../pages/home';
 import ProfileScreen from '../pages/profile';
 import EditProfile from '../pages/profile/edit';
 import EditField from '../pages/profile/edit/EditField';
+import SearchProfile from '../pages/search/UsersProfile';
 import {HomeScreen} from './BottomTab';
 
 const Stack = createNativeStackNavigator();
@@ -54,6 +55,15 @@ export const ProfileStack = () => {
     <Stack.Navigator screenOptions={{headerShown: false}}>
       <Stack.Screen name="Edit" component={EditProfile} />
       <Stack.Screen name="EditField" component={EditField} />
+    </Stack.Navigator>
+  );
+};
+
+export const SearchStack = () => {
+  return (
+    <Stack.Navigator screenOptions={{headerShown: false}}>
+      <Stack.Screen name="SearchHome" component={Search} />
+      <Stack.Screen name="SearchProfile" component={SearchProfile} />
     </Stack.Navigator>
   );
 };

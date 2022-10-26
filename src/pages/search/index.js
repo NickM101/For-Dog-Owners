@@ -12,6 +12,8 @@ import Container from '../../layouts/Container';
 const SearchHome = () => {
   const {history, users, loading} = useSelector(SearchList);
 
+  console.log('history', users);
+
   const [scrollYValue, setScrollYValue] = useState(new Animated.Value(0));
 
   const clampedScroll = Animated.diffClamp(
@@ -49,11 +51,11 @@ const SearchHome = () => {
             () => {}, // Optional async listener
           )}
           contentInsetAdjustmentBehavior="automatic">
-          {/* {users.length ? (
+          {users.length ? (
             <UserListComponent usersArrayList={users} />
           ) : (
             <UserListComponent usersArrayList={history} />
-          )} */}
+          )}
         </Animated.ScrollView>
       </SafeAreaView>
     </Animated.View>

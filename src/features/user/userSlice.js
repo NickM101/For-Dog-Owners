@@ -1,4 +1,7 @@
 import {createSlice} from '@reduxjs/toolkit';
+import auth from '@react-native-firebase/auth';
+import firestore from '@react-native-firebase/firestore';
+
 import {
   anonymousLogIn,
   fetchUserDetails,
@@ -13,6 +16,7 @@ const initialState = {
   loading: false,
   updateStatus: false,
   user: null,
+  search: null,
   error: null,
   followers: [],
   postLoading: false,
@@ -66,7 +70,11 @@ const userSlice = createSlice({
         state.error = action.error;
       })
       .addCase(fetchUserDetails.fulfilled, (state, action) => {
-        state.user = action.payload;
+        if (auth().currentUser.uid === action.payload.id) {
+          state.user = action.payload;
+        } else {
+          state.search = action.payload;
+        }
       })
       .addCase(updateUserProfile.pending, state => {
         state.updateStatus = true;

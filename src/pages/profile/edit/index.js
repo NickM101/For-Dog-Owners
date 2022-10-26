@@ -18,7 +18,7 @@ const EditProfile = ({navigation}) => {
   const toast = useToast();
   const dispatch = useDispatch();
 
-  const user = useSelector(loggedInUser);
+  const {user} = useSelector(loggedInUser);
 
   const fetchPhotos = async () => {
     await launchImageLibrary({mediaType: 'photo'})
@@ -33,7 +33,7 @@ const EditProfile = ({navigation}) => {
 
           Promise.all([
             dispatch(uploadProfilePhoto(source)),
-            dispatch(fetchUserDetails()),
+            dispatch(fetchUserDetails(user.id)),
           ]);
         }
       })

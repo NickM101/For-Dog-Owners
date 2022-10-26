@@ -9,6 +9,7 @@ import ProfileScreen from '../pages/profile';
 import MediaPage from '../pages/camera/MediaPage';
 import DiscoverFeed from '../pages/discover';
 import SearchHome from '../pages/search';
+import SearchProfile from '../pages/search/UsersProfile';
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
@@ -74,6 +75,7 @@ export default function BottomTabs() {
       <Stack.Screen name="PetBox" component={TabStacks} />
       <Stack.Screen name="ProfileEdit" component={ProfileStack} />
       <Stack.Screen name="Media" component={MediaPage} />
+      <Stack.Screen name="SearchProfile" component={SearchProfile} />
     </Stack.Navigator>
   );
 }
