@@ -81,6 +81,7 @@ import org.apache.tools.ant.taskdefs.condition.Os
 
 project.ext.react = [
     enableHermes: true,  // clean and rebuild if changing
+    enableVmCleanup: false,
 ]
 
 apply from: "../../node_modules/react-native/react.gradle"
@@ -111,7 +112,9 @@ def enableProguardInReleaseBuilds = false
  * give correct results when using with locales other than en-US.  Note that
  * this variant is about 6MiB larger per architecture than default.
  */
-def jscFlavor = 'org.webkit:android-jsc:+'
+ 
+// def jscFlavor = 'org.webkit:android-jsc:+'
+def jscFlavor = 'org.webkit:android-jsc-intl:+'
 
 /**
  * Whether to enable the Hermes VM.
@@ -222,6 +225,12 @@ android {
             keyAlias 'androiddebugkey'
             keyPassword 'android'
         }
+        release {
+            storeFile file('tiktok.keystore')
+            storePassword 'tiktok'
+            keyAlias 'tiktok'
+            keyPassword 'tiktok'
+        }
     }
     buildTypes {
         debug {
@@ -230,7 +239,7 @@ android {
         release {
             // Caution! In production, you need to generate your own keystore file.
             // see https://reactnative.dev/docs/signed-apk-android.
-            signingConfig signingConfigs.debug
+            signingConfig signingConfigs.release
             minifyEnabled enableProguardInReleaseBuilds
             proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
         }

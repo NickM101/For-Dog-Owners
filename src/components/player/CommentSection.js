@@ -1,15 +1,10 @@
 import {View, Text, TouchableOpacity} from 'react-native';
 import React, {useEffect, useState} from 'react';
 import {useDispatch, useSelector} from 'react-redux';
-import database from '@react-native-firebase/database';
+import firestore from '@react-native-firebase/firestore';
 import {ActivityIndicator, Avatar} from 'react-native-paper';
 import {useToast} from 'react-native-toast-notifications';
-import {
-  formatDistanceToNow,
-  formatDistanceToNowStrict,
-  formatDuration,
-  fromUnixTime,
-} from 'date-fns';
+
 import {BottomSheetFlatList, BottomSheetTextInput} from '@gorhom/bottom-sheet';
 import CommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
@@ -20,36 +15,41 @@ import {postComment} from '@services/comments';
 import {loggedInUser} from '@features/user/userSlice';
 import {addDiscoverComment} from '@features/discover/discoverSlice';
 import {addPostComment} from '../../features/posts/postSlice';
+import {formatDistance, formatDistanceToNow} from 'date-fns';
 
-const CommentSection = ({navigation, id, sheetIndex, type}) => {
+const CommentSection = ({userId, id, sheetIndex, type}) => {
   const toast = useToast();
   const dispatch = useDispatch();
   const user = useSelector(loggedInUser);
 
   const [comments, setComments] = useState([]);
   const [comment, setComment] = useState('');
-  const [loading, setLoading] = useState('');
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     if (sheetIndex === 1) {
       setLoading(true);
-      const onCommentChange = database()
-        .ref(`feeds/${id}/comments`)
-        .on('value', snapshot => {
-          if (snapshot.exists()) {
-            const data = snapshot.val();
-            let result = [];
-            for (let key in snapshot.val()) {
-              let output = data[key];
-              result.push({id: key, ...output});
-            }
-            setLoading(false);
-            setComments(result);
+      const subscribe = firestore()
+        .collection(`posts/${userId}/personal/${id}/comments`)
+        .orderBy('creation', 'asc')
+        .limitToLast(10)
+        .onSnapshot(snapshot => {
+          const results = [];
+
+          if (!snapshot.empty) {
+            snapshot.forEach(doc => {
+              const id = doc.id;
+
+              results.push({id, ...doc.data()});
+            });
           }
+
+          console.log('results', results);
+          setLoading(false);
+          setComments(results);
         });
 
-      return () =>
-        database().ref(`feeds/${id}/comments`).off('value', onCommentChange);
+      return () => subscribe();
     }
   }, [sheetIndex]);
 
@@ -57,9 +57,9 @@ const CommentSection = ({navigation, id, sheetIndex, type}) => {
     if (!comment.length) {
       toast.show("Can't send an empty comment.");
     } else {
-      console.log('sent');
       const data = {
         postID: id,
+        userId,
         user: {
           username: user.displayName ? user.displayName : user.email,
           imageURL: user.photoURL,
@@ -67,49 +67,63 @@ const CommentSection = ({navigation, id, sheetIndex, type}) => {
         },
         comment,
       };
+      console.log('sent', type);
+
+      postComment(data).then(() => setComment(''));
       type === 'posts'
         ? dispatch(addPostComment({postId: id}))
         : dispatch(addDiscoverComment({postId: id}));
-      return postComment(data).then(() => setComment(''));
     }
   };
 
   const _renderItem = ({item, index}) => {
+    const time = item.creation
+      ? formatDistanceToNow(item?.creation?.toDate(), {
+          includeSeconds: true,
+        })
+      : '--';
     return (
       <View className={'flex-row justify-between my-2'}>
         <View className={'flex-row'}>
           <Avatar.Image
-            className={'mx-2 my-1'}
+            className={'mx-2 my-1 self-center'}
             source={require('../../assets/images/logo.png')}
             size={30}
           />
           <View className={'w-30'}>
             <Text className={'text-black font-semibold text-base'}>
-              {item?.creator?.username}
+              {item?.creator}
             </Text>
             <Text className={'flex-wrap'}>{item.comment}</Text>
           </View>
         </View>
-        {/* <Text>{time}</Text> */}
+        <Text>{time}</Text>
       </View>
     );
   };
 
-  if (loading) {
-    <Container className={'justify-center items-center'}>
-      <ActivityIndicator animating={true} color={'orange'} size={'large'} />
-      <Text>Fetching Comments ....</Text>
-    </Container>;
-  }
   return (
     <Container>
-      <Header title={`${comments.length} Comments`} leftIcon={null} />
+      <Header title={`${comments.length} Comments`} rightIcon={null} />
       <View className={'flex-1 px-2'}>
-        <BottomSheetFlatList
-          data={comments}
-          keyExtractor={item => item.id}
-          renderItem={_renderItem}
-        />
+        {loading ? (
+          <Container className={'justify-center items-center'}>
+            <ActivityIndicator
+              animating={true}
+              color={'orange'}
+              size={'small'}
+            />
+            <Text className={'text-base font-semibold my-2'}>
+              Loading comments ....
+            </Text>
+          </Container>
+        ) : (
+          <BottomSheetFlatList
+            data={comments}
+            keyExtractor={item => item.id}
+            renderItem={_renderItem}
+          />
+        )}
       </View>
       <View className={'flex-row justify-around items-center'}>
         <BottomSheetTextInput
@@ -132,3 +146,29 @@ const CommentSection = ({navigation, id, sheetIndex, type}) => {
 };
 
 export default CommentSection;
+
+//  useEffect(() => {
+//    if (sheetIndex === 1) {
+//      setLoading(true);
+//      async function onCommentChange() {
+//        console.log('inside function', id);
+//        await database()
+//          .ref(`feeds/${id}/comments`)
+//          .on('value', snapshot => {
+//            console.log(snapshot);
+//            if (snapshot.exists()) {
+//              const data = snapshot.val();
+//              let result = [];
+//              for (let key in snapshot.val()) {
+//                let output = data[key];
+//                result.push({id: key, ...output});
+//              }
+//              setLoading(false);
+//              setComments(result);
+//            }
+//          });
+//      }
+//      return () =>
+//        database().ref(`feeds/${id}/comments`).off('value', onCommentChange);
+//    }
+//  }, [sheetIndex]);

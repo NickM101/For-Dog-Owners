@@ -29,7 +29,7 @@ const postSlice = createSlice({
     addPostComment(state, action) {
       const {postId} = action.payload;
       const existingPost = state.posts.find(post => post.id === postId);
-      existingPost.comments.push(postId);
+      existingPost.comments++;
     },
   },
   extraReducers: builder => {

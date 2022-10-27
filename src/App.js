@@ -46,7 +46,7 @@ const App = () => {
         <PaperProvider theme={theme}>
           <GestureHandlerRootView style={{flex: 1}}>
             <Router />
-            <Toast ref={ref => (global['toast'] = ref)} />
+            <Toast placement="top" ref={ref => (global['toast'] = ref)} />
           </GestureHandlerRootView>
         </PaperProvider>
       </WithSplashScreen>

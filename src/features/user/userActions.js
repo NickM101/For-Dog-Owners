@@ -86,7 +86,6 @@ export const anonymousLogIn = createAsyncThunk('user/anonymous', async () => {
 export const fetchUserDetails = createAsyncThunk(
   'user/fetching',
   async ({userId}) => {
-    console.log('fetching user data================', userId);
     try {
       const response = await firestore().collection('users').doc(userId).get();
       return response.data();
@@ -99,10 +98,6 @@ export const fetchUserDetails = createAsyncThunk(
 export const fetchUserPosts = createAsyncThunk(
   'user/posts',
   async ({userId}) => {
-    console.log(
-      '----------------Fetching user posts---------------------',
-      userId,
-    );
     try {
       const response = await firestore()
         .collectionGroup('personal')

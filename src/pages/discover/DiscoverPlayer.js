@@ -62,6 +62,7 @@ const DiscoverPlayer = ({posts}) => {
           key={posts.id}
           ref={videoRef}
           source={{uri: posts?.mediaURL[1]}}
+          poster={posts?.mediaURL[0]}
           paused={!paused === visible}
           resizeMode="cover"
           posterResizeMode="cover"
@@ -111,7 +112,7 @@ const DiscoverPlayer = ({posts}) => {
           </TouchableOpacity>
         </View>
         <Text className={'text-white text-base'}>{`@ ${
-          posts.user?.username || ''
+          posts.creator?.username || ''
         }`}</Text>
         <Text className={'text-white text-sm'}>{posts.caption || ''}</Text>
       </View>
@@ -125,7 +126,8 @@ const DiscoverPlayer = ({posts}) => {
         onChange={handleSheetChanges}
         enablePanDownToClose={true}>
         <CommentSection
-          id={posts.id}
+          id={posts?.id}
+          userId={posts?.creator?.id}
           status={!paused === visible}
           sheetIndex={sheetIndex}
           type={'discover'}

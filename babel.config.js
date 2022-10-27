@@ -19,7 +19,7 @@ module.exports = {
         },
       },
     ],
-    // ['transform-remove-console', {exclude: ['log']}],
+    // 'transform-remove-console',
   ],
   env: {
     production: {

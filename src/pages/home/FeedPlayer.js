@@ -60,6 +60,7 @@ const FeedPlayer = ({posts, type}) => {
           key={posts.id}
           ref={videoRef}
           source={{uri: posts?.mediaURL[1]}}
+          poster={posts?.mediaURL[0]}
           paused={!paused === visible}
           resizeMode="cover"
           posterResizeMode="cover"

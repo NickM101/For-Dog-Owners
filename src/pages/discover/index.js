@@ -7,6 +7,7 @@ import Container from '@layouts/Container';
 import {fetchDiscover} from '@features/discover/discoverAPI';
 import DiscoverPlayer from './DiscoverPlayer';
 import NewFeeds from '../../components/pages/NewFeeds';
+import DiscoverEmpty from '../../components/pages/DiscoverEmpty';
 
 const DiscoverFeed = () => {
   const dispatch = useDispatch();
@@ -47,7 +48,7 @@ const DiscoverFeed = () => {
         snapToAlignment={'start'}
         decelerationRate={'fast'}
         contentContainerStyle={{flexGrow: 1}}
-        ListEmptyComponent={NewFeeds}
+        ListEmptyComponent={DiscoverEmpty}
         refreshControl={
           <RefreshControl
             refreshing={loading}

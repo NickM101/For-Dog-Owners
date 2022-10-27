@@ -11,6 +11,7 @@ import {
   TouchableOpacity,
   TextInput,
   Dimensions,
+  Keyboard,
 } from 'react-native';
 import Video from 'react-native-video';
 import {SAFE_AREA_PADDING} from '../../constants/camera';
@@ -83,24 +84,25 @@ const MediaPage = ({navigation, route}) => {
     try {
       setSavingState('saving');
 
-      let postSaved = await Promise.all([
+      await Promise.all([
         saveMediaStorage(thumbnail, 'post', true),
         saveMediaStorage(`file://${path}`, 'post', false),
-      ]);
+      ]).then(async postSaved => {
+        const contentToSend = isVisible ? text : '';
 
-      const contentToSend = isVisible ? text : '';
-
-      const user = {
-        id: user.id,
-        imageURL: user.imageURL,
-        username: user.username,
-      };
-      await saveUserPost(postSaved, contentToSend, user)
-        .then(() => console.log('Saved to storage'))
-        .catch(() => console.error('Error saving'));
-
-      setSavingState('saved');
-      navigation.goBack();
+        console.log(user?.id);
+        const currentUser = {
+          id: user?.id,
+          imageURL: user?.imageURL,
+          username: user?.username,
+        };
+        await saveUserPost(postSaved, contentToSend, currentUser)
+          .then(() => {
+            setSavingState('saved');
+            navigation.goBack();
+          })
+          .catch(() => console.error('Error saving'));
+      });
     } catch (e) {
       const message = e instanceof Error ? e.message : JSON.stringify(e);
       setSavingState('none');
@@ -130,12 +132,17 @@ const MediaPage = ({navigation, route}) => {
     setIsVisible(!isVisible);
   };
 
+  const handleTextInput = () => {
+    Keyboard.dismiss();
+  };
+
   return (
     <View style={[styles.container, screenStyle]}>
       {type === 'video' && (
         <TouchableOpacity
-          style={StyleSheet.absoluteFill}
-          onPress={handleTextDescription}>
+          onPress={handleTextInput}
+          onLongPress={handleTextDescription}
+          style={StyleSheet.absoluteFill}>
           <Video
             source={source}
             style={StyleSheet.absoluteFill}

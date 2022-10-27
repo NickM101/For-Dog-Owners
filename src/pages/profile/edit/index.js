@@ -18,7 +18,7 @@ const EditProfile = ({navigation}) => {
   const toast = useToast();
   const dispatch = useDispatch();
 
-  const {user} = useSelector(loggedInUser);
+  const user = useSelector(loggedInUser);
 
   const fetchPhotos = async () => {
     await launchImageLibrary({mediaType: 'photo'})
@@ -48,7 +48,7 @@ const EditProfile = ({navigation}) => {
           style={{alignSelf: 'center', margin: 20}}
           size={120}
           source={{
-            uri: user.imageURL,
+            uri: user?.imageURL,
           }}
         />
         <View
@@ -58,7 +58,11 @@ const EditProfile = ({navigation}) => {
           <MaterialIcon name="plus" size={24} color={'orange'} />
         </View>
       </TouchableOpacity>
-      <UserDetail title={'Username'} value={user.username} field={'username'} />
+      <UserDetail
+        title={'Username'}
+        value={user?.username}
+        field={'username'}
+      />
       <UserDetail
         title={"Pet's Name"}
         value={user?.pets_name}
@@ -72,14 +76,14 @@ const EditProfile = ({navigation}) => {
       />
       <UserDetail
         title={'Email Address'}
-        value={user.email}
+        value={user?.email}
         field={'email'}
         disabled={true}
         type={'email-address'}
       />
       <UserDetail
         title={'Phone Number'}
-        value={user.phoneNumber}
+        value={user?.phoneNumber}
         field={'phoneNumber'}
         type={'phone-pad'}
       />

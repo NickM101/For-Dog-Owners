@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {FlatList, Image, View, Text} from 'react-native';
+import {FlatList, Image, View, Text, TouchableOpacity} from 'react-native';
 import {Button} from 'react-native-paper';
 import MaterialIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {useDispatch, useSelector} from 'react-redux';
@@ -8,13 +8,13 @@ import Container from '@layouts/Container';
 
 import {fetchUserPosts} from '@features/user/userActions';
 import {userInfo} from '@features/user/userSlice';
+import {useNavigation} from '@react-navigation/native';
 
 export const UserVideos = ({user}) => {
   const dispatch = useDispatch();
+  const navigation = useNavigation();
 
   const {posts, postLoading} = useSelector(userInfo);
-
-  console.log('posts', posts);
 
   useEffect(() => {
     dispatch(fetchUserPosts({userId: user}));
@@ -27,9 +27,11 @@ export const UserVideos = ({user}) => {
         removeClippedSubviews
         data={posts}
         keyExtractor={item => item.id}
+        showsVerticalScrollIndicator={false}
         renderItem={({item}) => {
           return (
-            <View
+            <TouchableOpacity
+              onPress={() => navigation.navigate('PostView', {post: item})}
               style={{
                 flex: 1 / 3,
                 height: 200,
@@ -37,7 +39,7 @@ export const UserVideos = ({user}) => {
                 margin: 2,
               }}>
               <Image style={{flex: 1}} source={{uri: item.mediaURL[0]}} />
-            </View>
+            </TouchableOpacity>
           );
         }}
         contentContainerStyle={{

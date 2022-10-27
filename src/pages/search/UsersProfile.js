@@ -19,7 +19,28 @@ const SearchProfile = ({route}) => {
   const [isFollower, setFollower] = useState(false);
 
   useEffect(() => {
-    dispatch(fetchUserDetails({userId: user.id}));
+    async function isFollowing() {
+      const response = await firestore()
+        .collection('following')
+        .doc(auth().currentUser.uid)
+        .collection('following_users')
+        .doc(user.id)
+        .get();
+
+      console.log('response', response.exists);
+
+      response.exists ? setFollower(true) : setFollower(false);
+    }
+
+    async function fetchAllData() {
+      let data = await Promise.all([
+        dispatch(fetchUserDetails({userId: user.id})),
+        isFollowing(),
+      ]);
+
+      return data();
+    }
+    fetchAllData();
   }, []);
 
   const unfollowUser = async () => {
