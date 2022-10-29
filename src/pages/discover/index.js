@@ -17,7 +17,6 @@ const DiscoverFeed = () => {
   useEffect(() => {
     if (discover) {
       console.log('---------Discover Fetching Data -------');
-
       dispatch(fetchDiscover());
     }
   }, []);

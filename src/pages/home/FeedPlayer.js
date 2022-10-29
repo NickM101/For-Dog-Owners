@@ -8,7 +8,7 @@ import {
   TouchableWithoutFeedback,
 } from 'react-native';
 import Video from 'react-native-video';
-import {Avatar} from 'react-native-paper';
+import {Avatar, ProgressBar} from 'react-native-paper';
 import BottomSheet from '@gorhom/bottom-sheet';
 import {useDispatch, useSelector} from 'react-redux';
 import {useFocusEffect} from '@react-navigation/native';
@@ -29,6 +29,7 @@ const FeedPlayer = ({posts, type}) => {
   const [paused, setPaused] = useState(true);
   const [visible, setVisible] = useState(false);
   const [sheetIndex, setSheetIndex] = useState(-1);
+  const [ready, setReady] = useState(false);
 
   const handleSheetChanges = useCallback(index => {
     setSheetIndex(index);
@@ -55,6 +56,20 @@ const FeedPlayer = ({posts, type}) => {
       onChange={isVisible => {
         setVisible(isVisible);
       }}>
+      <ProgressBar
+        style={styles.progress}
+        animatedValue={1}
+        indeterminate={!ready}
+        visible={!ready}
+      />
+      {!paused === visible && (
+        <MaterialIcons
+          name="play-circle"
+          color={'#FF5A00'}
+          size={100}
+          style={styles.control}
+        />
+      )}
       <TouchableWithoutFeedback style={{flex: 1}} onPress={onPlayPausePress}>
         <Video
           key={posts.id}
@@ -79,6 +94,7 @@ const FeedPlayer = ({posts, type}) => {
             bufferForPlaybackMs: 1500,
             bufferForPlaybackAfterRebufferMs: 1500,
           }}
+          onReadyForDisplay={() => setReady(true)}
         />
       </TouchableWithoutFeedback>
       <View style={styles.description}>
@@ -87,8 +103,8 @@ const FeedPlayer = ({posts, type}) => {
             <TouchableOpacity>
               <Avatar.Image
                 className={'bg-slate-700 border border-white '}
-                size={36}
-                source={require('../../assets/images/petbox.png')}
+                size={35}
+                source={{uri: posts?.creator?.imageURL}}
               />
             </TouchableOpacity>
           </View>
@@ -101,13 +117,11 @@ const FeedPlayer = ({posts, type}) => {
               size={36}
               color={'white'}
             />
-            <Text className={'font-bold text-white'}>
-              {posts?.comments.length}
-            </Text>
+            <Text className={'font-bold text-white'}>{posts?.comments}</Text>
           </TouchableOpacity>
         </View>
         <Text className={'text-white text-base'}>{`@ ${
-          posts.user?.username || ''
+          posts.creator?.username || ''
         }`}</Text>
         <Text className={'text-white text-sm'}>{posts.caption || ''}</Text>
       </View>
@@ -122,6 +136,7 @@ const FeedPlayer = ({posts, type}) => {
         enablePanDownToClose={true}>
         <CommentSection
           id={posts.id}
+          userId={posts?.creator?.id}
           status={!paused === visible}
           sheetIndex={sheetIndex}
           type={'posts'}
@@ -137,12 +152,24 @@ const styles = StyleSheet.create({
     height: Dimensions.get('window').height - 70,
     padding: 15,
   },
+  progress: {
+    position: 'absolute',
+    top: 0,
+    zIndex: 1,
+  },
   video: {
     position: 'absolute',
     top: 0,
     left: 0,
     bottom: 0,
     right: 0,
+    zIndex: -1,
+  },
+  control: {
+    position: 'absolute',
+    top: Dimensions.get('window').height / 2.3,
+    alignSelf: 'center',
+    zIndex: 2,
   },
   description: {
     height: '100%',

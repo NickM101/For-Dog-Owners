@@ -48,7 +48,6 @@ export const saveUserPost = (mediaURL, text, user) =>
         })
         .then(user => {
           console.log('---- User Post Saved Firestore ---- ');
-          console.log('user collection', user);
           resolve();
         });
     } catch (error) {
@@ -67,12 +66,16 @@ export const getUserPosts = () =>
         .where('creator.id', 'in', followers_arr)
         .orderBy('creation', 'desc')
         .limit(10)
-        .onSnapshot(snapshot => {
-          let posts = snapshot.docs.map(doc => {
-            const data = doc.data();
-            const id = doc.id;
-            return {id, ...data};
-          });
+        .get()
+        .then(querySnapshot => {
+          const posts = [];
+          if (!querySnapshot.empty) {
+            querySnapshot.forEach(doc => {
+              const data = doc.data();
+              const id = doc.id;
+              return posts.push({id, ...data});
+            });
+          }
           return resolve(posts);
         });
     } catch (error) {
@@ -101,4 +104,13 @@ export const dislikePost = ({creator, postId, userId}) => {
     .update({
       likes_by_users: firestore.FieldValue.arrayRemove(userId),
     });
+};
+
+export const commentIncrement = ({postId, creator}) => {
+  firestore()
+    .collection('posts')
+    .doc(creator)
+    .collection('personal')
+    .doc(postId)
+    .update({comments: firestore.FieldValue.increment(1)});
 };

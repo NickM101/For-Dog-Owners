@@ -11,6 +11,8 @@ import ProfileCount from '@components/profile/ProfileCount';
 
 import {logOut, fetchUserDetails} from '@features/user/userActions';
 import {UserVideos} from '../../components/profile/ProfileTabs/UserVideos';
+import {fetchUserPosts} from '../../features/user/userActions';
+import Header from '../../layouts/Header';
 
 const SearchProfile = ({route}) => {
   const dispatch = useDispatch();
@@ -27,8 +29,6 @@ const SearchProfile = ({route}) => {
         .doc(user.id)
         .get();
 
-      console.log('response', response.exists);
-
       response.exists ? setFollower(true) : setFollower(false);
     }
 
@@ -36,6 +36,7 @@ const SearchProfile = ({route}) => {
       let data = await Promise.all([
         dispatch(fetchUserDetails({userId: user.id})),
         isFollowing(),
+        dispatch(fetchUserPosts({userId: user.id})),
       ]);
 
       return data();
@@ -68,6 +69,7 @@ const SearchProfile = ({route}) => {
 
   return (
     <Container>
+      <Header title={user.username} />
       <ProfilePicture
         photo={user.imageURL ? user.imageURL : user.imageURL}
         username={user.username}

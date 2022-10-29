@@ -5,7 +5,11 @@ import firestore from '@react-native-firebase/firestore';
 import {ActivityIndicator, Avatar} from 'react-native-paper';
 import {useToast} from 'react-native-toast-notifications';
 
-import {BottomSheetFlatList, BottomSheetTextInput} from '@gorhom/bottom-sheet';
+import {
+  BottomSheetFlatList,
+  BottomSheetScrollView,
+  BottomSheetTextInput,
+} from '@gorhom/bottom-sheet';
 import CommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
 import Container from '@layouts/Container';
@@ -15,7 +19,7 @@ import {postComment} from '@services/comments';
 import {loggedInUser} from '@features/user/userSlice';
 import {addDiscoverComment} from '@features/discover/discoverSlice';
 import {addPostComment} from '../../features/posts/postSlice';
-import {formatDistance, formatDistanceToNow} from 'date-fns';
+import {formatDistanceToNow} from 'date-fns';
 
 const CommentSection = ({userId, id, sheetIndex, type}) => {
   const toast = useToast();
@@ -44,7 +48,6 @@ const CommentSection = ({userId, id, sheetIndex, type}) => {
             });
           }
 
-          console.log('results', results);
           setLoading(false);
           setComments(results);
         });
@@ -57,33 +60,32 @@ const CommentSection = ({userId, id, sheetIndex, type}) => {
     if (!comment.length) {
       toast.show("Can't send an empty comment.");
     } else {
+      const creator = {
+        username: user.displayName ? user.displayName : user.email,
+        imageURL: user.photoURL,
+        id: user.id,
+      };
       const data = {
         postID: id,
         userId,
-        user: {
-          username: user.displayName ? user.displayName : user.email,
-          imageURL: user.photoURL,
-          id: user.id,
-        },
+        user: creator,
         comment,
       };
-      console.log('sent', type);
-
       postComment(data).then(() => setComment(''));
       type === 'posts'
-        ? dispatch(addPostComment({postId: id}))
-        : dispatch(addDiscoverComment({postId: id}));
+        ? dispatch(addPostComment({postId: id, creator: userId}))
+        : dispatch(addDiscoverComment({postId: id, creator: userId}));
     }
   };
 
-  const _renderItem = ({item, index}) => {
+  const _renderItem = item => {
     const time = item.creation
       ? formatDistanceToNow(item?.creation?.toDate(), {
           includeSeconds: true,
         })
       : '--';
     return (
-      <View className={'flex-row justify-between my-2'}>
+      <View className={'flex-row justify-between my-2'} key={item.id}>
         <View className={'flex-row'}>
           <Avatar.Image
             className={'mx-2 my-1 self-center'}
@@ -118,11 +120,14 @@ const CommentSection = ({userId, id, sheetIndex, type}) => {
             </Text>
           </Container>
         ) : (
-          <BottomSheetFlatList
-            data={comments}
-            keyExtractor={item => item.id}
-            renderItem={_renderItem}
-          />
+          // <BottomSheetFlatList
+          //   data={comments}
+          //   keyExtractor={item => item.id}
+          //   renderItem={_renderItem}
+          // />
+          <BottomSheetScrollView>
+            {comments.map(_renderItem)}
+          </BottomSheetScrollView>
         )}
       </View>
       <View className={'flex-row justify-around items-center'}>

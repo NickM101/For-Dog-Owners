@@ -23,6 +23,7 @@ import Container from '../../layouts/Container';
 import {saveUserPost} from '../../services/posts';
 import {useSelector} from 'react-redux';
 import {loggedInUser} from '../../features/user/userSlice';
+import {Button} from 'react-native-paper';
 
 const window = Dimensions.get('window');
 const size = 30;
@@ -57,6 +58,7 @@ const MediaPage = ({navigation, route}) => {
   const [isVisible, setIsVisible] = useState(false);
   const [text, setText] = useState('');
   const [height, setHeight] = useState(40);
+  const [mediaError, setMediaError] = useState(false);
 
   const onMediaLoad = useCallback(event => {
     if (isVideoOnLoadEvent(event)) {
@@ -78,6 +80,7 @@ const MediaPage = ({navigation, route}) => {
   }, []);
   const onMediaLoadError = useCallback(error => {
     console.log(`failed to load media: ${JSON.stringify(error)}`);
+    setMediaError(true);
   }, []);
 
   const onSavePressed = useCallback(async () => {
@@ -135,6 +138,17 @@ const MediaPage = ({navigation, route}) => {
   const handleTextInput = () => {
     Keyboard.dismiss();
   };
+
+  if (mediaError) {
+    return (
+      <Container className={'justify-center items-center'}>
+        <Text>Error loading media.</Text>
+        <Button className={'rounded'} onPress={() => navigation.goBack()}>
+          Go Back
+        </Button>
+      </Container>
+    );
+  }
 
   return (
     <View style={[styles.container, screenStyle]}>

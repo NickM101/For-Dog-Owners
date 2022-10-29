@@ -3,7 +3,6 @@ import {firebaseErrors} from './fb_errors';
 
 export const postComment = ({postID, user, userId, comment}) =>
   new Promise(async (resolve, reject) => {
-    console.log('post', user);
     try {
       firestore()
         .collection(`posts/${userId}/personal/${postID}/comments`)

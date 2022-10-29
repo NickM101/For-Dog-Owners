@@ -1,7 +1,7 @@
 import firestore from '@react-native-firebase/firestore';
 
 import {createSlice} from '@reduxjs/toolkit';
-import {dislikePost, likePost} from '../../services/posts';
+import {commentIncrement, dislikePost, likePost} from '../../services/posts';
 
 import {fetchDiscover, updateDiscoverLikes} from './discoverAPI';
 
@@ -49,9 +49,10 @@ const discoverSlice = createSlice({
       }
     },
     addDiscoverComment(state, action) {
-      const {postId} = action.payload;
+      const {postId, creator} = action.payload;
       const existingPost = state.discover.find(post => post.id === postId);
       existingPost.comments++;
+      commentIncrement({creator, postId});
     },
   },
   extraReducers: builder => {

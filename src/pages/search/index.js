@@ -7,13 +7,9 @@ import LoaderComponent from '../../components/search/LoaderComponent';
 import UserListComponent from '../../components/search/UserListComponent';
 import {useDispatch, useSelector} from 'react-redux';
 import {SearchList} from '../../features/search/searchSlice';
-import Container from '../../layouts/Container';
-import {FlatList} from 'react-native-gesture-handler';
 
 const SearchHome = () => {
   const {history, users, loading} = useSelector(SearchList);
-
-  console.log('history', users);
 
   const [scrollYValue, setScrollYValue] = useState(new Animated.Value(0));
 

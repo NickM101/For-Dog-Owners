@@ -50,6 +50,7 @@ const RegisterMenu = ({navigation}) => {
   });
 
   const onSubmit = data => {
+    console.log(data);
     dispatch(registerUser(data));
   };
 

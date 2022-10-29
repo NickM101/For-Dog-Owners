@@ -1,11 +1,12 @@
 import * as React from 'react';
-import {Animated, Dimensions, StyleSheet, TextInput} from 'react-native';
-import {Searchbar} from 'react-native-paper';
+import {Animated, Dimensions, StyleSheet} from 'react-native';
+import {TextInput} from 'react-native-paper';
 import {useDispatch, useSelector} from 'react-redux';
 
 import firestore from '@react-native-firebase/firestore';
 import {setLoading, setUsers} from '../../features/search/searchSlice';
 import {firebaseErrors} from '../../services/fb_errors';
+import MaterialIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 const SearchComponent = ({clampedScroll}) => {
   const dispatch = useDispatch();
@@ -32,14 +33,13 @@ const SearchComponent = ({clampedScroll}) => {
 
   const onSearchUser = async () => {
     setLoading(true);
-    console.log('search', search);
+    console.log('searching');
     await firestore()
       .collection('users')
-      .where('email', '>=', search)
-      .where('email', '<=', search + '\uf8ff')
+      .where('username', '>=', search)
+      .where('username', '<=', search + '\uf8ff')
       .get()
       .then(querySnapshot => {
-        console.log('is empty', querySnapshot.empty);
         let users = [];
         if (!querySnapshot.empty) {
           querySnapshot.forEach(doc => {
@@ -50,11 +50,11 @@ const SearchComponent = ({clampedScroll}) => {
             users.push({id, ...data});
           });
         }
-        console.log('users', users);
         setLoading(false);
         return dispatch(setUsers(users));
       })
       .catch(error => {
+        console.log('error', error);
         firebaseErrors(error.code);
         setLoading(false);
       })
@@ -62,7 +62,8 @@ const SearchComponent = ({clampedScroll}) => {
   };
 
   const clearText = () => {
-    console.log('item cleared');
+    setSearch('');
+    setUsers([]);
   };
   return (
     <Animated.View
@@ -77,14 +78,17 @@ const SearchComponent = ({clampedScroll}) => {
           opacity: searchBarOpacity,
         },
       ]}>
-      <Searchbar
+      <TextInput
+        mode="outlined"
         placeholder="Search"
         onChangeText={setSearch}
         value={search}
         className={'rounded-lg'}
         onSubmitEditing={onSearchUser}
-        loading={loading}
-        onIconPress={onSearchUser}
+        left={<TextInput.Icon icon={'account-search'} />}
+        right={<TextInput.Icon icon={'close-circle'} onPress={clearText} />}
+        keyboardType={'web-search'}
+        returnKeyLabel={'search'}
       />
     </Animated.View>
   );

@@ -14,7 +14,7 @@ import {loggedInUser} from '@features/user/userSlice';
 import {uploadProfilePhoto} from '@features/user/userActions';
 import {fetchUserDetails} from '../../../features/user/userActions';
 
-const EditProfile = ({navigation}) => {
+const EditProfile = () => {
   const toast = useToast();
   const dispatch = useDispatch();
 
@@ -42,7 +42,7 @@ const EditProfile = ({navigation}) => {
 
   return (
     <Container>
-      <ProfileHeader />
+      <ProfileHeader title={'Edit Profile'} />
       <TouchableOpacity onPress={fetchPhotos}>
         <Avatar.Image
           style={{alignSelf: 'center', margin: 20}}

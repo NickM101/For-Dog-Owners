@@ -22,7 +22,7 @@ const EditField = ({navigation, route}) => {
     await Promise.all([
       dispatch(updateUserProfile({field, text})),
       dispatch(fetchUserDetails({userId: auth().currentUser.uid})),
-    ]).then(navigation.goBack());
+    ]).then(() => navigation.goBack());
   };
 
   return (

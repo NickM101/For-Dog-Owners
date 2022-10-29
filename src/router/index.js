@@ -10,8 +10,6 @@ import {loggedInUser} from '../features/user/userSlice';
 export default function Router() {
   const user = useSelector(loggedInUser);
 
-  console.log(user);
-
   const linking = {
     prefixes: ['tiktok://'],
 

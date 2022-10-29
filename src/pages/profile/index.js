@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react';
+import React, {useCallback, useEffect} from 'react';
 import {View, Text, TouchableOpacity} from 'react-native';
 import {useDispatch, useSelector} from 'react-redux';
 import IonIcon from 'react-native-vector-icons/Ionicons';
@@ -6,22 +6,25 @@ import IonIcon from 'react-native-vector-icons/Ionicons';
 import Container from '@layouts/Container';
 import ProfilePicture from '@components/profile/ProfilePicture';
 import ProfileCount from '@components/profile/ProfileCount';
-import ProfileTabs from '@components/profile/ProfileTabs';
 
-import {loggedInUser} from '@features/user/userSlice';
 import {logOut, fetchUserDetails} from '@features/user/userActions';
 import {UserVideos} from '../../components/profile/ProfileTabs/UserVideos';
 import {Divider} from 'react-native-paper';
 import {userInfo} from '../../features/user/userSlice';
+import {useFocusEffect} from '@react-navigation/native';
+import {fetchUserPosts} from '../../features/user/userActions';
 
 const ProfileScreen = ({navigation, route}) => {
   const dispatch = useDispatch();
 
-  const {user, followers} = useSelector(userInfo);
+  const {user} = useSelector(userInfo);
 
-  useEffect(() => {
-    dispatch(fetchUserDetails({userId: user.id}));
-  }, []);
+  useFocusEffect(
+    useCallback(() => {
+      dispatch(fetchUserDetails({userId: user.id}));
+      dispatch(fetchUserPosts({userId: user.id}));
+    }, [route]),
+  );
 
   return (
     <Container>

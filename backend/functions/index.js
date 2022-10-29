@@ -2,12 +2,30 @@ const functions = require('firebase-functions');
 
 const admin = require('firebase-admin');
 const {FieldValue} = require('firebase-admin/firestore');
+const {
+  default: exported,
+} = require('react-native/Libraries/Components/SafeAreaView/SafeAreaView');
 
 admin.initializeApp();
 
 const db = admin.firestore();
 
 // ---------------------- POSTS --------------------- //
+
+exports.onPostCreated = functions.firestore
+  .document('posts/{userID}/personal/{postID}')
+  .onCreate((snap, context) => {
+    const {userID, postID} = context.params;
+    const data = snap.data();
+
+    try {
+      db.collection('users').doc(userID).update({
+        last_post: data,
+      });
+    } catch (error) {
+      console.log('onPostCreated error', error);
+    }
+  });
 
 exports.onCommentCreated = functions.firestore
   .document('posts/{userID}/personal/{postID}/comments/{commentID}')

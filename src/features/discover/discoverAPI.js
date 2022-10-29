@@ -11,7 +11,6 @@ const discoverDate = addDays(new Date(), 4);
 export const fetchDiscover = createAsyncThunk(
   'discover/feed',
   async (params, thunkAPI) => {
-    console.log('-----Thunk Fetching Discover posts -------');
     try {
       const response = await firestore()
         .collection('following')
@@ -49,7 +48,6 @@ export const fetchDiscover = createAsyncThunk(
       }
       return result;
     } catch (error) {
-      console.log('err', error);
       firebaseErrors(error.code);
     }
   },

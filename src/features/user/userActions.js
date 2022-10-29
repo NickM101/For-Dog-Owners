@@ -15,7 +15,7 @@ export const registerUser = createAsyncThunk(
       );
 
       await firestore().collection('users').doc(registration.user.uid).set({
-        username,
+        username: username.toLowerCase(),
         pets_name,
         phoneNumber: null,
         imageURL: null,
@@ -98,10 +98,12 @@ export const fetchUserDetails = createAsyncThunk(
 export const fetchUserPosts = createAsyncThunk(
   'user/posts',
   async ({userId}) => {
+    console.log(userId);
     try {
       const response = await firestore()
-        .collectionGroup('personal')
-        .where('creator.id', '==', userId)
+        .collection('posts')
+        .doc(userId)
+        .collection('personal')
         .orderBy('creation', 'desc')
         .get();
 
@@ -154,7 +156,6 @@ export const uploadProfilePhoto = createAsyncThunk(
       .collection('users')
       .doc(auth().currentUser.uid)
       .update({imageURL: imageLocation});
-    console.log('response', res);
   },
 );
 

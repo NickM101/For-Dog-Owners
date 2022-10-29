@@ -8,7 +8,7 @@ import {
   TouchableWithoutFeedback,
 } from 'react-native';
 import Video from 'react-native-video';
-import {Avatar} from 'react-native-paper';
+import {Avatar, ProgressBar} from 'react-native-paper';
 import BottomSheet from '@gorhom/bottom-sheet';
 import {useDispatch, useSelector} from 'react-redux';
 import {useFocusEffect} from '@react-navigation/native';
@@ -31,6 +31,7 @@ const DiscoverPlayer = ({posts}) => {
   const [paused, setPaused] = useState(true);
   const [visible, setVisible] = useState(false);
   const [sheetIndex, setSheetIndex] = useState(-1);
+  const [ready, setReady] = useState(false);
 
   const handleSheetChanges = useCallback(index => {
     setSheetIndex(index);
@@ -57,6 +58,20 @@ const DiscoverPlayer = ({posts}) => {
       onChange={isVisible => {
         setVisible(isVisible);
       }}>
+      <ProgressBar
+        style={styles.progress}
+        animatedValue={1}
+        indeterminate={!ready}
+        visible={!ready}
+      />
+      {!paused === visible && (
+        <MaterialIcons
+          name="play-circle"
+          color={'#FF5A00'}
+          size={100}
+          style={styles.control}
+        />
+      )}
       <TouchableWithoutFeedback style={{flex: 1}} onPress={onPlayPausePress}>
         <Video
           key={posts.id}
@@ -81,6 +96,7 @@ const DiscoverPlayer = ({posts}) => {
             bufferForPlaybackMs: 1500,
             bufferForPlaybackAfterRebufferMs: 1500,
           }}
+          onReadyForDisplay={() => setReady(true)}
         />
       </TouchableWithoutFeedback>
       <View style={styles.description}>
@@ -90,12 +106,12 @@ const DiscoverPlayer = ({posts}) => {
               <Avatar.Image
                 className={'bg-slate-700 border border-white '}
                 size={36}
-                source={require('../../assets/images/petbox.png')}
+                source={{uri: posts?.creator?.imageURL}}
               />
             </TouchableOpacity>
-            {!posts.followed_status && (
+            {!posts.followed_status && !user?.isAnonymous ? (
               <FollowButton follower={posts.creator.id} />
-            )}
+            ) : null}
           </View>
           <LikeButton post={posts} user={user.id} type={'discover'} />
           <TouchableOpacity
@@ -106,9 +122,7 @@ const DiscoverPlayer = ({posts}) => {
               size={36}
               color={'white'}
             />
-            <Text className={'font-bold text-white'}>
-              {posts?.comments.length}
-            </Text>
+            <Text className={'font-bold text-white'}>{posts?.comments}</Text>
           </TouchableOpacity>
         </View>
         <Text className={'text-white text-base'}>{`@ ${
@@ -143,12 +157,24 @@ const styles = StyleSheet.create({
     height: Dimensions.get('window').height - 70,
     padding: 15,
   },
+  progress: {
+    position: 'absolute',
+    top: 0,
+    zIndex: 1,
+  },
   video: {
     position: 'absolute',
     top: 0,
     left: 0,
     bottom: 0,
     right: 0,
+    zIndex: -1,
+  },
+  control: {
+    position: 'absolute',
+    top: Dimensions.get('window').height / 2.3,
+    alignSelf: 'center',
+    zIndex: 2,
   },
   description: {
     height: '100%',

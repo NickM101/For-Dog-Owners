@@ -21,7 +21,10 @@ const searchSlice = createSlice({
       state.users = payload;
     },
     setHistory(state, {payload}) {
-      state.history.push(payload);
+      console.log('payload', payload);
+      if (payload.length) {
+        state.history.push(payload);
+      }
     },
     clearHistory(state) {
       state.history = [];

@@ -1,5 +1,12 @@
-import React, {useEffect, useState} from 'react';
-import {FlatList, Image, View, Text, TouchableOpacity} from 'react-native';
+import React, {useCallback, useEffect, useState} from 'react';
+import {
+  FlatList,
+  Image,
+  View,
+  Text,
+  TouchableOpacity,
+  RefreshControl,
+} from 'react-native';
 import {Button} from 'react-native-paper';
 import MaterialIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {useDispatch, useSelector} from 'react-redux';
@@ -8,17 +15,14 @@ import Container from '@layouts/Container';
 
 import {fetchUserPosts} from '@features/user/userActions';
 import {userInfo} from '@features/user/userSlice';
-import {useNavigation} from '@react-navigation/native';
+import {useFocusEffect, useNavigation} from '@react-navigation/native';
+import {loggedInUser} from '../../../features/user/userSlice';
 
 export const UserVideos = ({user}) => {
   const dispatch = useDispatch();
   const navigation = useNavigation();
 
   const {posts, postLoading} = useSelector(userInfo);
-
-  useEffect(() => {
-    dispatch(fetchUserPosts({userId: user}));
-  }, [user]);
 
   return (
     <Container className="">
@@ -56,6 +60,12 @@ export const UserVideos = ({user}) => {
               Your videos will be present once you share them.
             </Text>
           </Container>
+        }
+        refreshControl={
+          <RefreshControl
+            refreshing={postLoading}
+            onRefresh={() => dispatch(fetchUserPosts({userId: user}))}
+          />
         }
       />
     </Container>

@@ -1,5 +1,5 @@
 import {createSlice} from '@reduxjs/toolkit';
-import {dislikePost, likePost} from '../../services/posts';
+import {commentIncrement, dislikePost, likePost} from '../../services/posts';
 import {fetchPosts, updatePostLikes} from './postAPI';
 
 const initialState = {
@@ -27,9 +27,11 @@ const postSlice = createSlice({
       }
     },
     addPostComment(state, action) {
-      const {postId} = action.payload;
+      const {postId, creator} = action.payload;
+      console.log('{postId, creator}', postId, creator);
       const existingPost = state.posts.find(post => post.id === postId);
       existingPost.comments++;
+      commentIncrement({creator, postId});
     },
   },
   extraReducers: builder => {

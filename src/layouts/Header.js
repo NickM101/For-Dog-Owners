@@ -16,12 +16,15 @@ const Header = ({
     return rightPressed === undefined ? navigation.goBack() : rightPressed;
   }, [rightIcon]);
 
-
   return (
     <View>
       <Appbar mode="center-aligned">
         {rightIcon && (
-          <Appbar.Action icon={rightIcon} onPress={handleRightPressed} />
+          <Appbar.Action
+            centered={false}
+            icon={rightIcon}
+            onPress={handleRightPressed}
+          />
         )}
         <Appbar.Content title={title} />
         {leftIcon && <Appbar.Action icon={leftIcon} onPress={leftPressed} />}
